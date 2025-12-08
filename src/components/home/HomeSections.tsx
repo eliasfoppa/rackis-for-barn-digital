@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Heart, Users, Sparkles } from "lucide-react";
+import { ArrowRight, Heart, Users, Sparkles, Instagram } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export function HeroSection() {
@@ -9,28 +9,31 @@ export function HeroSection() {
         <div className="max-w-3xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary text-secondary-foreground text-sm font-medium mb-6 animate-fade-up">
             <Sparkles className="h-4 w-4" />
-            <span>Studentdriven ideell organisation</span>
+            <span>Student-run nonprofit organization</span>
           </div>
           
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-foreground leading-tight mb-6 animate-fade-up delay-100">
-            Tillsammans skapar vi en{" "}
-            <span className="text-primary">bättre framtid</span> för barn
+            Together we create a{" "}
+            <span className="text-primary">brighter future</span> for children
           </h1>
           
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8 animate-fade-up delay-200">
-            Rackis för Barn är en ideell organisation driven av studenter som arbetar 
-            för att stödja och hjälpa barn i behov runt om i Sverige.
+            Rackis for Barn is a nonprofit organization run by students, dedicated to 
+            supporting and helping children in need across Sweden.
           </p>
           
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-up delay-300">
             <Button variant="hero" size="lg" asChild>
               <Link to="/about">
-                Läs mer om oss
+                Learn more about us
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
             <Button variant="hero-outline" size="lg" asChild>
-              <Link to="/contact">Kontakta oss</Link>
+              <a href="https://instagram.com/rackisforbarn" target="_blank" rel="noopener noreferrer">
+                <Instagram className="mr-2 h-5 w-5" />
+                Follow on Instagram
+              </a>
             </Button>
           </div>
         </div>
@@ -47,18 +50,18 @@ export function MissionSection() {
   const features = [
     {
       icon: Heart,
-      title: "Stöd & Omsorg",
-      description: "Vi erbjuder emotionellt och praktiskt stöd till barn och familjer som behöver det mest.",
+      title: "Support & Care",
+      description: "We provide emotional and practical support to children and families who need it most.",
     },
     {
       icon: Users,
-      title: "Gemenskap",
-      description: "Vi skapar trygga mötesplatser där barn kan växa, lära sig och ha roligt tillsammans.",
+      title: "Community",
+      description: "We create safe spaces where children can grow, learn, and have fun together.",
     },
     {
       icon: Sparkles,
-      title: "Möjligheter",
-      description: "Vi öppnar dörrar till nya upplevelser och möjligheter för barn med begränsade resurser.",
+      title: "Opportunities",
+      description: "We open doors to new experiences and possibilities for children with limited resources.",
     },
   ];
 
@@ -67,10 +70,10 @@ export function MissionSection() {
       <div className="container">
         <div className="text-center max-w-2xl mx-auto mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-            Vad vi gör
+            What We Do
           </h2>
           <p className="text-muted-foreground text-lg">
-            [Platshållartext: Beskriv kort vad er organisation gör och vad som driver er.]
+            [Placeholder: Briefly describe what your organization does and what drives you.]
           </p>
         </div>
         
@@ -104,18 +107,26 @@ export function CTASection() {
       <div className="container">
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-            Vill du göra skillnad?
+            Want to make a difference?
           </h2>
           <p className="text-muted-foreground text-lg mb-8">
-            Oavsett om du vill bli volontär, donera eller bara lära dig mer om vårt arbete – 
-            vi vill gärna höra från dig.
+            Whether you want to volunteer, donate, or just learn more about our work – 
+            we'd love to hear from you.
           </p>
-          <Button variant="hero" size="lg" asChild>
-            <Link to="/contact">
-              Ta kontakt
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Link>
-          </Button>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Button variant="hero" size="lg" asChild>
+              <Link to="/contact">
+                Get in touch
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Link>
+            </Button>
+            <Button variant="outline" size="lg" asChild>
+              <a href="https://instagram.com/rackisforbarn" target="_blank" rel="noopener noreferrer">
+                <Instagram className="mr-2 h-5 w-5" />
+                Follow our journey
+              </a>
+            </Button>
+          </div>
         </div>
       </div>
     </section>

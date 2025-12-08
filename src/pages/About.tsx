@@ -5,23 +5,23 @@ const About = () => {
   const values = [
     {
       icon: Heart,
-      title: "Empati",
-      description: "Vi sätter alltid barnens bästa i centrum och agerar med omsorg och förståelse.",
+      title: "Empathy",
+      description: "We always put the children's best interests first and act with care and understanding.",
     },
     {
       icon: Target,
-      title: "Engagemang",
-      description: "Som studenter brinner vi för att göra verklig skillnad i samhället.",
+      title: "Dedication",
+      description: "As students, we are passionate about making a real difference in society.",
     },
     {
       icon: Users,
-      title: "Samarbete",
-      description: "Tillsammans kan vi åstadkomma mer än vi någonsin kunde göra på egen hand.",
+      title: "Collaboration",
+      description: "Together we can achieve more than we ever could on our own.",
     },
     {
       icon: Award,
-      title: "Transparens",
-      description: "Vi är öppna med hur vi arbetar och hur våra resurser används.",
+      title: "Transparency",
+      description: "We are open about how we work and how our resources are used.",
     },
   ];
 
@@ -32,10 +32,10 @@ const About = () => {
         <div className="container">
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6 animate-fade-up">
-              Om Rackis för Barn
+              About Rackis for Barn
             </h1>
             <p className="text-lg text-muted-foreground animate-fade-up delay-100">
-              En studentdriven ideell organisation dedikerad till att göra skillnad för barn i Sverige.
+              A student-run nonprofit organization dedicated to making a difference for children in Sweden.
             </p>
           </div>
         </div>
@@ -46,20 +46,20 @@ const About = () => {
         <div className="container-narrow">
           <div className="prose prose-lg max-w-none">
             <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-6">
-              Vår historia
+              Our Story
             </h2>
             <div className="space-y-4 text-muted-foreground">
               <p>
-                [Platshållartext: Berätta om hur organisationen grundades. Vem startade den, 
-                när och varför? Vad var den ursprungliga visionen?]
+                [Placeholder: Tell the story of how the organization was founded. Who started it, 
+                when, and why? What was the original vision?]
               </p>
               <p>
-                [Platshållartext: Beskriv hur organisationen har utvecklats sedan starten. 
-                Vilka milstolpar har ni uppnått? Hur har ni växt som grupp?]
+                [Placeholder: Describe how the organization has developed since its founding. 
+                What milestones have you achieved? How have you grown as a group?]
               </p>
               <p>
-                [Platshållartext: Förklara vad som driver er idag och vad ni hoppas 
-                uppnå i framtiden. Vilken inverkan vill ni ha på samhället?]
+                [Placeholder: Explain what drives you today and what you hope to 
+                achieve in the future. What impact do you want to have on society?]
               </p>
             </div>
           </div>
@@ -70,12 +70,12 @@ const About = () => {
       <section className="section-padding bg-section-alt">
         <div className="container-narrow">
           <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-6 text-center">
-            Vårt uppdrag
+            Our Mission
           </h2>
           <div className="bg-card border border-border rounded-2xl p-8 md:p-12 text-center">
             <p className="text-xl md:text-2xl text-foreground leading-relaxed">
-              [Platshållartext: Skriv er mission statement här. Vad är ert huvudsakliga 
-              syfte och vad strävar ni efter att uppnå för barnen ni hjälper?]
+              [Placeholder: Write your mission statement here. What is your main 
+              purpose and what do you strive to achieve for the children you help?]
             </p>
           </div>
         </div>
@@ -85,10 +85,10 @@ const About = () => {
       <section className="section-padding">
         <div className="container">
           <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-12 text-center">
-            Våra värderingar
+            Our Values
           </h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {values.map((value, index) => (
+            {values.map((value) => (
               <div
                 key={value.title}
                 className="text-center p-6"
@@ -112,16 +112,16 @@ const About = () => {
       <section className="section-padding bg-section-alt">
         <div className="container-narrow">
           <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-6 text-center">
-            Vårt team
+            Our Team
           </h2>
           <p className="text-center text-muted-foreground mb-12">
-            [Platshållartext: Presentera teamet kort. Ni kan lägga till foton och 
-            information om nyckelpersoner här.]
+            [Placeholder: Briefly introduce the team. You can add photos and 
+            information about key people here.]
           </p>
           <div className="bg-card border border-border rounded-2xl p-8 text-center">
             <p className="text-muted-foreground">
-              Vi är en grupp engagerade studenter som brinner för att hjälpa barn. 
-              Vår styrka ligger i vår mångfald och vårt gemensamma mål.
+              We are a group of dedicated students who are passionate about helping children. 
+              Our strength lies in our diversity and our shared goal.
             </p>
           </div>
         </div>

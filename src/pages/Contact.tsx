@@ -1,6 +1,6 @@
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
-import { Mail, MapPin } from "lucide-react";
+import { Mail, MapPin, Instagram } from "lucide-react";
 
 const Contact = () => {
   return (
@@ -9,10 +9,10 @@ const Contact = () => {
         <div className="container">
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6 animate-fade-up">
-              Kontakta oss
+              Contact Us
             </h1>
             <p className="text-lg text-muted-foreground animate-fade-up delay-100">
-              Har du frågor eller vill du engagera dig? Vi hör gärna från dig!
+              Have questions or want to get involved? We'd love to hear from you!
             </p>
           </div>
         </div>
@@ -25,11 +25,11 @@ const Contact = () => {
             <div className="space-y-8">
               <div>
                 <h2 className="text-2xl font-bold text-foreground mb-4">
-                  Hör av dig
+                  Get in Touch
                 </h2>
                 <p className="text-muted-foreground">
-                  Oavsett om du vill bli volontär, samarbeta med oss eller bara veta mer 
-                  om vårt arbete – tveka inte att kontakta oss.
+                  Whether you want to volunteer, collaborate with us, or just learn more 
+                  about our work – don't hesitate to reach out.
                 </p>
               </div>
 
@@ -39,12 +39,29 @@ const Contact = () => {
                     <Mail className="h-5 w-5 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-medium text-foreground">E-post</h3>
+                    <h3 className="font-medium text-foreground">Email</h3>
                     <a 
-                      href="mailto:kontakt@rackisforbarn.se" 
+                      href="mailto:contact@rackisforbarn.se" 
                       className="text-muted-foreground hover:text-primary transition-colors"
                     >
-                      kontakt@rackisforbarn.se
+                      contact@rackisforbarn.se
+                    </a>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <Instagram className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-medium text-foreground">Instagram</h3>
+                    <a 
+                      href="https://instagram.com/rackisforbarn" 
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-muted-foreground hover:text-primary transition-colors"
+                    >
+                      @rackisforbarn
                     </a>
                   </div>
                 </div>
@@ -54,10 +71,10 @@ const Contact = () => {
                     <MapPin className="h-5 w-5 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-medium text-foreground">Adress</h3>
+                    <h3 className="font-medium text-foreground">Location</h3>
                     <p className="text-muted-foreground">
-                      [Platshållartext: Lägg till er adress här]<br />
-                      Sverige
+                      [Placeholder: Add your address here]<br />
+                      Sweden
                     </p>
                   </div>
                 </div>
@@ -67,44 +84,44 @@ const Contact = () => {
             {/* Contact Form */}
             <div className="bg-card border border-border rounded-2xl p-6 md:p-8">
               <h3 className="text-xl font-semibold text-foreground mb-6">
-                Skicka ett meddelande
+                Send a Message
               </h3>
               <form className="space-y-4">
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium text-foreground mb-2">
-                    Namn
+                    Name
                   </label>
                   <input
                     type="text"
                     id="name"
                     className="w-full px-4 py-3 rounded-lg border border-input bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-                    placeholder="Ditt namn"
+                    placeholder="Your name"
                   />
                 </div>
                 <div>
                   <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">
-                    E-post
+                    Email
                   </label>
                   <input
                     type="email"
                     id="email"
                     className="w-full px-4 py-3 rounded-lg border border-input bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-                    placeholder="din@email.se"
+                    placeholder="your@email.com"
                   />
                 </div>
                 <div>
                   <label htmlFor="message" className="block text-sm font-medium text-foreground mb-2">
-                    Meddelande
+                    Message
                   </label>
                   <textarea
                     id="message"
                     rows={4}
                     className="w-full px-4 py-3 rounded-lg border border-input bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring resize-none"
-                    placeholder="Skriv ditt meddelande här..."
+                    placeholder="Write your message here..."
                   />
                 </div>
                 <Button type="submit" className="w-full" size="lg">
-                  Skicka meddelande
+                  Send Message
                 </Button>
               </form>
             </div>

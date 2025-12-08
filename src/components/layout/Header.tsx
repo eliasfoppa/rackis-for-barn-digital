@@ -1,13 +1,13 @@
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Instagram } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const navLinks = [
-  { href: "/", label: "Hem" },
-  { href: "/about", label: "Om Oss" },
-  { href: "/contact", label: "Kontakt" },
+  { href: "/", label: "Home" },
+  { href: "/about", label: "About Us" },
+  { href: "/contact", label: "Contact" },
 ];
 
 export function Header() {
@@ -18,7 +18,7 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
       <div className="container flex h-16 items-center justify-between">
         <Link to="/" className="flex items-center gap-2">
-          <span className="text-xl font-bold text-primary">Rackis för Barn</span>
+          <span className="text-xl font-bold text-primary">Rackis for Barn</span>
         </Link>
 
         {/* Desktop Navigation */}
@@ -37,8 +37,14 @@ export function Header() {
               {link.label}
             </Link>
           ))}
-          <Button size="sm" className="ml-4">
-            Engagera dig
+          <Button variant="outline" size="sm" className="ml-2" asChild>
+            <a href="https://instagram.com/rackisforbarn" target="_blank" rel="noopener noreferrer">
+              <Instagram className="h-4 w-4 mr-2" />
+              Follow Us
+            </a>
+          </Button>
+          <Button size="sm" className="ml-2">
+            Get Involved
           </Button>
         </nav>
 
@@ -71,8 +77,14 @@ export function Header() {
                 {link.label}
               </Link>
             ))}
+            <Button variant="outline" size="sm" className="mt-2" asChild>
+              <a href="https://instagram.com/rackisforbarn" target="_blank" rel="noopener noreferrer">
+                <Instagram className="h-4 w-4 mr-2" />
+                Follow Us on Instagram
+              </a>
+            </Button>
             <Button size="sm" className="mt-2">
-              Engagera dig
+              Get Involved
             </Button>
           </div>
         </nav>

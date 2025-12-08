@@ -1,15 +1,16 @@
 import { Link } from "react-router-dom";
-import { Heart } from "lucide-react";
+import { Heart, Instagram } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const footerLinks = {
   organization: [
-    { href: "/about", label: "Om Oss" },
-    { href: "/contact", label: "Kontakt" },
+    { href: "/about", label: "About Us" },
+    { href: "/contact", label: "Contact" },
   ],
   legal: [
     { href: "/impressum", label: "Impressum" },
-    { href: "/privacy", label: "Integritetspolicy" },
-    { href: "/terms", label: "Villkor" },
+    { href: "/privacy", label: "Privacy Policy" },
+    { href: "/terms", label: "Terms & Conditions" },
   ],
 };
 
@@ -19,20 +20,26 @@ export function Footer() {
   return (
     <footer className="bg-section-alt border-t border-border">
       <div className="container py-12 md:py-16">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-12">
           {/* Brand */}
-          <div className="space-y-4">
+          <div className="space-y-4 md:col-span-2">
             <Link to="/" className="inline-block">
-              <span className="text-xl font-bold text-primary">Rackis för Barn</span>
+              <span className="text-xl font-bold text-primary">Rackis for Barn</span>
             </Link>
             <p className="text-sm text-muted-foreground max-w-xs">
-              En studentdriven ideell organisation dedikerad till att göra skillnad för barn i Sverige.
+              A student-run nonprofit organization dedicated to making a difference for children in Sweden.
             </p>
+            <Button variant="outline" size="sm" asChild>
+              <a href="https://instagram.com/rackisforbarn" target="_blank" rel="noopener noreferrer">
+                <Instagram className="h-4 w-4 mr-2" />
+                Follow us on Instagram
+              </a>
+            </Button>
           </div>
 
           {/* Organization Links */}
           <div>
-            <h4 className="font-semibold text-foreground mb-4">Organisation</h4>
+            <h4 className="font-semibold text-foreground mb-4">Organization</h4>
             <ul className="space-y-3">
               {footerLinks.organization.map((link) => (
                 <li key={link.href}>
@@ -49,7 +56,7 @@ export function Footer() {
 
           {/* Legal Links */}
           <div>
-            <h4 className="font-semibold text-foreground mb-4">Juridiskt</h4>
+            <h4 className="font-semibold text-foreground mb-4">Legal</h4>
             <ul className="space-y-3">
               {footerLinks.legal.map((link) => (
                 <li key={link.href}>
@@ -69,10 +76,10 @@ export function Footer() {
         <div className="mt-12 pt-8 border-t border-border">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <p className="text-sm text-muted-foreground">
-              © {currentYear} Rackis för Barn. Alla rättigheter förbehållna.
+              © {currentYear} Rackis for Barn. All rights reserved.
             </p>
             <p className="text-sm text-muted-foreground flex items-center gap-1">
-              Skapat med <Heart className="h-4 w-4 text-accent fill-accent" /> av studenter
+              Made with <Heart className="h-4 w-4 text-accent fill-accent" /> by students
             </p>
           </div>
         </div>
