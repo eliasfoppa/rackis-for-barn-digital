@@ -12,43 +12,43 @@ const Impressum = () => {
           <div className="prose prose-lg max-w-none space-y-6 text-muted-foreground">
             <section>
               <h2 className="text-xl font-semibold text-foreground mb-3">
-                Organisationsuppgifter
+                Organization Details
               </h2>
               <p>
-                Rackis för Barn<br />
-                [Platshållartext: Organisationsnummer]<br />
-                [Platshållartext: Adress]<br />
-                [Platshållartext: Postnummer och Ort]<br />
-                Sverige
+                Rackis for Barn<br />
+                [Placeholder: Organization number]<br />
+                [Placeholder: Address]<br />
+                [Placeholder: Postal code and City]<br />
+                Sweden
               </p>
             </section>
 
             <section>
               <h2 className="text-xl font-semibold text-foreground mb-3">
-                Kontaktinformation
+                Contact Information
               </h2>
               <p>
-                E-post: kontakt@rackisforbarn.se<br />
-                [Platshållartext: Telefonnummer om tillämpligt]
+                Email: contact@rackisforbarn.se<br />
+                [Placeholder: Phone number if applicable]
               </p>
             </section>
 
             <section>
               <h2 className="text-xl font-semibold text-foreground mb-3">
-                Ansvarig utgivare
+                Responsible Publisher
               </h2>
               <p>
-                [Platshållartext: Namn på ansvarig person]<br />
-                [Platshållartext: Roll/Titel]
+                [Placeholder: Name of responsible person]<br />
+                [Placeholder: Role/Title]
               </p>
             </section>
 
             <section>
               <h2 className="text-xl font-semibold text-foreground mb-3">
-                Organisationsform
+                Organization Type
               </h2>
               <p>
-                Rackis för Barn är en ideell förening registrerad i Sverige.
+                Rackis for Barn is a nonprofit organization registered in Sweden.
               </p>
             </section>
           </div>

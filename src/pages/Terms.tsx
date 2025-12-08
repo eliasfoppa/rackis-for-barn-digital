@@ -6,69 +6,69 @@ const Terms = () => {
       <section className="section-padding">
         <div className="container-narrow">
           <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-8">
-            Villkor
+            Terms & Conditions
           </h1>
           
           <div className="prose prose-lg max-w-none space-y-6 text-muted-foreground">
             <p className="text-lg">
-              Senast uppdaterad: [Datum]
+              Last updated: [Date]
             </p>
 
             <section>
               <h2 className="text-xl font-semibold text-foreground mb-3">
-                1. Allmänt
+                1. General
               </h2>
               <p>
-                Genom att använda denna webbplats godkänner du dessa villkor. Om du inte 
-                godkänner villkoren, vänligen använd inte webbplatsen.
+                By using this website, you agree to these terms. If you do not 
+                agree to the terms, please do not use the website.
               </p>
             </section>
 
             <section>
               <h2 className="text-xl font-semibold text-foreground mb-3">
-                2. Användning av webbplatsen
+                2. Use of Website
               </h2>
               <p>
-                Innehållet på denna webbplats är avsett för informationsändamål. Du får inte 
-                använda webbplatsen på ett sätt som kan skada, inaktivera eller överbelasta den.
+                The content on this website is intended for informational purposes. You may not 
+                use the website in a way that could damage, disable, or overload it.
               </p>
             </section>
 
             <section>
               <h2 className="text-xl font-semibold text-foreground mb-3">
-                3. Immateriella rättigheter
+                3. Intellectual Property
               </h2>
               <p>
-                Allt innehåll på denna webbplats, inklusive text, bilder och logotyper, 
-                tillhör Rackis för Barn om inget annat anges.
+                All content on this website, including text, images, and logos, 
+                belongs to Rackis for Barn unless otherwise stated.
               </p>
             </section>
 
             <section>
               <h2 className="text-xl font-semibold text-foreground mb-3">
-                4. Ansvarsbegränsning
+                4. Limitation of Liability
               </h2>
               <p>
-                [Platshållartext: Beskriv eventuella ansvarsbegränsningar för organisationen.]
+                [Placeholder: Describe any limitations of liability for the organization.]
               </p>
             </section>
 
             <section>
               <h2 className="text-xl font-semibold text-foreground mb-3">
-                5. Ändringar
+                5. Changes
               </h2>
               <p>
-                Vi förbehåller oss rätten att när som helst ändra dessa villkor. Ändringar 
-                träder i kraft när de publiceras på denna sida.
+                We reserve the right to change these terms at any time. Changes 
+                take effect when published on this page.
               </p>
             </section>
 
             <section>
               <h2 className="text-xl font-semibold text-foreground mb-3">
-                6. Kontakt
+                6. Contact
               </h2>
               <p>
-                För frågor om dessa villkor, kontakta oss på kontakt@rackisforbarn.se.
+                For questions about these terms, contact us at contact@rackisforbarn.se.
               </p>
             </section>
           </div>

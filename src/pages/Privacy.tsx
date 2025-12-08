@@ -6,69 +6,69 @@ const Privacy = () => {
       <section className="section-padding">
         <div className="container-narrow">
           <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-8">
-            Integritetspolicy
+            Privacy Policy
           </h1>
           
           <div className="prose prose-lg max-w-none space-y-6 text-muted-foreground">
             <p className="text-lg">
-              Senast uppdaterad: [Datum]
+              Last updated: [Date]
             </p>
 
             <section>
               <h2 className="text-xl font-semibold text-foreground mb-3">
-                1. Inledning
+                1. Introduction
               </h2>
               <p>
-                Rackis för Barn värnar om din integritet. Denna integritetspolicy förklarar 
-                hur vi samlar in, använder och skyddar dina personuppgifter.
+                Rackis for Barn values your privacy. This privacy policy explains 
+                how we collect, use, and protect your personal data.
               </p>
             </section>
 
             <section>
               <h2 className="text-xl font-semibold text-foreground mb-3">
-                2. Vilka uppgifter vi samlar in
+                2. What Data We Collect
               </h2>
               <p>
-                [Platshållartext: Beskriv vilka personuppgifter ni samlar in, t.ex. namn, 
-                e-postadress, etc.]
+                [Placeholder: Describe what personal data you collect, e.g., name, 
+                email address, etc.]
               </p>
             </section>
 
             <section>
               <h2 className="text-xl font-semibold text-foreground mb-3">
-                3. Hur vi använder dina uppgifter
+                3. How We Use Your Data
               </h2>
               <p>
-                [Platshållartext: Förklara hur ni använder de insamlade uppgifterna, t.ex. 
-                för att kommunicera, skicka nyhetsbrev, etc.]
+                [Placeholder: Explain how you use the collected data, e.g., 
+                for communication, newsletters, etc.]
               </p>
             </section>
 
             <section>
               <h2 className="text-xl font-semibold text-foreground mb-3">
-                4. Delning av uppgifter
+                4. Data Sharing
               </h2>
               <p>
-                [Platshållartext: Förklara om och hur ni delar uppgifter med tredje part.]
+                [Placeholder: Explain if and how you share data with third parties.]
               </p>
             </section>
 
             <section>
               <h2 className="text-xl font-semibold text-foreground mb-3">
-                5. Dina rättigheter
+                5. Your Rights
               </h2>
               <p>
-                Enligt GDPR har du rätt att begära tillgång till, rättelse av eller radering 
-                av dina personuppgifter. Kontakta oss om du vill utöva dessa rättigheter.
+                Under GDPR, you have the right to request access to, correction of, or deletion 
+                of your personal data. Contact us if you wish to exercise these rights.
               </p>
             </section>
 
             <section>
               <h2 className="text-xl font-semibold text-foreground mb-3">
-                6. Kontakt
+                6. Contact
               </h2>
               <p>
-                För frågor om denna integritetspolicy, kontakta oss på kontakt@rackisforbarn.se.
+                For questions about this privacy policy, contact us at contact@rackisforbarn.se.
               </p>
             </section>
           </div>
