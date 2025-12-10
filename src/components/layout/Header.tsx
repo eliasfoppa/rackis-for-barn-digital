@@ -52,8 +52,13 @@ export function Header() {
             </a>
           </Button>
 
+          {/* New Donate and Buy Buttons */}
           <Button size="sm" className="ml-2" asChild>
-            <Link to="/get-involved">Get Involved</Link>
+            <Link to="/donate">Donate</Link>
+          </Button>
+
+          <Button size="sm" className="ml-2" asChild>
+            <Link to="/buy">Buy</Link>
           </Button>
         </nav>
 
@@ -98,9 +103,16 @@ export function Header() {
               </a>
             </Button>
 
+            {/* New Donate and Buy Buttons for Mobile */}
             <Button size="sm" className="mt-2" asChild>
-              <Link to="/get-involved" onClick={() => setIsOpen(false)}>
-                Get Involved
+              <Link to="/donate" onClick={() => setIsOpen(false)}>
+                Donate
+              </Link>
+            </Button>
+
+            <Button size="sm" className="mt-2" asChild>
+              <Link to="/buy" onClick={() => setIsOpen(false)}>
+                Buy
               </Link>
             </Button>
           </div>

@@ -1,6 +1,9 @@
 import { Layout } from "@/components/layout/Layout";
 import { Heart, Target, Users, Award, Recycle, MapPin } from "lucide-react";
 import { useState, useEffect } from "react";
+import eliasImg from "@/assets/elias.png";
+import jacobImg from "@/assets/jacob.png";
+import leaImg from "@/assets/lea.png";
 
 // Generate hearts on a jittered grid like homepage
 function generateJitteredHearts(
@@ -16,16 +19,12 @@ function generateJitteredHearts(
     for (let c = 0; c < cols; c++) {
       const baseX = (c + 0.5) / cols * width;
       const baseY = (r + 0.5) / rows * height;
-
       const jitterX = (Math.random() - 0.5) * (width / cols);
       const jitterY = (Math.random() - 0.5) * (height / rows);
-
       const x = baseX + jitterX;
       const y = baseY + jitterY;
-
       const size = sizeRange[0] + Math.random() * (sizeRange[1] - sizeRange[0]);
       const delay = Math.random() * 600;
-
       hearts.push({ x, y, size, delay });
     }
   }
@@ -36,18 +35,14 @@ function generateJitteredHearts(
 const About = () => {
   const [hearts, setHearts] = useState<{ x: number; y: number; size: number; delay: number }[]>([]);
 
-  // Adjust number of hearts based on window width
   useEffect(() => {
     const updateHearts = () => {
       if (window.innerWidth < 768) {
-        // Mobile: fewer hearts
         setHearts(generateJitteredHearts(3, 5, 100, 100, [12, 20]));
       } else {
-        // Desktop: full hearts
         setHearts(generateJitteredHearts(4, 6, 100, 100, [16, 30]));
       }
     };
-
     updateHearts();
     window.addEventListener("resize", updateHearts);
     return () => window.removeEventListener("resize", updateHearts);
@@ -61,15 +56,15 @@ const About = () => {
   ];
 
   const boardMembers = [
-    { name: "Jacob Lehmann", role: "President" },
-    { name: "Elias Foppa", role: "Vice President & Treasurer" },
-    { name: "Lea Poewe", role: "Secretary" },
+    { name: "Jacob Lehmann", role: "President & Founder", img: jacobImg },
+    { name: "Elias Foppa", role: "Vice President & Treasurer", img: eliasImg },
+    { name: "Lea Poewe", role: "Secretary & Head of Marketing", img: leaImg },
   ];
 
   return (
     <Layout>
       {/* Hero */}
-      <section className="bg-hero-gradient section-padding relative overflow-hidden min-h-[60vh] flex items-center">
+      <section className="bg-hero-gradient section-padding relative overflow-hidden min-h-[60vh] flex flex-col items-center justify-center">
         {/* Background blobs */}
         <div className="absolute top-20 right-[10%] w-48 h-48 bg-primary/10 blob animate-float" />
         <div className="absolute bottom-10 left-[5%] w-32 h-32 bg-warm/10 blob animate-wiggle" />
@@ -96,7 +91,7 @@ const About = () => {
               About Rackis för Barn
             </h1>
             <p className="text-xl text-muted-foreground animate-fade-up delay-100 leading-relaxed">
-              A student-run second-hand store in Uppsala, turning move-out items into support for children in need. In addition to our board, many amazing volunteers contribute their time and effort to make Rackis för Barn possible.
+              We were all once new students in Uppsala, and quickly noticed how difficult it was to find second-hand items like bedding for our new rooms. At the same time, many students moving out were throwing away perfectly good items. Since then, we’ve been working every day to tackle both of these problems.
             </p>
           </div>
         </div>
@@ -112,10 +107,10 @@ const About = () => {
             </h2>
             <div className="space-y-6 text-lg text-muted-foreground leading-relaxed">
               <p>
-                Rackis för Barn is a platform designed specifically for students in Uppsala to exchange second-hand items during move-ins and move-outs. We believe in creating a sustainable cycle where useful items find new homes instead of being discarded.
+                Rackis för Barn is a student-run non-profit organization designed specifically for students in Uppsala to exchange second-hand items during move-ins and move-outs. We believe in creating a sustainable cycle where useful items find new homes instead of being discarded.
               </p>
               <p>
-                When students move out, instead of throwing away items that are still useful, they donate them to us. We collect items like duvets, curtains, bikes, kitchen equipment, lamps, small furniture, toys, books, and more. Then, students moving into new places can browse our collection and find everything they need at fair, student-friendly prices.
+                When students move out, instead of throwing away items that are still useful, they donate them to us. We collect many items like duvets, curtains, bikes, kitchen equipment, lamps, small furniture, decoration, and much more. Then, students moving into new places can browse our collection and find everything they need at fair, student-friendly prices.
               </p>
               <p className="text-foreground font-semibold">
                 All profits from sales go directly to Barncancerfonden and RBU, supporting children and their families.
@@ -125,32 +120,50 @@ const About = () => {
         </div>
       </section>
 
-      {/* Location Card */}
+      {/* Name Meaning */}
       <section className="section-padding bg-section-alt">
+        <div className="container-narrow text-center">
+          <span className="inline-block text-sm font-bold text-accent uppercase tracking-wider mb-2">Our name</span>
+          <h2 className="font-display text-2xl md:text-4xl font-bold text-foreground mb-4">
+            What "Rackis för Barn" means
+          </h2>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+            "Rackis" is short for <span className="font-semibold text-foreground">Rackarbergsgatan</span>, the student housing area where our journey began.
+            "För Barn" means <span className="font-semibold text-foreground">for children</span> in Swedish, reflecting our mission to support children in need.
+          </p>
+        </div>
+      </section>
+
+      {/* Team */}
+      <section className="section-padding bg-section-warm">
         <div className="container-narrow">
-          <div className="bg-card border border-border rounded-3xl p-8 md:p-12">
-            <div className="flex flex-col md:flex-row items-center gap-8">
-              <div className="w-20 h-20 rounded-2xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-                <MapPin className="h-10 w-10 text-primary" />
-              </div>
-              <div className="text-center md:text-left">
-                <h3 className="font-display text-2xl font-bold text-foreground mb-2">
-                  Visit us in Uppsala
-                </h3>
-                <p className="text-lg text-muted-foreground mb-4">
-                  You can find us at <span className="font-semibold text-foreground">Rackarbergsgatan 32</span>. Check our Instagram for opening times and more information.
-                </p>
-                <a
-                  href="https://instagram.com/rackis_for_barn"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center text-primary font-semibold hover:underline"
-                >
-                  Follow @rackis_for_barn
-                </a>
-              </div>
-            </div>
+          <div className="text-center mb-12">
+            <span className="inline-block text-sm font-bold text-primary uppercase tracking-wider mb-4">The people behind it</span>
+            <h2 className="font-display text-2xl md:text-4xl font-bold text-foreground mb-6">
+              Our Team
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
+              We are a group of dedicated students in Uppsala who believe in sustainability, community, and making a difference.
+            </p>
           </div>
+
+          <div className="grid sm:grid-cols-3 gap-6 mb-6">
+            {boardMembers.map((member) => (
+              <div key={member.name} className="card-warm text-center">
+                <img
+                  src={member.img}
+                  alt={member.name}
+                  className="mx-auto w-32 h-32 object-cover rounded-full mb-4"
+                />
+                <h3 className="text-lg font-bold text-foreground">{member.name}</h3>
+                <p className="text-sm text-muted-foreground">{member.role}</p>
+              </div>
+            ))}
+          </div>
+
+          <p className="text-center text-lg text-muted-foreground max-w-2xl mx-auto">
+            In addition to our board, many amazing volunteers contribute their time and effort to make Rackis för Barn possible.
+          </p>
         </div>
       </section>
 
@@ -173,81 +186,6 @@ const About = () => {
                 <p className="text-sm text-muted-foreground">{value.description}</p>
               </div>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Team */}
-      <section className="section-padding bg-section-warm">
-        <div className="container-narrow">
-          <div className="text-center mb-12">
-            <span className="inline-block text-sm font-bold text-primary uppercase tracking-wider mb-4">The people behind it</span>
-            <h2 className="font-display text-2xl md:text-4xl font-bold text-foreground mb-6">
-              Our Team
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
-              We are a group of dedicated students in Uppsala who believe in sustainability, community, and making a difference.
-            </p>
-          </div>
-
-          <div className="grid sm:grid-cols-3 gap-6 mb-6">
-            {boardMembers.map((member) => (
-              <div key={member.name} className="card-warm text-center">
-                <div className="w-16 h-16 mx-auto rounded-full bg-primary/10 flex items-center justify-center mb-4">
-                  <Users className="h-8 w-8 text-primary" />
-                </div>
-                <h3 className="text-lg font-bold text-foreground">{member.name}</h3>
-                <p className="text-sm text-muted-foreground">{member.role}</p>
-              </div>
-            ))}
-          </div>
-
-          <p className="text-center text-lg text-muted-foreground max-w-2xl mx-auto">
-            In addition to our board, many amazing volunteers contribute their time and effort to make Rackis för Barn possible.
-          </p>
-        </div>
-      </section>
-
-      {/* Charities */}
-      <section className="section-padding">
-        <div className="container-narrow">
-          <div className="text-center mb-8">
-            <span className="inline-block text-sm font-bold text-accent uppercase tracking-wider mb-4">Our cause</span>
-            <h2 className="font-display text-2xl md:text-4xl font-bold text-foreground mb-6">
-              Who we support
-            </h2>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="bg-card border border-border rounded-3xl p-8">
-              <h3 className="text-xl font-bold text-foreground mb-4">Barncancerfonden</h3>
-              <p className="text-muted-foreground leading-relaxed mb-4">
-                Sweden's leading organization dedicated to supporting children with cancer and their families through research funding and family support programs.
-              </p>
-              <a
-                href="https://www.barncancerfonden.se"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center text-primary font-semibold hover:underline"
-              >
-                barncancerfonden.se
-              </a>
-            </div>
-
-            <div className="bg-card border border-border rounded-3xl p-8">
-              <h3 className="text-xl font-bold text-foreground mb-4">RBU</h3>
-              <p className="text-muted-foreground leading-relaxed mb-4">
-                Riksförbundet för Rörelsehindrade Barn och Ungdomar works to improve the lives of children and young people with mobility impairments in Sweden.
-              </p>
-              <a
-                href="https://www.rbu.se"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center text-primary font-semibold hover:underline"
-              >
-                rbu.se
-              </a>
-            </div>
           </div>
         </div>
       </section>

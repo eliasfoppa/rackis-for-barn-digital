@@ -16,7 +16,7 @@ const Impressum = () => {
               </h2>
               <p>
                 Rackis för Barn<br />
-                Rackarbergsgatan 32, Lgh 1207<br />
+                Rackarbergsgatan 32<br />
                 752 32 Uppsala<br />
                 Sweden
               </p>

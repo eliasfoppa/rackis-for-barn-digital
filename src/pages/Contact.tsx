@@ -1,23 +1,41 @@
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Mail, MapPin, Instagram } from "lucide-react";
+import { useState } from "react";
 
 const Contact = () => {
+  const [form, setForm] = useState({ name: "", email: "", message: "" });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const subject = encodeURIComponent("Contact Form Submission – Rackis för Barn");
+    const body = encodeURIComponent(
+      `Name: ${form.name}\nEmail: ${form.email}\n\nMessage:\n${form.message}`
+    );
+    window.location.href = `mailto:info@rackisforbarn.com?subject=${subject}&body=${body}`;
+  };
+
   return (
     <Layout>
+      {/* Hero Section */}
       <section className="bg-hero-gradient section-padding">
         <div className="container">
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6 animate-fade-up">
-              Contact Us
+              Contact Rackis för Barn
             </h1>
             <p className="text-lg text-muted-foreground animate-fade-up delay-100">
-              Have questions or want to get involved? We'd love to hear from you!
+              We welcome inquiries regarding donations, volunteering, or general questions about our work. Please get in touch using the form below or via the provided contact details.
             </p>
           </div>
         </div>
       </section>
 
+      {/* Contact Info + Form */}
       <section className="section-padding">
         <div className="container max-w-4xl">
           <div className="grid md:grid-cols-2 gap-12">
@@ -28,8 +46,7 @@ const Contact = () => {
                   Get in Touch
                 </h2>
                 <p className="text-muted-foreground">
-                  Whether you want to volunteer, collaborate with us, or just learn more
-                  about our work – don't hesitate to reach out.
+                  Whether you want to volunteer, collaborate with us, or learn more about our initiatives – we would be delighted to hear from you.
                 </p>
               </div>
 
@@ -73,12 +90,10 @@ const Contact = () => {
                   <div>
                     <h3 className="font-medium text-foreground">Location</h3>
                     <p className="text-muted-foreground">
-                      <p>
-                        Rackis för Barn<br />
-                        Rackarbergsgatan 32, Lgh 1207<br />
-                        752 32 Uppsala<br />
-                        Sweden
-                      </p>
+                      Rackis för Barn<br />
+                      Rackarbergsgatan 32<br />
+                      752 32 Uppsala<br />
+                      Sweden
                     </p>
                   </div>
                 </div>
@@ -90,7 +105,7 @@ const Contact = () => {
               <h3 className="text-xl font-semibold text-foreground mb-6">
                 Send a Message
               </h3>
-              <form className="space-y-4">
+              <form className="space-y-4" onSubmit={handleSubmit}>
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium text-foreground mb-2">
                     Name
@@ -98,8 +113,12 @@ const Contact = () => {
                   <input
                     type="text"
                     id="name"
+                    name="name"
+                    value={form.name}
+                    onChange={handleChange}
                     className="w-full px-4 py-3 rounded-lg border border-input bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-                    placeholder="Your name"
+                    placeholder="Your full name"
+                    required
                   />
                 </div>
                 <div>
@@ -109,8 +128,12 @@ const Contact = () => {
                   <input
                     type="email"
                     id="email"
+                    name="email"
+                    value={form.email}
+                    onChange={handleChange}
                     className="w-full px-4 py-3 rounded-lg border border-input bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-                    placeholder="your@email.com"
+                    placeholder="you@example.com"
+                    required
                   />
                 </div>
                 <div>
@@ -119,9 +142,13 @@ const Contact = () => {
                   </label>
                   <textarea
                     id="message"
-                    rows={4}
+                    name="message"
+                    rows={6}
+                    value={form.message}
+                    onChange={handleChange}
                     className="w-full px-4 py-3 rounded-lg border border-input bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring resize-none"
                     placeholder="Write your message here..."
+                    required
                   />
                 </div>
                 <Button type="submit" className="w-full" size="lg">

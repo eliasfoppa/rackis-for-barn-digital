@@ -91,7 +91,7 @@ export function HeroSection() {
           </h1>
 
           <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto mb-10 animate-fade-up delay-200 leading-relaxed">
-            Your donated items become affordable finds for fellow students, and every profit goes directly to{" "}
+            Your donated items become affordable finds for fellow students, and all profit goes directly to{" "}
             <span className="font-semibold text-foreground">Barncancerfonden</span> and{" "}
             <span className="font-semibold text-foreground">RBU</span>.
           </p>
@@ -100,7 +100,7 @@ export function HeroSection() {
             <Button variant="hero" size="lg" asChild className="text-lg px-8">
               <a href="https://instagram.com/rackis_for_barn" target="_blank" rel="noopener noreferrer">
                 <Instagram className="mr-2 h-5 w-5" />
-                Visit our shop
+                Follow us
               </a>
             </Button>
 
@@ -122,26 +122,25 @@ export function HeroSection() {
   );
 }
 
-
 export function HowItWorksSection() {
   const steps = [
     {
-      icon: Gift,
-      title: "Donate",
-      description: "Moving out? Do not throw away useful items. Give them to us! We accept duvets, curtains, bikes, kitchen gear, and more.",
-      color: "bg-primary/10 text-primary"
-    },
-    {
       icon: ShoppingBag,
       title: "Shop",
-      description: "Moving in? Browse our collection of quality second-hand items at fair, student-friendly prices.",
+      description: "Moving in? We've got you covered for your first days in Uppsala (and beyond).",
       color: "bg-green-100" // background stays light
     },
     {
       icon: Heart,
       title: "Support",
-      description: "All profits go directly to Barncancerfonden and RBU, supporting children and their families.",
+      description: "All profits from your purchase go directly to Barncancerfonden and RBU, supporting children in need.",
       color: "bg-warm/10 text-warm"
+    },
+    {
+      icon: Gift,
+      title: "Donate",
+      description: "Moving out? Do not throw away useful items. Give them to us! We accept duvets, curtains, bikes, kitchen gear, and more.",
+      color: "bg-primary/10 text-primary"
     },
   ];
 
@@ -157,8 +156,7 @@ export function HowItWorksSection() {
             <div key={step.title} className="card-warm text-center group">
               <div className={`w-16 h-16 rounded-2xl ${step.color} flex items-center justify-center mx-auto mb-6 transform group-hover:scale-110 transition-transform`}>
                 <step.icon
-                  className={`h-8 w-8 ${step.title === "Shop" ? "text-green-600" : "" // darker green icon
-                    }`}
+                  className={`h-8 w-8 ${step.title === "Shop" ? "text-green-600" : ""}`}
                 />
               </div>
               <span className="inline-block text-sm font-bold text-muted-foreground/60 mb-2">Step {index + 1}</span>
@@ -177,16 +175,16 @@ export function WhyChooseUsSection() {
     { icon: Recycle, title: "Sustainable", description: "Reduce waste by giving items a second life." },
     { icon: ShoppingBag, title: "Affordable", description: "Quality items at student-friendly prices." },
     { icon: Heart, title: "Charitable", description: "Every purchase supports children in need." },
-    { icon: Home, title: "Convenient", description: "Everything to make your place feel like home." },
+    { icon: Home, title: "Convenient", description: "Directly buy from student housing locations." },
     { icon: Users, title: "Community", description: "Run by students, for students." },
-    { icon: Bike, title: "Variety", description: "From bikes to kitchen gear, we have it all." },
+    { icon: Bike, title: "Variety", description: "From bedsheets to bikes, we have it all." },
   ];
 
   return (
     <section className="section-padding bg-section-warm">
       <div className="container">
         <div className="text-center max-w-2xl mx-auto mb-16">
-          <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground mb-6">Why choose Rackis för Barn?</h2>
+          <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground mb-6">Why makes Rackis för Barn unique?</h2>
           <p className="text-lg text-muted-foreground">More than just a second-hand store. We are building a sustainable student community.</p>
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
