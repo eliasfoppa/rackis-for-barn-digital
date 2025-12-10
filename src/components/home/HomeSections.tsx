@@ -18,17 +18,18 @@ export function HeroSection() {
           <h1 className="font-display text-5xl sm:text-6xl md:text-7xl font-bold text-foreground leading-[1.1] mb-8 animate-fade-up delay-100">
             Give items a{" "}
             <span className="hand-drawn-underline text-primary">second life</span>
-            {" "}and help children with cancer
+            {" "}and help children in need
           </h1>
           
           <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto mb-10 animate-fade-up delay-200 leading-relaxed">
-            Your donated items become affordable finds for fellow students — and every profit goes directly to{" "}
-            <span className="font-semibold text-foreground">Barncancerfonden</span>.
+            Your donated items become affordable finds for fellow students, and every profit goes directly to{" "}
+            <span className="font-semibold text-foreground">Barncancerfonden</span> and{" "}
+            <span className="font-semibold text-foreground">RBU</span>.
           </p>
           
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-up delay-300">
             <Button variant="hero" size="lg" asChild className="text-lg px-8">
-              <a href="https://instagram.com/rackisforbarn" target="_blank" rel="noopener noreferrer">
+              <a href="https://instagram.com/rackis_for_barn" target="_blank" rel="noopener noreferrer">
                 <Instagram className="mr-2 h-5 w-5" />
                 Visit our shop
               </a>
@@ -53,9 +54,9 @@ export function HeroSection() {
 
 export function HowItWorksSection() {
   const steps = [
-    { icon: Gift, title: "Donate", description: "Moving out? Don't throw away useful items — give them to us! We accept duvets, curtains, bikes, kitchen gear, and more.", color: "bg-primary/10 text-primary" },
+    { icon: Gift, title: "Donate", description: "Moving out? Do not throw away useful items. Give them to us! We accept duvets, curtains, bikes, kitchen gear, and more.", color: "bg-primary/10 text-primary" },
     { icon: ShoppingBag, title: "Shop", description: "Moving in? Browse our collection of quality second-hand items at fair, student-friendly prices.", color: "bg-warm/10 text-warm" },
-    { icon: Heart, title: "Support", description: "All profits go directly to Barncancerfonden, supporting children with cancer and their families.", color: "bg-accent/10 text-accent" },
+    { icon: Heart, title: "Support", description: "All profits go directly to Barncancerfonden and RBU, supporting children and their families.", color: "bg-accent/10 text-accent" },
   ];
 
   return (
@@ -86,10 +87,10 @@ export function WhyChooseUsSection() {
   const benefits = [
     { icon: Recycle, title: "Sustainable", description: "Reduce waste by giving items a second life." },
     { icon: ShoppingBag, title: "Affordable", description: "Quality items at student-friendly prices." },
-    { icon: Heart, title: "Charitable", description: "Every purchase supports Barncancerfonden." },
+    { icon: Heart, title: "Charitable", description: "Every purchase supports children in need." },
     { icon: Home, title: "Convenient", description: "Everything to make your place feel like home." },
     { icon: Users, title: "Community", description: "Run by students, for students." },
-    { icon: Bike, title: "Variety", description: "From bikes to kitchen gear — we've got it all." },
+    { icon: Bike, title: "Variety", description: "From bikes to kitchen gear, we have it all." },
   ];
 
   return (
@@ -97,7 +98,7 @@ export function WhyChooseUsSection() {
       <div className="container">
         <div className="text-center max-w-2xl mx-auto mb-16">
           <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground mb-6">Why choose Rackis?</h2>
-          <p className="text-lg text-muted-foreground">More than just a second-hand store — we're building a sustainable student community.</p>
+          <p className="text-lg text-muted-foreground">More than just a second-hand store. We are building a sustainable student community.</p>
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {benefits.map((benefit) => (
@@ -115,26 +116,52 @@ export function WhyChooseUsSection() {
   );
 }
 
-export function AboutBarncancerfondenSection() {
+export function AboutCharitiesSection() {
   return (
     <section className="section-padding">
       <div className="container">
-        <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-12 items-center">
-          <div>
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-12">
             <span className="inline-block text-sm font-bold text-accent uppercase tracking-wider mb-4">Our cause</span>
-            <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-6">Supporting Barncancerfonden</h2>
-            <div className="space-y-4 text-muted-foreground leading-relaxed">
-              <p>Barncancerfonden is Sweden's leading organization dedicated to supporting children with cancer and their families.</p>
-              <p className="font-semibold text-foreground">Every item you donate or purchase helps fund this vital work.</p>
+            <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-6">Supporting children in need</h2>
+          </div>
+          
+          <div className="grid md:grid-cols-2 gap-8">
+            <div className="card-warm">
+              <h3 className="text-xl font-bold text-foreground mb-4">Barncancerfonden</h3>
+              <p className="text-muted-foreground leading-relaxed mb-4">
+                Sweden's leading organization dedicated to supporting children with cancer and their families. Through research funding and family support programs, they work to improve outcomes for young cancer patients.
+              </p>
+              <a 
+                href="https://www.barncancerfonden.se" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-flex items-center text-primary font-semibold hover:underline"
+              >
+                Learn more at barncancerfonden.se
+              </a>
+            </div>
+            
+            <div className="card-warm">
+              <h3 className="text-xl font-bold text-foreground mb-4">RBU</h3>
+              <p className="text-muted-foreground leading-relaxed mb-4">
+                Riksförbundet för Rörelsehindrade Barn och Ungdomar works to improve the lives of children and young people with mobility impairments in Sweden through advocacy and support programs.
+              </p>
+              <a 
+                href="https://www.rbu.se" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-flex items-center text-primary font-semibold hover:underline"
+              >
+                Learn more at rbu.se
+              </a>
             </div>
           </div>
-          <div className="relative">
-            <div className="aspect-square rounded-3xl bg-gradient-to-br from-primary/20 via-warm/10 to-accent/20 flex items-center justify-center">
-              <div className="text-center p-8">
-                <Heart className="h-20 w-20 text-accent mx-auto mb-6" fill="currentColor" />
-                <p className="font-display text-2xl font-bold text-foreground">100% of profits</p>
-                <p className="text-muted-foreground mt-2">go to Barncancerfonden</p>
-              </div>
+          
+          <div className="mt-12 text-center">
+            <div className="inline-flex items-center gap-3 px-8 py-4 rounded-2xl bg-primary/10">
+              <Heart className="h-8 w-8 text-primary" fill="currentColor" />
+              <p className="font-display text-xl font-bold text-foreground">100% of profits go to these charities</p>
             </div>
           </div>
         </div>
@@ -152,9 +179,9 @@ export function CTASection() {
           <p className="text-xl text-primary-foreground/80 mb-10 leading-relaxed">Visit us at Rackarbergsgatan 32 in Uppsala. Check our Instagram for opening times!</p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Button size="lg" asChild className="bg-white text-primary hover:bg-white/90 text-lg px-8">
-              <a href="https://instagram.com/rackisforbarn" target="_blank" rel="noopener noreferrer">
+              <a href="https://instagram.com/rackis_for_barn" target="_blank" rel="noopener noreferrer">
                 <Instagram className="mr-2 h-5 w-5" />
-                Follow @rackisforbarn
+                Follow @rackis_for_barn
               </a>
             </Button>
             <Button variant="outline" size="lg" asChild className="border-white/30 text-primary-foreground hover:bg-white/10 text-lg px-8">

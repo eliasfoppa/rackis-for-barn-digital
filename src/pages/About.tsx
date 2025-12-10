@@ -11,18 +11,24 @@ const About = () => {
     {
       icon: Heart,
       title: "Compassion",
-      description: "Every action we take is driven by our desire to help children with cancer.",
+      description: "Every action we take is driven by our desire to help children in need.",
     },
     {
       icon: Users,
       title: "Community",
-      description: "Built by students, for students — we understand the Uppsala student life.",
+      description: "Built by students, for students. We understand the Uppsala student life.",
     },
     {
       icon: Award,
       title: "Transparency",
-      description: "100% of our profits go directly to Barncancerfonden. No exceptions.",
+      description: "100% of our profits go directly to Barncancerfonden and RBU.",
     },
+  ];
+
+  const boardMembers = [
+    { name: "Jacob Lehmann", role: "President" },
+    { name: "Elias Foppa", role: "Vice President & Treasurer" },
+    { name: "Lea Poewe", role: "Secretary" },
   ];
 
   return (
@@ -38,7 +44,7 @@ const About = () => {
               About Rackis for Barn
             </h1>
             <p className="text-xl text-muted-foreground animate-fade-up delay-100 leading-relaxed">
-              A student-run second-hand store in Uppsala, turning move-out items into support for children with cancer.
+              A student-run second-hand store in Uppsala, turning move-out items into support for children in need.
             </p>
           </div>
         </div>
@@ -60,7 +66,7 @@ const About = () => {
                 When students move out, instead of throwing away items that are still useful, they donate them to us. We collect items like duvets, curtains, bikes, kitchen equipment, and much more. Then, students moving into new places can browse our collection and find everything they need at fair, student-friendly prices.
               </p>
               <p className="text-foreground font-semibold">
-                But here's what makes us special: all profits from sales go directly to Barncancerfonden, supporting children with cancer and their families.
+                But here is what makes us special: all profits from sales go directly to Barncancerfonden and RBU, supporting children and their families.
               </p>
             </div>
           </div>
@@ -80,15 +86,15 @@ const About = () => {
                   Visit us in Uppsala
                 </h3>
                 <p className="text-lg text-muted-foreground mb-4">
-                  You can find us at <span className="font-semibold text-foreground">Rackarbergsgatan 32</span> — check our Instagram for opening times and the latest arrivals.
+                  You can find us at <span className="font-semibold text-foreground">Rackarbergsgatan 32</span>. Check our Instagram for opening times and the latest arrivals.
                 </p>
                 <a 
-                  href="https://instagram.com/rackisforbarn" 
+                  href="https://instagram.com/rackis_for_barn" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="inline-flex items-center text-primary font-semibold hover:underline"
                 >
-                  Follow @rackisforbarn →
+                  Follow @rackis_for_barn
                 </a>
               </div>
             </div>
@@ -127,52 +133,73 @@ const About = () => {
         </div>
       </section>
 
-      {/* Barncancerfonden */}
+      {/* Team */}
       <section className="section-padding bg-section-warm">
+        <div className="container-narrow">
+          <div className="text-center mb-12">
+            <span className="inline-block text-sm font-bold text-primary uppercase tracking-wider mb-4">The people behind it</span>
+            <h2 className="font-display text-2xl md:text-4xl font-bold text-foreground mb-6">
+              Our Team
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
+              We are a group of dedicated students in Uppsala who believe in sustainability, community, and making a difference.
+            </p>
+          </div>
+          
+          <div className="grid sm:grid-cols-3 gap-6">
+            {boardMembers.map((member) => (
+              <div key={member.name} className="card-warm text-center">
+                <div className="w-16 h-16 mx-auto rounded-full bg-primary/10 flex items-center justify-center mb-4">
+                  <Users className="h-8 w-8 text-primary" />
+                </div>
+                <h3 className="text-lg font-bold text-foreground">{member.name}</h3>
+                <p className="text-sm text-muted-foreground">{member.role}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Charities */}
+      <section className="section-padding">
         <div className="container-narrow">
           <div className="text-center mb-8">
             <span className="inline-block text-sm font-bold text-accent uppercase tracking-wider mb-4">Our cause</span>
             <h2 className="font-display text-2xl md:text-4xl font-bold text-foreground mb-6">
-              About Barncancerfonden
+              Who we support
             </h2>
           </div>
-          <div className="bg-card border border-border rounded-3xl p-8 md:p-12">
-            <div className="space-y-4 text-lg text-muted-foreground leading-relaxed text-center">
-              <p>
-                Barncancerfonden is Sweden's leading organization dedicated to supporting children with cancer and their families.
+          
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="bg-card border border-border rounded-3xl p-8">
+              <h3 className="text-xl font-bold text-foreground mb-4">Barncancerfonden</h3>
+              <p className="text-muted-foreground leading-relaxed mb-4">
+                Sweden's leading organization dedicated to supporting children with cancer and their families through research funding and family support programs.
               </p>
-              <p>
-                Through research funding, family support programs, and advocacy, they work tirelessly to improve outcomes for young cancer patients and their loved ones.
-              </p>
-              <p className="text-foreground font-semibold">
-                By shopping at or donating to Rackis for Barn, you're directly contributing to this vital work.
-              </p>
-            </div>
-            <div className="mt-8 text-center">
               <a 
                 href="https://www.barncancerfonden.se" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="inline-flex items-center text-primary font-semibold hover:underline"
               >
-                Learn more at barncancerfonden.se →
+                barncancerfonden.se
               </a>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Team */}
-      <section className="section-padding">
-        <div className="container-narrow">
-          <div className="text-center">
-            <span className="inline-block text-sm font-bold text-primary uppercase tracking-wider mb-4">The people behind it</span>
-            <h2 className="font-display text-2xl md:text-4xl font-bold text-foreground mb-6">
-              Our Team
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              We're a group of dedicated students in Uppsala who believe in sustainability, community, and making a difference. Our strength lies in our shared passion for helping both fellow students and children in need.
-            </p>
+            
+            <div className="bg-card border border-border rounded-3xl p-8">
+              <h3 className="text-xl font-bold text-foreground mb-4">RBU</h3>
+              <p className="text-muted-foreground leading-relaxed mb-4">
+                Riksförbundet för Rörelsehindrade Barn och Ungdomar works to improve the lives of children and young people with mobility impairments in Sweden.
+              </p>
+              <a 
+                href="https://www.rbu.se" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-flex items-center text-primary font-semibold hover:underline"
+              >
+                rbu.se
+              </a>
+            </div>
           </div>
         </div>
       </section>

@@ -12,13 +12,12 @@ const Impressum = () => {
           <div className="prose prose-lg max-w-none space-y-6 text-muted-foreground">
             <section>
               <h2 className="text-xl font-semibold text-foreground mb-3">
-                Organization Details
+                Website Operator
               </h2>
               <p>
-                Rackis for Barn<br />
-                [Placeholder: Organization number]<br />
-                [Placeholder: Address]<br />
-                [Placeholder: Postal code and City]<br />
+                Rackis för Barn<br />
+                Rackarbergsgatan 32, Lgh 1207<br />
+                752 32 Uppsala<br />
                 Sweden
               </p>
             </section>
@@ -28,18 +27,18 @@ const Impressum = () => {
                 Contact Information
               </h2>
               <p>
-                Email: contact@rackisforbarn.se<br />
-                [Placeholder: Phone number if applicable]
+                Email: info@rackisforbarn.com
               </p>
             </section>
 
             <section>
               <h2 className="text-xl font-semibold text-foreground mb-3">
-                Responsible Publisher
+                Board Members
               </h2>
               <p>
-                [Placeholder: Name of responsible person]<br />
-                [Placeholder: Role/Title]
+                President: Jacob Lehmann<br />
+                Vice President & Treasurer: Elias Foppa<br />
+                Secretary: Lea Poewe
               </p>
             </section>
 
@@ -48,7 +47,7 @@ const Impressum = () => {
                 Organization Type
               </h2>
               <p>
-                Rackis for Barn is a nonprofit organization registered in Sweden.
+                Rackis för Barn is a student-run nonprofit organization registered in Sweden. All proceeds go to Barncancerfonden and Riksförbundet för Rörelsehindrade Barn och Ungdomar (RBU).
               </p>
             </section>
           </div>

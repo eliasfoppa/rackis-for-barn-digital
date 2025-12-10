@@ -27,12 +27,12 @@ export function Footer() {
               <span className="text-xl font-bold text-primary">Rackis for Barn</span>
             </Link>
             <p className="text-sm text-muted-foreground max-w-xs">
-              A student-run nonprofit organization dedicated to making a difference for children in Sweden.
+              A student-run second-hand store in Uppsala. All proceeds go to Barncancerfonden and RBU.
             </p>
             <Button variant="outline" size="sm" asChild>
-              <a href="https://instagram.com/rackisforbarn" target="_blank" rel="noopener noreferrer">
+              <a href="https://instagram.com/rackis_for_barn" target="_blank" rel="noopener noreferrer">
                 <Instagram className="h-4 w-4 mr-2" />
-                Follow us on Instagram
+                Follow @rackis_for_barn
               </a>
             </Button>
           </div>
