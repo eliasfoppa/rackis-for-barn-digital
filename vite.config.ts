@@ -5,6 +5,7 @@ import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
+  base: "/rackis-for-barn-digital/", // <-- ADD THIS for GitHub Pages repo deployment
   server: {
     host: "::",
     port: 8080,
