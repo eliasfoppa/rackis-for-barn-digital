@@ -20,7 +20,8 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter>
+      {/* 🔑 THE FIX: Added the 'basename' prop to tell the router to ignore the repo path 🔑 */}
+      <BrowserRouter basename="/rackis-for-barn-digital">
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/about" element={<About />} />
