@@ -2,14 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,300..1000;1,300..1000&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    --background: 45 30% 98%;
     --foreground: 210 25% 15%;
 
-    --card: 0 0% 100%;
+    --card: 45 25% 99%;
     --card-foreground: 210 25% 15%;
 
     --popover: 0 0% 100%;
@@ -18,29 +18,34 @@
     --primary: 197 66% 44%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 197 30% 94%;
-    --secondary-foreground: 197 66% 35%;
+    --secondary: 197 25% 92%;
+    --secondary-foreground: 197 66% 30%;
 
-    --muted: 210 20% 96%;
-    --muted-foreground: 210 15% 45%;
+    --muted: 40 20% 94%;
+    --muted-foreground: 210 12% 40%;
 
-    --accent: 25 95% 55%;
+    --accent: 16 85% 55%;
     --accent-foreground: 0 0% 100%;
+
+    --warm: 35 90% 55%;
+    --warm-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 210 20% 90%;
-    --input: 210 20% 90%;
+    --border: 40 20% 88%;
+    --input: 40 20% 88%;
     --ring: 197 66% 44%;
 
-    --radius: 0.75rem;
+    --radius: 1rem;
 
     /* Custom tokens */
-    --hero-gradient: linear-gradient(135deg, hsl(197 66% 44% / 0.06) 0%, hsl(197 30% 94%) 100%);
-    --section-alt: 210 25% 97%;
-    --shadow-soft: 0 4px 20px -4px hsl(210 25% 15% / 0.08);
-    --shadow-elevated: 0 12px 40px -8px hsl(197 66% 44% / 0.15);
+    --hero-gradient: linear-gradient(165deg, hsl(45 40% 97%) 0%, hsl(197 40% 95%) 50%, hsl(45 30% 98%) 100%);
+    --section-alt: 45 25% 96%;
+    --section-warm: 35 40% 96%;
+    --shadow-soft: 0 4px 24px -6px hsl(210 25% 15% / 0.1);
+    --shadow-elevated: 0 16px 48px -12px hsl(197 66% 44% / 0.18);
+    --shadow-warm: 0 8px 32px -8px hsl(35 90% 55% / 0.2);
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -62,11 +67,11 @@
     --popover: 220 20% 12%;
     --popover-foreground: 210 20% 98%;
 
-    --primary: 174 62% 50%;
+    --primary: 197 66% 50%;
     --primary-foreground: 220 20% 10%;
 
-    --secondary: 20 40% 20%;
-    --secondary-foreground: 20 60% 85%;
+    --secondary: 197 25% 18%;
+    --secondary-foreground: 197 40% 80%;
 
     --muted: 220 15% 18%;
     --muted-foreground: 210 15% 65%;
@@ -74,14 +79,18 @@
     --accent: 16 85% 60%;
     --accent-foreground: 0 0% 100%;
 
+    --warm: 35 90% 55%;
+    --warm-foreground: 0 0% 100%;
+
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
 
     --border: 220 15% 20%;
     --input: 220 15% 20%;
-    --ring: 174 62% 50%;
+    --ring: 197 66% 50%;
 
     --section-alt: 220 18% 12%;
+    --section-warm: 30 20% 12%;
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -119,6 +128,38 @@
   .text-balance {
     text-wrap: balance;
   }
+
+  .hand-drawn-underline {
+    position: relative;
+    display: inline-block;
+  }
+
+  .hand-drawn-underline::after {
+    content: '';
+    position: absolute;
+    left: -4%;
+    bottom: -4px;
+    width: 108%;
+    height: 12px;
+    background: hsl(var(--warm) / 0.3);
+    border-radius: 50% 30% 50% 30%;
+    z-index: -1;
+    transform: rotate(-1deg);
+  }
+
+  .blob {
+    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+  }
+
+  .card-warm {
+    @apply bg-card border border-border rounded-2xl p-6 transition-all duration-300;
+    box-shadow: var(--shadow-soft);
+  }
+
+  .card-warm:hover {
+    box-shadow: var(--shadow-elevated);
+    transform: translateY(-4px);
+  }
 }
 
 @layer utilities {
@@ -134,10 +175,18 @@
     animation: scaleIn 0.4s ease-out forwards;
   }
 
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .animate-wiggle {
+    animation: wiggle 3s ease-in-out infinite;
+  }
+
   @keyframes fadeUp {
     from {
       opacity: 0;
-      transform: translateY(20px);
+      transform: translateY(24px);
     }
     to {
       opacity: 1;
@@ -165,8 +214,27 @@
     }
   }
 
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0) rotate(0deg);
+    }
+    50% {
+      transform: translateY(-12px) rotate(2deg);
+    }
+  }
+
+  @keyframes wiggle {
+    0%, 100% {
+      transform: rotate(-3deg);
+    }
+    50% {
+      transform: rotate(3deg);
+    }
+  }
+
   .delay-100 { animation-delay: 100ms; }
   .delay-200 { animation-delay: 200ms; }
   .delay-300 { animation-delay: 300ms; }
   .delay-400 { animation-delay: 400ms; }
+  .delay-500 { animation-delay: 500ms; }
 }
