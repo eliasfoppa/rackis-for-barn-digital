@@ -3,7 +3,7 @@ import {
   HeroSection, 
   HowItWorksSection, 
   WhyChooseUsSection, 
-  AboutBarncancerfondenSection,
+  AboutCharitiesSection,
   CTASection 
 } from "@/components/home/HomeSections";
 
@@ -13,7 +13,7 @@ const Index = () => {
       <HeroSection />
       <HowItWorksSection />
       <WhyChooseUsSection />
-      <AboutBarncancerfondenSection />
+      <AboutCharitiesSection />
       <CTASection />
     </Layout>
   );
