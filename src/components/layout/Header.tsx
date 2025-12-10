@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Menu, X, Instagram } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import Logo from "@/assets/logo.png"; // <-- import your bear logo
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -17,8 +18,10 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
       <div className="container flex h-16 items-center justify-between">
+        {/* Logo + Site Name */}
         <Link to="/" className="flex items-center gap-2">
-          <span className="text-xl font-bold text-primary">Rackis for Barn</span>
+          <img src={Logo} alt="Rackis för Barn Logo" className="h-10 w-auto" />
+          <span className="text-xl font-bold text-primary">Rackis för Barn</span>
         </Link>
 
         {/* Desktop Navigation */}
@@ -37,14 +40,20 @@ export function Header() {
               {link.label}
             </Link>
           ))}
+
           <Button variant="outline" size="sm" className="ml-2" asChild>
-            <a href="https://instagram.com/rackisforbarn" target="_blank" rel="noopener noreferrer">
+            <a
+              href="https://instagram.com/rackis_for_barn"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <Instagram className="h-4 w-4 mr-2" />
               Follow Us
             </a>
           </Button>
-          <Button size="sm" className="ml-2">
-            Get Involved
+
+          <Button size="sm" className="ml-2" asChild>
+            <Link to="/get-involved">Get Involved</Link>
           </Button>
         </nav>
 
@@ -77,14 +86,22 @@ export function Header() {
                 {link.label}
               </Link>
             ))}
+
             <Button variant="outline" size="sm" className="mt-2" asChild>
-              <a href="https://instagram.com/rackisforbarn" target="_blank" rel="noopener noreferrer">
+              <a
+                href="https://instagram.com/rackis_for_barn"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <Instagram className="h-4 w-4 mr-2" />
                 Follow Us on Instagram
               </a>
             </Button>
-            <Button size="sm" className="mt-2">
-              Get Involved
+
+            <Button size="sm" className="mt-2" asChild>
+              <Link to="/get-involved" onClick={() => setIsOpen(false)}>
+                Get Involved
+              </Link>
             </Button>
           </div>
         </nav>

@@ -24,10 +24,10 @@ export function Footer() {
           {/* Brand */}
           <div className="space-y-4 md:col-span-2">
             <Link to="/" className="inline-block">
-              <span className="text-xl font-bold text-primary">Rackis for Barn</span>
+              <span className="text-xl font-bold text-primary">Rackis för Barn</span>
             </Link>
             <p className="text-sm text-muted-foreground max-w-xs">
-              A student-run second-hand store in Uppsala. All proceeds go to Barncancerfonden and RBU.
+              A student-run second-hand store in Uppsala. All proceeds go to helping children in need.
             </p>
             <Button variant="outline" size="sm" asChild>
               <a href="https://instagram.com/rackis_for_barn" target="_blank" rel="noopener noreferrer">
@@ -76,7 +76,7 @@ export function Footer() {
         <div className="mt-12 pt-8 border-t border-border">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <p className="text-sm text-muted-foreground">
-              © {currentYear} Rackis for Barn. All rights reserved.
+              © {currentYear} Rackis för Barn. All rights reserved.
             </p>
             <p className="text-sm text-muted-foreground flex items-center gap-1">
               Made with <Heart className="h-4 w-4 text-accent fill-accent" /> by students

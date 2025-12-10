@@ -11,7 +11,7 @@ const Privacy = () => {
           
           <div className="prose prose-lg max-w-none space-y-6 text-muted-foreground">
             <p className="text-lg">
-              Last updated: [Date]
+              Last updated: December 10, 2025
             </p>
 
             <section>
@@ -19,8 +19,7 @@ const Privacy = () => {
                 1. Introduction
               </h2>
               <p>
-                Rackis for Barn values your privacy. This privacy policy explains 
-                how we collect, use, and protect your personal data.
+                Rackis för Barn values your privacy. This privacy policy explains how we collect, use, and protect your personal data when you interact with our website or services.
               </p>
             </section>
 
@@ -29,8 +28,7 @@ const Privacy = () => {
                 2. What Data We Collect
               </h2>
               <p>
-                [Placeholder: Describe what personal data you collect, e.g., name, 
-                email address, etc.]
+                We may collect personal data such as your name, email address, and any information you provide when contacting us, subscribing to newsletters, or making a donation. We do not collect sensitive data unless explicitly provided by you.
               </p>
             </section>
 
@@ -39,8 +37,7 @@ const Privacy = () => {
                 3. How We Use Your Data
               </h2>
               <p>
-                [Placeholder: Explain how you use the collected data, e.g., 
-                for communication, newsletters, etc.]
+                Your data is used to respond to inquiries, send updates and newsletters, process donations, and improve our services. We only use personal data for the purposes you have consented to or as required to comply with legal obligations.
               </p>
             </section>
 
@@ -49,7 +46,7 @@ const Privacy = () => {
                 4. Data Sharing
               </h2>
               <p>
-                [Placeholder: Explain if and how you share data with third parties.]
+                We do not sell or rent your personal data. Data may be shared with trusted service providers who help us operate the website or provide services, and only to the extent necessary. We may also disclose information when required by law or to protect our rights.
               </p>
             </section>
 
@@ -58,8 +55,7 @@ const Privacy = () => {
                 5. Your Rights
               </h2>
               <p>
-                Under GDPR, you have the right to request access to, correction of, or deletion 
-                of your personal data. Contact us if you wish to exercise these rights.
+                Under GDPR, you have the right to access, correct, or request deletion of your personal data. You also have the right to withdraw consent and object to processing. To exercise these rights, contact us using the details below.
               </p>
             </section>
 
@@ -68,7 +64,7 @@ const Privacy = () => {
                 6. Contact
               </h2>
               <p>
-                For questions about this privacy policy, contact us at contact@rackisforbarn.se.
+                For questions about this privacy policy or to exercise your rights, contact us at <a href="mailto:info@rackisforbarn.com" className="text-primary hover:underline">info@rackisforbarn.com</a>.
               </p>
             </section>
           </div>

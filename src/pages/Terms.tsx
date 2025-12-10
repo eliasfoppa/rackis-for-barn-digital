@@ -11,7 +11,7 @@ const Terms = () => {
           
           <div className="prose prose-lg max-w-none space-y-6 text-muted-foreground">
             <p className="text-lg">
-              Last updated: [Date]
+              Last updated: December 10, 2025
             </p>
 
             <section>
@@ -19,8 +19,8 @@ const Terms = () => {
                 1. General
               </h2>
               <p>
-                By using this website, you agree to these terms. If you do not 
-                agree to the terms, please do not use the website.
+                By using this website, you agree to these terms and conditions. If you do not 
+                agree to these terms, you must not use the website or any of its services.
               </p>
             </section>
 
@@ -29,8 +29,9 @@ const Terms = () => {
                 2. Use of Website
               </h2>
               <p>
-                The content on this website is intended for informational purposes. You may not 
-                use the website in a way that could damage, disable, or overload it.
+                The content on this website is provided for general informational purposes only. You may not 
+                use the website in any way that could cause damage, disable, or overload the website, or interfere 
+                with other users’ access.
               </p>
             </section>
 
@@ -39,8 +40,9 @@ const Terms = () => {
                 3. Intellectual Property
               </h2>
               <p>
-                All content on this website, including text, images, and logos, 
-                belongs to Rackis for Barn unless otherwise stated.
+                All content on this website, including text, images, logos, and other materials, is the property of 
+                Rackis för Barn or its licensors. You may not copy, reproduce, or distribute any content without 
+                explicit permission.
               </p>
             </section>
 
@@ -49,7 +51,9 @@ const Terms = () => {
                 4. Limitation of Liability
               </h2>
               <p>
-                [Placeholder: Describe any limitations of liability for the organization.]
+                Rackis för Barn is not responsible for any direct, indirect, incidental, or consequential damages 
+                arising from your use of this website or its content. The website is provided "as is" without warranties 
+                of any kind.
               </p>
             </section>
 
@@ -58,8 +62,8 @@ const Terms = () => {
                 5. Changes
               </h2>
               <p>
-                We reserve the right to change these terms at any time. Changes 
-                take effect when published on this page.
+                We reserve the right to update or modify these terms at any time. Changes become effective upon 
+                publication on this page. It is your responsibility to review the terms regularly.
               </p>
             </section>
 
@@ -68,7 +72,7 @@ const Terms = () => {
                 6. Contact
               </h2>
               <p>
-                For questions about these terms, contact us at contact@rackisforbarn.se.
+                For questions regarding these terms, please contact us at <a href="mailto:info@rackisforbarn.com" className="text-primary hover:underline">info@rackisforbarn.com</a>.
               </p>
             </section>
           </div>

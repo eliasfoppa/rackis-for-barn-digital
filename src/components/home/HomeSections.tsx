@@ -1,32 +1,101 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Heart, Recycle, ShoppingBag, MapPin, Instagram, Bike, Home, Users, Gift } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import Logo from "@/assets/logo.png"; // your teddy bear logo
+
+
+// Generate hearts on a jittered grid
+function generateJitteredHearts(
+  rows: number,
+  cols: number,
+  width = 100,
+  height = 100,
+  sizeRange: [number, number] = [16, 30]
+) {
+  const hearts: { x: number; y: number; size: number; delay: number }[] = [];
+
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const baseX = (c + 0.5) / cols * width;
+      const baseY = (r + 0.5) / rows * height;
+      const jitterX = (Math.random() - 0.5) * (width / cols);
+      const jitterY = (Math.random() - 0.5) * (height / rows);
+      const x = baseX + jitterX;
+      const y = baseY + jitterY;
+      const size = sizeRange[0] + Math.random() * (sizeRange[1] - sizeRange[0]);
+      const delay = Math.random() * 600;
+
+      hearts.push({ x, y, size, delay });
+    }
+  }
+
+  return hearts;
+}
 
 export function HeroSection() {
+  const [hearts, setHearts] = useState<{ x: number; y: number; size: number; delay: number }[]>([]);
+
+  useEffect(() => {
+    const updateHearts = () => {
+      if (window.innerWidth < 768) {
+        // Mobile: a few more hearts than before
+        setHearts(generateJitteredHearts(3, 5, 100, 100, [12, 20])); // 15 hearts
+      } else {
+        // Desktop: full hearts
+        setHearts(generateJitteredHearts(4, 7, 100, 100, [16, 30])); // 28 hearts
+      }
+    };
+
+    updateHearts();
+    window.addEventListener("resize", updateHearts);
+
+    return () => window.removeEventListener("resize", updateHearts);
+  }, []);
+
+
   return (
     <section className="relative overflow-hidden bg-hero-gradient min-h-[85vh] flex items-center">
+      {/* BLOBS */}
       <div className="absolute top-20 left-[10%] w-64 h-64 bg-primary/10 blob animate-float" />
       <div className="absolute bottom-32 right-[5%] w-48 h-48 bg-warm/10 blob animate-float delay-200" />
-      
+
+      {/* HEARTS */}
+      {hearts.map((h, i) => (
+        <Heart
+          key={i}
+          className="absolute text-warm/30 animate-float"
+          style={{
+            left: `${h.x}%`,
+            top: `${h.y}%`,
+            width: `${h.size}px`,
+            height: `${h.size}px`,
+            animationDelay: `${h.delay}ms`,
+          }}
+          fill="currentColor"
+        />
+      ))}
+
+      {/* MAIN CONTENT */}
       <div className="container section-padding relative z-10">
         <div className="max-w-4xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-secondary text-secondary-foreground text-sm font-semibold mb-8 animate-fade-up">
             <Heart className="h-4 w-4 text-accent" fill="currentColor" />
             <span>By students, for students in Uppsala</span>
           </div>
-          
+
           <h1 className="font-display text-5xl sm:text-6xl md:text-7xl font-bold text-foreground leading-[1.1] mb-8 animate-fade-up delay-100">
             Give items a{" "}
             <span className="hand-drawn-underline text-primary">second life</span>
             {" "}and help children in need
           </h1>
-          
+
           <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto mb-10 animate-fade-up delay-200 leading-relaxed">
             Your donated items become affordable finds for fellow students, and every profit goes directly to{" "}
             <span className="font-semibold text-foreground">Barncancerfonden</span> and{" "}
             <span className="font-semibold text-foreground">RBU</span>.
           </p>
-          
+
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-up delay-300">
             <Button variant="hero" size="lg" asChild className="text-lg px-8">
               <a href="https://instagram.com/rackis_for_barn" target="_blank" rel="noopener noreferrer">
@@ -34,6 +103,7 @@ export function HeroSection() {
                 Visit our shop
               </a>
             </Button>
+
             <Button variant="hero-outline" size="lg" asChild className="text-lg px-8">
               <Link to="/about">
                 Learn more
@@ -41,7 +111,7 @@ export function HeroSection() {
               </Link>
             </Button>
           </div>
-          
+
           <div className="mt-12 flex items-center justify-center gap-2 text-muted-foreground animate-fade-up delay-400">
             <MapPin className="h-5 w-5 text-primary" />
             <span className="font-medium">Find us at Rackarbergsgatan 32, Uppsala</span>
@@ -52,11 +122,27 @@ export function HeroSection() {
   );
 }
 
+
 export function HowItWorksSection() {
   const steps = [
-    { icon: Gift, title: "Donate", description: "Moving out? Do not throw away useful items. Give them to us! We accept duvets, curtains, bikes, kitchen gear, and more.", color: "bg-primary/10 text-primary" },
-    { icon: ShoppingBag, title: "Shop", description: "Moving in? Browse our collection of quality second-hand items at fair, student-friendly prices.", color: "bg-warm/10 text-warm" },
-    { icon: Heart, title: "Support", description: "All profits go directly to Barncancerfonden and RBU, supporting children and their families.", color: "bg-accent/10 text-accent" },
+    {
+      icon: Gift,
+      title: "Donate",
+      description: "Moving out? Do not throw away useful items. Give them to us! We accept duvets, curtains, bikes, kitchen gear, and more.",
+      color: "bg-primary/10 text-primary"
+    },
+    {
+      icon: ShoppingBag,
+      title: "Shop",
+      description: "Moving in? Browse our collection of quality second-hand items at fair, student-friendly prices.",
+      color: "bg-green-100" // background stays light
+    },
+    {
+      icon: Heart,
+      title: "Support",
+      description: "All profits go directly to Barncancerfonden and RBU, supporting children and their families.",
+      color: "bg-warm/10 text-warm"
+    },
   ];
 
   return (
@@ -70,7 +156,10 @@ export function HowItWorksSection() {
           {steps.map((step, index) => (
             <div key={step.title} className="card-warm text-center group">
               <div className={`w-16 h-16 rounded-2xl ${step.color} flex items-center justify-center mx-auto mb-6 transform group-hover:scale-110 transition-transform`}>
-                <step.icon className="h-8 w-8" />
+                <step.icon
+                  className={`h-8 w-8 ${step.title === "Shop" ? "text-green-600" : "" // darker green icon
+                    }`}
+                />
               </div>
               <span className="inline-block text-sm font-bold text-muted-foreground/60 mb-2">Step {index + 1}</span>
               <h3 className="text-2xl font-bold text-foreground mb-3">{step.title}</h3>
@@ -97,7 +186,7 @@ export function WhyChooseUsSection() {
     <section className="section-padding bg-section-warm">
       <div className="container">
         <div className="text-center max-w-2xl mx-auto mb-16">
-          <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground mb-6">Why choose Rackis?</h2>
+          <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground mb-6">Why choose Rackis för Barn?</h2>
           <p className="text-lg text-muted-foreground">More than just a second-hand store. We are building a sustainable student community.</p>
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -125,31 +214,31 @@ export function AboutCharitiesSection() {
             <span className="inline-block text-sm font-bold text-accent uppercase tracking-wider mb-4">Our cause</span>
             <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-6">Supporting children in need</h2>
           </div>
-          
+
           <div className="grid md:grid-cols-2 gap-8">
             <div className="card-warm">
               <h3 className="text-xl font-bold text-foreground mb-4">Barncancerfonden</h3>
               <p className="text-muted-foreground leading-relaxed mb-4">
                 Sweden's leading organization dedicated to supporting children with cancer and their families. Through research funding and family support programs, they work to improve outcomes for young cancer patients.
               </p>
-              <a 
-                href="https://www.barncancerfonden.se" 
-                target="_blank" 
+              <a
+                href="https://www.barncancerfonden.se"
+                target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center text-primary font-semibold hover:underline"
               >
                 Learn more at barncancerfonden.se
               </a>
             </div>
-            
+
             <div className="card-warm">
               <h3 className="text-xl font-bold text-foreground mb-4">RBU</h3>
               <p className="text-muted-foreground leading-relaxed mb-4">
                 Riksförbundet för Rörelsehindrade Barn och Ungdomar works to improve the lives of children and young people with mobility impairments in Sweden through advocacy and support programs.
               </p>
-              <a 
-                href="https://www.rbu.se" 
-                target="_blank" 
+              <a
+                href="https://www.rbu.se"
+                target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center text-primary font-semibold hover:underline"
               >
@@ -157,10 +246,10 @@ export function AboutCharitiesSection() {
               </a>
             </div>
           </div>
-          
+
           <div className="mt-12 text-center">
             <div className="inline-flex items-center gap-3 px-8 py-4 rounded-2xl bg-primary/10">
-              <Heart className="h-8 w-8 text-primary" fill="currentColor" />
+              <Heart className="h-8 w-8 text-warm" fill="currentColor" />
               <p className="font-display text-xl font-bold text-foreground">100% of profits go to these charities</p>
             </div>
           </div>
@@ -178,13 +267,13 @@ export function CTASection() {
           <h2 className="font-display text-3xl md:text-5xl font-bold text-primary-foreground mb-6">Ready to find your next treasure?</h2>
           <p className="text-xl text-primary-foreground/80 mb-10 leading-relaxed">Visit us at Rackarbergsgatan 32 in Uppsala. Check our Instagram for opening times!</p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Button size="lg" asChild className="bg-white text-primary hover:bg-white/90 text-lg px-8">
+            <Button size="lg" asChild className="bg-white text-primary hover:bg-white/70 text-lg px-8">
               <a href="https://instagram.com/rackis_for_barn" target="_blank" rel="noopener noreferrer">
                 <Instagram className="mr-2 h-5 w-5" />
                 Follow @rackis_for_barn
               </a>
             </Button>
-            <Button variant="outline" size="lg" asChild className="border-white/30 text-primary-foreground hover:bg-white/10 text-lg px-8">
+            <Button variant="outline" size="lg" asChild className="border-white/30 text-primary hover:bg-white/70 text-lg px-8">
               <Link to="/contact">Get in touch</Link>
             </Button>
           </div>

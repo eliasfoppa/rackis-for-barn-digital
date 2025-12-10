@@ -28,7 +28,7 @@ const Contact = () => {
                   Get in Touch
                 </h2>
                 <p className="text-muted-foreground">
-                  Whether you want to volunteer, collaborate with us, or just learn more 
+                  Whether you want to volunteer, collaborate with us, or just learn more
                   about our work – don't hesitate to reach out.
                 </p>
               </div>
@@ -40,11 +40,11 @@ const Contact = () => {
                   </div>
                   <div>
                     <h3 className="font-medium text-foreground">Email</h3>
-                    <a 
-                      href="mailto:contact@rackisforbarn.se" 
+                    <a
+                      href="mailto:info@rackisforbarn.com"
                       className="text-muted-foreground hover:text-primary transition-colors"
                     >
-                      contact@rackisforbarn.se
+                      info@rackisforbarn.com
                     </a>
                   </div>
                 </div>
@@ -55,13 +55,13 @@ const Contact = () => {
                   </div>
                   <div>
                     <h3 className="font-medium text-foreground">Instagram</h3>
-                    <a 
-                      href="https://instagram.com/rackisforbarn" 
+                    <a
+                      href="https://instagram.com/rackis_for_barn"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-muted-foreground hover:text-primary transition-colors"
                     >
-                      @rackisforbarn
+                      @rackis_for_barn
                     </a>
                   </div>
                 </div>
@@ -73,8 +73,12 @@ const Contact = () => {
                   <div>
                     <h3 className="font-medium text-foreground">Location</h3>
                     <p className="text-muted-foreground">
-                      [Placeholder: Add your address here]<br />
-                      Sweden
+                      <p>
+                        Rackis för Barn<br />
+                        Rackarbergsgatan 32, Lgh 1207<br />
+                        752 32 Uppsala<br />
+                        Sweden
+                      </p>
                     </p>
                   </div>
                 </div>
