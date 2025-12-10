@@ -15,13 +15,17 @@ import Donate from "./pages/Donate";
 
 const queryClient = new QueryClient();
 
+// 🔑 Set the BASE_URL based on the environment variable, or default to '/' (local) 🔑
+// Note: VITE_APP_BASE is set during the build process (see Step 3)
+const BASENAME = import.meta.env.VITE_APP_BASE || '';
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      {/* 🔑 THE FIX: Added the 'basename' prop to tell the router to ignore the repo path 🔑 */}
-      <BrowserRouter basename="/rackis-for-barn-digital">
+      {/* 🔑 Use the dynamic BASENAME 🔑 */}
+      <BrowserRouter basename={BASENAME}>
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/about" element={<About />} />
@@ -33,7 +37,6 @@ const App = () => (
           <Route path="/buy" element={<Buy />} />
           <Route path="/donate" element={<Donate />} />
         </Routes>
-
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
