@@ -148,10 +148,6 @@ export function Donate() {
                         <li>No large furniture (beds, couches, wardrobes).</li>
                     </ul>
 
-                    <p className="text-base text-muted-foreground animate-fade-up delay-400">
-                        Your donations support students, reduce waste, and help children in need through our charity partners.
-                    </p>
-
                     <Button size="default" asChild className="bg-primary text-primary-foreground hover:bg-primary/90 px-6 animate-fade-up delay-500">
                         <a
                             href="https://instagram.com/rackis_for_barn"
@@ -174,7 +170,7 @@ export function Donate() {
                     </h2>
 
                     <p className="text-base text-muted-foreground text-center max-w-2xl mx-auto mb-8 leading-relaxed">
-                        We accept practical, good-quality items that help students settle into their new homes.
+                        We accept good-quality items that help students settle into their new homes.
                         The categories below show what is most needed and most useful.
                     </p>
 

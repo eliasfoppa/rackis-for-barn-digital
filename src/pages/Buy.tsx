@@ -135,10 +135,6 @@ export function Buy() {
             </div>
           </div>
 
-          <p className="text-base text-muted-foreground animate-fade-up delay-300">
-            All items are sold at student-friendly prices, and proceeds go directly to supporting children in need.
-          </p>
-
           <Button size="default" asChild className="bg-primary text-primary-foreground hover:bg-primary/90 px-6 animate-fade-up delay-400">
             <a
               href="https://instagram.com/rackis_for_barn"
@@ -161,8 +157,8 @@ export function Buy() {
           </h2>
 
           <p className="text-base text-muted-foreground text-center max-w-2xl mx-auto mb-8 leading-relaxed">
-            We offer practical, good-quality items that help students settle into their new homes.
-            The categories below show what is typically available.
+            We offer second hand items that help students settle into their new homes.
+            The categories below show examples of what is sold.
           </p>
 
           <div className="space-y-6">

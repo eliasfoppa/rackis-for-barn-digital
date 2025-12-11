@@ -56,7 +56,7 @@ const About = () => {
   ];
 
   const boardMembers = [
-    { name: "Jacob Lehmann", role: "President & Founder", /* img: jacobImg */ img: "https://via.placeholder.com/128?text=Jacob" }, // TODO: replace with jacobImg
+    { name: "Jacob Lehmann", role: "President & Founder", img: jacobImg },
     { name: "Elias Foppa", role: "Vice President & Treasurer", img: eliasImg },
     { name: "Lea Poewe", role: "Secretary & Head of Marketing", /* img: leaImg */ img: "https://via.placeholder.com/128?text=Lea" }, // TODO: replace with leaImg
   ];
@@ -92,7 +92,7 @@ const About = () => {
               About Rackis for Barn
             </h1>
             <p className="text-lg text-muted-foreground animate-fade-up delay-100 leading-relaxed">
-              We were all once new students in Uppsala, and quickly noticed how difficult it was to find second-hand items like bedding for our new rooms. At the same time, many students moving out were throwing away perfectly good items. Since then, we've been working every day to tackle both of these problems.
+              As new students in Uppsala, we struggled to find second-hand essentials, while others moving out were throwing away perfectly good items. We’ve been working ever since to tackle these problems.
             </p>
           </div>
         </div>
