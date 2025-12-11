@@ -76,7 +76,9 @@ export function Buy() {
               Buy Items
             </h1>
             <p className="text-lg text-muted-foreground animate-fade-up delay-100 leading-relaxed">
-              At the beginning of each semester, we host a large sale for students moving in. Be quick to find your treasure!
+              At the beginning of each semester, we host a large sale for students moving in.
+              <br />
+              Be quick to find your treasure!
             </p>
           </div>
         </div>
