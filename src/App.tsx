@@ -4,7 +4,6 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ScrollToTop } from "@/components/ScrollToTop";
-import GitHubRedirectHandler from "@/components/GitHubRedirectHandler";
 import Index from "./pages/Index";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
@@ -17,18 +16,40 @@ import Donate from "./pages/Donate";
 
 const queryClient = new QueryClient();
 
-const BASENAME = import.meta.env.VITE_APP_BASE || '';
+// Keep BASENAME fixed to the root path
+const BASENAME = '';
 
 const App = () => (
+  // START ISOLATION: Remove external providers one by one if necessary
+  
+  // Keep the most necessary provider, but remove others if this still fails.
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
+    {/* Temporarily remove TooltipProvider if the red test box does not show up */}
+    <TooltipProvider> 
       <Toaster />
       <Sonner />
+      
       <BrowserRouter basename={BASENAME}>
-        <GitHubRedirectHandler /> 
+        {/* CRITICAL STEP: TEMPORARILY COMMENT OUT THE CUSTOM HANDLER. 
+           This is the most likely culprit for an application-wide crash. */}
+        {/* <GitHubRedirectHandler /> */}
+        
         <ScrollToTop />  
+        
         <Routes>
-          <Route path="/" element={<Index />} />
+          {/* CRITICAL TEST: Replace <Index /> with guaranteed visible HTML */}
+          <Route path="/" element={
+            <div style={{ 
+              padding: '50px', 
+              backgroundColor: 'red', 
+              color: 'white', 
+              fontSize: '24px',
+              textAlign: 'center'
+            }}>
+                DEPLOYMENT FIXED! IF YOU SEE THIS, THE ISSUE IS IN Index.tsx
+            </div>
+          } />
+          
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/impressum" element={<Impressum />} />
@@ -41,6 +62,7 @@ const App = () => (
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
+  // END ISOLATION
 );
 
 export default App;

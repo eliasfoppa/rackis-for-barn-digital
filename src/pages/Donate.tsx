@@ -144,7 +144,7 @@ export function Donate() {
                     <ul className="text-left text-lg text-muted-foreground max-w-xl mx-auto space-y-3 animate-fade-up delay-300 list-disc list-inside">
                         <li>All items should be in good, usable condition. No broken items.</li>
                         <li>
-                            Textiles must be washed at <span className="font-semibold">60°C</span> before donation.
+                            Please wash textiles at <span className="font-semibold">60°C</span> before donation.
                             If unwashed, please inform us when donating.
                         </li>
                         <li>We do not accept clothing and toiletries.</li>

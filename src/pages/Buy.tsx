@@ -112,11 +112,11 @@ export function Buy() {
         </div>
       </section>
 
-      {/* What You Can Donate */}
+      {/* What You Can Buy */}
       <section className="section-padding bg-section-alt">
         <div className="container max-w-4xl mx-auto">
           <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground text-center mb-6">
-            What You Can Donate
+            What You Can Buy
           </h2>
 
           <p className="text-lg text-muted-foreground text-center max-w-2xl mx-auto mb-12 leading-relaxed">
