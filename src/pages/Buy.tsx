@@ -49,7 +49,7 @@ export function Buy() {
   return (
     <Layout>
       {/* Hero Section */}
-      <section className="bg-hero-gradient py-8 md:py-12 relative overflow-hidden min-h-[30vh] flex items-center">
+      <section className="bg-hero-gradient py-8 md:pb-12 relative overflow-hidden min-h-[30vh] flex items-center">
         {/* Background blobs */}
         <div className="absolute top-10 right-[10%] w-32 h-32 bg-primary/10 blob animate-float" />
         <div className="absolute bottom-5 left-[5%] w-24 h-24 bg-warm/10 blob animate-wiggle" />
@@ -76,14 +76,14 @@ export function Buy() {
               Buy Items
             </h1>
             <p className="text-lg text-muted-foreground animate-fade-up delay-100 leading-relaxed">
-              At the beginning of each semester, we host a large sale for students moving in. Stop by for a variety of second-hand items at student-friendly prices!
+              At the beginning of each semester, we host a large sale for students moving in. Be quick to find your treasure!
             </p>
           </div>
         </div>
       </section>
 
       {/* Buy Info Section */}
-      <section className="py-8 md:py-12 relative z-10">
+      <section className="py-8 md:pb-12 relative z-10">
         <div className="container max-w-3xl mx-auto text-center space-y-4">
           
           <div className="bg-white/70 backdrop-blur-sm border rounded-2xl p-6 max-w-2xl mx-auto my-6 animate-fade-up delay-250 shadow-md">
@@ -95,10 +95,10 @@ export function Buy() {
                 <div className="text-left">
                   <p className="font-semibold text-foreground text-base mb-1"> Where:</p>
                   <p className="text-sm text-muted-foreground">
-                    <span className="font-bold text-foreground">Rackarbergsgatan 32 (Rackis)</span> - basement storage units
+                    <span className="font-bold text-foreground">Rackarbergsgatan 32 (Rackis)</span>
                   </p>
                   <p className="text-sm text-muted-foreground">
-                    <span className="font-bold text-foreground">Building Nr. 1 (Flogsta)</span> - bedding only during move-in days
+                    <span className="font-bold text-foreground">Flogsta</span> - only bedding during move-in days
                   </p>
                 </div>
               </div>

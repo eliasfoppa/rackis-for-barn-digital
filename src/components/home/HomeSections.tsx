@@ -95,7 +95,7 @@ export function HeroSection() {
             <br /> 
             all profit goes directly to{" "}
             <span className="font-semibold text-foreground">Barncancerfonden</span> and{" "}
-            <span className="font-semibold text-foreground">RBU</span>.
+            <span className="font-semibold text-foreground">RBU</span>
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-up delay-300">

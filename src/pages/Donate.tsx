@@ -49,7 +49,7 @@ export function Donate() {
     return (
         <Layout>
             {/* Hero Section */}
-            <section className="bg-hero-gradient py-8 md:py-12 relative overflow-hidden min-h-[30vh] flex items-center">
+            <section className="bg-hero-gradient py-8 md:pb-12 relative overflow-hidden min-h-[30vh] flex items-center">
                 {/* Background blobs */}
                 <div className="absolute top-10 right-[10%] w-32 h-32 bg-primary/10 blob animate-float" />
                 <div className="absolute bottom-5 left-[5%] w-24 h-24 bg-warm/10 blob animate-wiggle" />
@@ -83,7 +83,7 @@ export function Donate() {
             </section>
 
             {/* Drop-off Information */}
-            <section className="py-8 md:py-12 relative z-10">
+            <section className="py-8 md:pb-12 relative z-10">
                 <div className="container max-w-3xl mx-auto text-center space-y-4">
 
                     <div className="bg-white/70 backdrop-blur-sm border rounded-2xl p-6 max-w-2xl mx-auto my-6 animate-fade-up delay-250 shadow-md">
