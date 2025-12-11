@@ -89,7 +89,7 @@ const About = () => {
         <div className="container relative z-10 text-center">
           <div className="max-w-3xl mx-auto">
             <h1 className="font-display text-4xl md:text-6xl font-bold text-foreground mb-6 animate-fade-up">
-              About Rackis för Barn
+              About Rackis for Barn
             </h1>
             <p className="text-xl text-muted-foreground animate-fade-up delay-100 leading-relaxed">
               We were all once new students in Uppsala, and quickly noticed how difficult it was to find second-hand items like bedding for our new rooms. At the same time, many students moving out were throwing away perfectly good items. Since then, we’ve been working every day to tackle both of these problems.
@@ -108,7 +108,7 @@ const About = () => {
             </h2>
             <div className="space-y-6 text-lg text-muted-foreground leading-relaxed">
               <p>
-                Rackis för Barn is a student-run non-profit organization designed specifically for students in Uppsala to exchange second-hand items during move-ins and move-outs. We believe in creating a sustainable cycle where useful items find new homes instead of being discarded.
+                Rackis for Barn is a student-run non-profit organization designed specifically for students in Uppsala to exchange second-hand items during move-ins and move-outs. We believe in creating a sustainable cycle where useful items find new homes instead of being discarded.
               </p>
               <p>
                 When students move out, instead of throwing away items that are still useful, they donate them to us. We collect many items like bedding, curtains, bikes, kitchen equipment, lamps, small furniture, decoration, and much more. Then, students moving into new places can browse our collection and find everything they need at fair, student-friendly prices.
@@ -126,11 +126,11 @@ const About = () => {
         <div className="container-narrow text-center">
           <span className="inline-block text-sm font-bold text-accent uppercase tracking-wider mb-2">Our name</span>
           <h2 className="font-display text-2xl md:text-4xl font-bold text-foreground mb-4">
-            What "Rackis för Barn" means
+            What "Rackis for Barn" means
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
             "Rackis" is short for <span className="font-semibold text-foreground">Rackarbergsgatan</span>, the student housing area where our journey began.
-            "För Barn" means <span className="font-semibold text-foreground">for children</span> in Swedish, reflecting our mission to support children in need.
+            "Barn" means <span className="font-semibold text-foreground">children</span> in Swedish, reflecting our mission to support children in need.
           </p>
         </div>
       </section>
@@ -163,7 +163,7 @@ const About = () => {
           </div>
 
           <p className="text-center text-lg text-muted-foreground max-w-2xl mx-auto">
-            In addition to our board, many amazing volunteers contribute their time and effort to make Rackis för Barn possible.
+            In addition to our board, many amazing volunteers contribute their time and effort to make Rackis for Barn possible.
           </p>
         </div>
       </section>

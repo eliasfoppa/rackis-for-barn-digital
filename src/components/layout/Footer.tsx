@@ -24,7 +24,7 @@ export function Footer() {
           {/* Brand */}
           <div className="space-y-4 md:col-span-2">
             <Link to="/" className="inline-block">
-              <span className="text-xl font-bold text-primary">Rackis för Barn</span>
+              <span className="text-xl font-bold text-primary">Rackis for Barn</span>
             </Link>
             <p className="text-sm text-muted-foreground max-w-xs">
               A student-run second-hand store in Uppsala. All proceeds go to helping children in need.

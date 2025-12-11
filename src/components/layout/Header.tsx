@@ -20,8 +20,8 @@ export function Header() {
       <div className="container flex h-16 items-center justify-between">
         {/* Logo + Site Name */}
         <Link to="/" className="flex items-center gap-2">
-          <img src={Logo} alt="Rackis för Barn Logo" className="h-10 w-auto" />
-          <span className="text-xl font-bold text-primary">Rackis för Barn</span>
+          <img src={Logo} alt="Rackis for Barn Logo" className="h-10 w-auto" />
+          <span className="text-xl font-bold text-primary">Rackis for Barn</span>
         </Link>
 
         {/* Desktop Navigation */}

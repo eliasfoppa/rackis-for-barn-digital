@@ -12,7 +12,7 @@ const Contact = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const subject = encodeURIComponent("Contact Form Submission – Rackis för Barn");
+    const subject = encodeURIComponent("Contact Form Submission – Rackis for Barn");
     const body = encodeURIComponent(
       `Name: ${form.name}\nEmail: ${form.email}\n\nMessage:\n${form.message}`
     );
@@ -26,7 +26,7 @@ const Contact = () => {
         <div className="container">
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6 animate-fade-up">
-              Contact Rackis för Barn
+              Contact Rackis for Barn
             </h1>
             <p className="text-lg text-muted-foreground animate-fade-up delay-100">
               We welcome inquiries regarding donations, volunteering, or general questions about our work. Please get in touch using the form below or via the provided contact details.
