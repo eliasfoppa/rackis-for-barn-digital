@@ -1,6 +1,6 @@
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
-import { Instagram, Heart, MapPin, CheckCircle } from "lucide-react";
+import { Instagram, Heart, MapPin, MessageCircle, Clock } from "lucide-react";
 import { useState, useEffect } from "react";
 
 // Generate hearts on a jittered grid
@@ -82,22 +82,70 @@ export function Donate() {
                 </div>
             </section>
 
-            {/* Donation Guidelines */}
+            {/* Drop-off Information */}
             <section className="section-padding relative z-10">
                 <div className="container max-w-3xl mx-auto text-center space-y-6">
                     <p className="text-lg text-muted-foreground animate-fade-up delay-200">
-                        We collect donations in the weeks leading up to the end of each semester. Items can be dropped off at{" "}
-                        <span className="font-semibold">Rackarbergsgatan 32</span> or in <span className="font-semibold">Flogsta</span>.
+                        We are collecting donations from now until the end of the semester. Items can be dropped off at the locations below during our collection hours.
                     </p>
 
+                    <div className="bg-white/70 backdrop-blur-sm border rounded-2xl p-8 max-w-2xl mx-auto my-8 animate-fade-up delay-250 shadow-md">
+                        <div className="space-y-6">
+                            
+                            {/* Where */}
+                            <div className="flex items-start gap-4">
+                                <MapPin className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
+                                <div className="text-left">
+                                    <p className="font-semibold text-foreground text-lg mb-2"> Where:</p>
+                                    <p className="text-muted-foreground">
+                                        <span className="font-bold text-foreground">Rackarbergsgatan 32 (Rackis)</span>
+                                    </p>
+                                    <p className="text-muted-foreground">
+                                        Or <span className="font-bold text-foreground">Building Nr. 1 (Flogsta)</span>
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div className="h-px bg-border"></div>
+                            
+                            {/* When */}
+                            <div className="flex items-start gap-4">
+                                <Clock className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
+                                <div className="text-left">
+                                    <p className="font-semibold text-foreground text-lg mb-2"> When:</p>
+                                    <p className="text-muted-foreground">
+                                        <span className="font-bold text-foreground">Everyday from 18:00 - 19:00</span>
+                                    </p>
+                                    <p className="text-sm text-muted-foreground italic">(except for Christmas)</p>
+                                </div>
+                            </div>
+
+                            <div className="h-px bg-border"></div>
+
+                            {/* How */}
+                            <div className="flex items-start gap-4">
+                                <MessageCircle className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
+                                <div className="text-left">
+                                    <p className="font-semibold text-foreground text-lg mb-2"> How:</p>
+                                    <p className="text-muted-foreground">
+                                        <span className="font-bold text-foreground">DM us on Instagram and then stop by to drop off your items.</span>
+                                    </p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <h2 className="font-display text-2xl md:text-4xl font-bold text-foreground mb-8">
+                        Donation Rules
+                    </h2>
                     <ul className="text-left text-lg text-muted-foreground max-w-xl mx-auto space-y-3 animate-fade-up delay-300 list-disc list-inside">
-                        <li>All items should be in good, usable condition.</li>
+                        <li>All items should be in good, usable condition. No broken items.</li>
                         <li>
-                            Bedding must be washed at <span className="font-semibold">60°C</span> before donation.
-                            If unwashed, please tell us when donating.
+                            Textiles must be washed at <span className="font-semibold">60°C</span> before donation.
+                            If unwashed, please inform us when donating.
                         </li>
-                        <li>We do not accept clothing.</li>
-                        <li>No broken electronics or damaged furniture.</li>
+                        <li>We do not accept clothing and toiletries.</li>
                         <li>No large furniture (beds, couches, wardrobes).</li>
                     </ul>
 
@@ -116,11 +164,6 @@ export function Donate() {
                             Check our Instagram for updates
                         </a>
                     </Button>
-
-                    <div className="mt-12 flex items-center justify-center gap-2 text-muted-foreground animate-fade-up delay-600">
-                        <MapPin className="h-5 w-5 text-primary" />
-                        <span className="font-medium">Donate at Rackarbergsgatan 32 or Flogsta</span>
-                    </div>
                 </div>
             </section>
 
