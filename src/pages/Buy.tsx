@@ -1,6 +1,6 @@
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
-import { Instagram, Heart, MapPin } from "lucide-react";
+import { Instagram, Heart, MapPin, MessageCircle, Clock } from "lucide-react";
 import { useState, useEffect } from "react";
 
 // Generate hearts on a jittered grid
@@ -49,10 +49,10 @@ export function Buy() {
   return (
     <Layout>
       {/* Hero Section */}
-      <section className="bg-hero-gradient section-padding relative overflow-hidden min-h-[60vh] flex items-center">
+      <section className="bg-hero-gradient py-8 md:py-12 relative overflow-hidden min-h-[30vh] flex items-center">
         {/* Background blobs */}
-        <div className="absolute top-20 right-[10%] w-48 h-48 bg-primary/10 blob animate-float" />
-        <div className="absolute bottom-10 left-[5%] w-32 h-32 bg-warm/10 blob animate-wiggle" />
+        <div className="absolute top-10 right-[10%] w-32 h-32 bg-primary/10 blob animate-float" />
+        <div className="absolute bottom-5 left-[5%] w-24 h-24 bg-warm/10 blob animate-wiggle" />
 
         {/* Floating hearts */}
         {hearts.map((h, i) => (
@@ -72,10 +72,10 @@ export function Buy() {
 
         <div className="container relative z-10 text-center">
           <div className="max-w-3xl mx-auto">
-            <h1 className="font-display text-4xl md:text-6xl font-bold text-foreground mb-6 animate-fade-up">
+            <h1 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-4 animate-fade-up">
               Buy Items
             </h1>
-            <p className="text-xl text-muted-foreground animate-fade-up delay-100 leading-relaxed">
+            <p className="text-lg text-muted-foreground animate-fade-up delay-100 leading-relaxed">
               At the beginning of each semester, we host a large sale for students moving in. Stop by for a variety of second-hand items at student-friendly prices!
             </p>
           </div>
@@ -83,55 +83,94 @@ export function Buy() {
       </section>
 
       {/* Buy Info Section */}
-      <section className="section-padding relative z-10">
-        <div className="container max-w-3xl mx-auto text-center space-y-6">
-          <p className="text-lg text-muted-foreground animate-fade-up delay-200">
-            The sale happens in the basement storage units at <span className="font-semibold">Rackarbergsgatan 32</span>. Only bedding will be sold in <span className="font-semibold">Flogsta</span> during the move-in days.
+      <section className="py-8 md:py-12 relative z-10">
+        <div className="container max-w-3xl mx-auto text-center space-y-4">
+          
+          <div className="bg-white/70 backdrop-blur-sm border rounded-2xl p-6 max-w-2xl mx-auto my-6 animate-fade-up delay-250 shadow-md">
+            <div className="space-y-4">
+
+              {/* Where */}
+              <div className="flex items-start gap-3">
+                <MapPin className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
+                <div className="text-left">
+                  <p className="font-semibold text-foreground text-base mb-1"> Where:</p>
+                  <p className="text-sm text-muted-foreground">
+                    <span className="font-bold text-foreground">Rackarbergsgatan 32 (Rackis)</span> - basement storage units
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    <span className="font-bold text-foreground">Building Nr. 1 (Flogsta)</span> - bedding only during move-in days
+                  </p>
+                </div>
+              </div>
+
+              <div className="h-px bg-border"></div>
+
+              {/* When */}
+              <div className="flex items-start gap-3">
+                <Clock className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
+                <div className="text-left">
+                  <p className="font-semibold text-foreground text-base mb-1"> When:</p>
+                  <p className="text-sm text-muted-foreground">
+                    <span className="font-bold text-foreground">At the beginning of each semester</span>
+                  </p>
+                  <p className="text-xs text-muted-foreground italic">Check Instagram for exact dates and times</p>
+                </div>
+              </div>
+
+              <div className="h-px bg-border"></div>
+
+              {/* How */}
+              <div className="flex items-start gap-3">
+                <MessageCircle className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
+                <div className="text-left">
+                  <p className="font-semibold text-foreground text-base mb-1"> How:</p>
+                  <p className="text-sm text-muted-foreground">
+                    <span className="font-bold text-foreground">First-come, first-served basis.</span> Arrive early for the best finds!
+                  </p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <p className="text-base text-muted-foreground animate-fade-up delay-300">
+            All items are sold at student-friendly prices, and proceeds go directly to supporting children in need.
           </p>
 
-          <p className="text-lg text-muted-foreground animate-fade-up delay-300">
-            All items are sold on a first-come, first-served basis, so arrive early for the best finds!
-          </p>
-
-          <Button size="lg" asChild className="bg-primary text-primary-foreground hover:bg-primary/90 px-8 animate-fade-up delay-400">
+          <Button size="default" asChild className="bg-primary text-primary-foreground hover:bg-primary/90 px-6 animate-fade-up delay-400">
             <a
               href="https://instagram.com/rackis_for_barn"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2"
             >
-              <Instagram className="h-5 w-5" />
+              <Instagram className="h-4 w-4" />
               Check Instagram for opening times
             </a>
           </Button>
-
-          <div className="mt-12 flex items-center justify-center gap-2 text-muted-foreground animate-fade-up delay-500">
-            <MapPin className="h-5 w-5 text-primary" />
-            <span className="font-medium">Find us at Rackarbergsgatan 32 or Flogsta</span>
-          </div>
         </div>
       </section>
 
       {/* What You Can Buy */}
-      <section className="section-padding bg-section-alt">
+      <section className="py-8 md:py-12 bg-section-alt">
         <div className="container max-w-4xl mx-auto">
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground text-center mb-6">
+          <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground text-center mb-4">
             What You Can Buy
           </h2>
 
-          <p className="text-lg text-muted-foreground text-center max-w-2xl mx-auto mb-12 leading-relaxed">
-            We accept practical, good-quality items that help students settle into their new homes.
-            The categories below show what is most needed and most useful.
+          <p className="text-base text-muted-foreground text-center max-w-2xl mx-auto mb-8 leading-relaxed">
+            We offer practical, good-quality items that help students settle into their new homes.
+            The categories below show what is typically available.
           </p>
 
-          <div className="space-y-8">
+          <div className="space-y-6">
 
             {/* CATEGORY BLOCK */}
-            <div className="rounded-2xl bg-white/70 backdrop-blur-sm border shadow-sm p-8">
-              <h3 className="text-xl font-semibold text-foreground mb-4">
+            <div className="rounded-2xl bg-white/70 backdrop-blur-sm border shadow-sm p-6">
+              <h3 className="text-lg font-semibold text-foreground mb-3">
                 Household & Bedding
               </h3>
-              <ul className="grid md:grid-cols-2 gap-y-3 gap-x-6 text-muted-foreground text-lg leading-relaxed">
+              <ul className="grid md:grid-cols-2 gap-y-2 gap-x-4 text-muted-foreground text-base leading-relaxed">
                 <li>Duvets and pillows</li>
                 <li>Bed sheets and blankets</li>
                 <li>Curtains</li>
@@ -140,11 +179,11 @@ export function Buy() {
             </div>
 
             {/* CATEGORY BLOCK */}
-            <div className="rounded-2xl bg-white/70 backdrop-blur-sm border shadow-sm p-8">
-              <h3 className="text-xl font-semibold text-foreground mb-4">
+            <div className="rounded-2xl bg-white/70 backdrop-blur-sm border shadow-sm p-6">
+              <h3 className="text-lg font-semibold text-foreground mb-3">
                 Kitchen Equipment
               </h3>
-              <ul className="grid md:grid-cols-2 gap-y-3 gap-x-6 text-muted-foreground text-lg leading-relaxed">
+              <ul className="grid md:grid-cols-2 gap-y-2 gap-x-4 text-muted-foreground text-base leading-relaxed">
                 <li>Pots and pans</li>
                 <li>Cutlery and cooking utensils</li>
                 <li>Plates, bowls, cups and glasses</li>
@@ -153,11 +192,11 @@ export function Buy() {
             </div>
 
             {/* CATEGORY BLOCK */}
-            <div className="rounded-2xl bg-white/70 backdrop-blur-sm border shadow-sm p-8">
-              <h3 className="text-xl font-semibold text-foreground mb-4">
+            <div className="rounded-2xl bg-white/70 backdrop-blur-sm border shadow-sm p-6">
+              <h3 className="text-lg font-semibold text-foreground mb-3">
                 Electronics
               </h3>
-              <ul className="grid md:grid-cols-2 gap-y-3 gap-x-6 text-muted-foreground text-lg leading-relaxed">
+              <ul className="grid md:grid-cols-2 gap-y-2 gap-x-4 text-muted-foreground text-base leading-relaxed">
                 <li>Routers and basic Wi-Fi equipment</li>
                 <li>Extension cords and power strips</li>
                 <li>Desk lamps and floor lamps</li>
@@ -166,11 +205,11 @@ export function Buy() {
             </div>
 
             {/* CATEGORY BLOCK */}
-            <div className="rounded-2xl bg-white/70 backdrop-blur-sm border shadow-sm p-8">
-              <h3 className="text-xl font-semibold text-foreground mb-4">
+            <div className="rounded-2xl bg-white/70 backdrop-blur-sm border shadow-sm p-6">
+              <h3 className="text-lg font-semibold text-foreground mb-3">
                 And Many Other Items Such As...
               </h3>
-              <ul className="grid md:grid-cols-2 gap-y-3 gap-x-6 text-muted-foreground text-lg leading-relaxed">
+              <ul className="grid md:grid-cols-2 gap-y-2 gap-x-4 text-muted-foreground text-base leading-relaxed">
                 <li>Small shelves and storage containers</li>
                 <li>Mirrors and decoration</li>
                 <li>Laundry racks and hangers</li>
@@ -180,7 +219,7 @@ export function Buy() {
 
           </div>
 
-          <p className="text-lg text-muted-foreground text-center mt-12 leading-relaxed">
+          <p className="text-base text-muted-foreground text-center mt-8 leading-relaxed">
             Stop by during our sale days to see the full range of items available for purchase!
           </p>
         </div>

@@ -49,10 +49,10 @@ export function Donate() {
     return (
         <Layout>
             {/* Hero Section */}
-            <section className="bg-hero-gradient section-padding relative overflow-hidden min-h-[60vh] flex items-center">
+            <section className="bg-hero-gradient py-8 md:py-12 relative overflow-hidden min-h-[30vh] flex items-center">
                 {/* Background blobs */}
-                <div className="absolute top-20 right-[10%] w-48 h-48 bg-primary/10 blob animate-float" />
-                <div className="absolute bottom-10 left-[5%] w-32 h-32 bg-warm/10 blob animate-wiggle" />
+                <div className="absolute top-10 right-[10%] w-32 h-32 bg-primary/10 blob animate-float" />
+                <div className="absolute bottom-5 left-[5%] w-24 h-24 bg-warm/10 blob animate-wiggle" />
 
                 {/* Floating hearts */}
                 {hearts.map((h, i) => (
@@ -72,62 +72,59 @@ export function Donate() {
 
                 <div className="container relative z-10 text-center">
                     <div className="max-w-3xl mx-auto">
-                        <h1 className="font-display text-4xl md:text-6xl font-bold text-foreground mb-6 animate-fade-up">
+                        <h1 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-4 animate-fade-up">
                             Donate Items
                         </h1>
-                        <p className="text-xl text-muted-foreground animate-fade-up delay-100 leading-relaxed">
-                            Help students and children in need by donating items in good condition. Your contributions make a real difference!
+                        <p className="text-lg text-muted-foreground animate-fade-up delay-100 leading-relaxed">
+                            We are collecting donations from now until the end of the semester. Items can be dropped off at the locations below during our collection hours.
                         </p>
                     </div>
                 </div>
             </section>
 
             {/* Drop-off Information */}
-            <section className="section-padding relative z-10">
-                <div className="container max-w-3xl mx-auto text-center space-y-6">
-                    <p className="text-lg text-muted-foreground animate-fade-up delay-200">
-                        We are collecting donations from now until the end of the semester. Items can be dropped off at the locations below during our collection hours.
-                    </p>
+            <section className="py-8 md:py-12 relative z-10">
+                <div className="container max-w-3xl mx-auto text-center space-y-4">
 
-                    <div className="bg-white/70 backdrop-blur-sm border rounded-2xl p-8 max-w-2xl mx-auto my-8 animate-fade-up delay-250 shadow-md">
-                        <div className="space-y-6">
-                            
+                    <div className="bg-white/70 backdrop-blur-sm border rounded-2xl p-6 max-w-2xl mx-auto my-6 animate-fade-up delay-250 shadow-md">
+                        <div className="space-y-4">
+
                             {/* Where */}
-                            <div className="flex items-start gap-4">
-                                <MapPin className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
+                            <div className="flex items-start gap-3">
+                                <MapPin className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
                                 <div className="text-left">
-                                    <p className="font-semibold text-foreground text-lg mb-2"> Where:</p>
-                                    <p className="text-muted-foreground">
+                                    <p className="font-semibold text-foreground text-base mb-1"> Where:</p>
+                                    <p className="text-sm text-muted-foreground">
                                         <span className="font-bold text-foreground">Rackarbergsgatan 32 (Rackis)</span>
                                     </p>
-                                    <p className="text-muted-foreground">
+                                    <p className="text-sm text-muted-foreground">
                                         Or <span className="font-bold text-foreground">Building Nr. 1 (Flogsta)</span>
                                     </p>
                                 </div>
                             </div>
-                            
+
                             <div className="h-px bg-border"></div>
-                            
+
                             {/* When */}
-                            <div className="flex items-start gap-4">
-                                <Clock className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
+                            <div className="flex items-start gap-3">
+                                <Clock className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
                                 <div className="text-left">
-                                    <p className="font-semibold text-foreground text-lg mb-2"> When:</p>
-                                    <p className="text-muted-foreground">
+                                    <p className="font-semibold text-foreground text-base mb-1"> When:</p>
+                                    <p className="text-sm text-muted-foreground">
                                         <span className="font-bold text-foreground">Everyday from 18:00 - 19:00</span>
                                     </p>
-                                    <p className="text-sm text-muted-foreground italic">(except for Christmas)</p>
+                                    <p className="text-xs text-muted-foreground italic">(except for Christmas)</p>
                                 </div>
                             </div>
 
                             <div className="h-px bg-border"></div>
 
                             {/* How */}
-                            <div className="flex items-start gap-4">
-                                <MessageCircle className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
+                            <div className="flex items-start gap-3">
+                                <MessageCircle className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
                                 <div className="text-left">
-                                    <p className="font-semibold text-foreground text-lg mb-2"> How:</p>
-                                    <p className="text-muted-foreground">
+                                    <p className="font-semibold text-foreground text-base mb-1"> How:</p>
+                                    <p className="text-sm text-muted-foreground">
                                         <span className="font-bold text-foreground">DM us on Instagram and then stop by to drop off your items.</span>
                                     </p>
                                 </div>
@@ -138,10 +135,10 @@ export function Donate() {
 
                     <br />
 
-                    <h2 className="font-display text-2xl md:text-4xl font-bold text-foreground mb-8">
+                    <h2 className="font-display text-xl md:text-3xl font-bold text-foreground mb-6">
                         Donation Rules
                     </h2>
-                    <ul className="text-left text-lg text-muted-foreground max-w-xl mx-auto space-y-3 animate-fade-up delay-300 list-disc list-inside">
+                    <ul className="text-left text-base text-muted-foreground max-w-xl mx-auto space-y-2 animate-fade-up delay-300 list-disc list-inside">
                         <li>All items should be in good, usable condition. No broken items.</li>
                         <li>
                             Please wash textiles at <span className="font-semibold">60°C</span> before donation.
@@ -151,18 +148,18 @@ export function Donate() {
                         <li>No large furniture (beds, couches, wardrobes).</li>
                     </ul>
 
-                    <p className="text-lg text-muted-foreground animate-fade-up delay-400">
+                    <p className="text-base text-muted-foreground animate-fade-up delay-400">
                         Your donations support students, reduce waste, and help children in need through our charity partners.
                     </p>
 
-                    <Button size="lg" asChild className="bg-primary text-primary-foreground hover:bg-primary/90 px-8 animate-fade-up delay-500">
+                    <Button size="default" asChild className="bg-primary text-primary-foreground hover:bg-primary/90 px-6 animate-fade-up delay-500">
                         <a
                             href="https://instagram.com/rackis_for_barn"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex items-center gap-2"
                         >
-                            <Instagram className="h-5 w-5" />
+                            <Instagram className="h-4 w-4" />
                             Check our Instagram for updates
                         </a>
                     </Button>
@@ -170,25 +167,25 @@ export function Donate() {
             </section>
 
             {/* What You Can Donate */}
-            <section className="section-padding bg-section-alt">
+            <section className="py-8 md:py-12 bg-section-alt">
                 <div className="container max-w-4xl mx-auto">
-                    <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground text-center mb-6">
+                    <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground text-center mb-4">
                         What You Can Donate
                     </h2>
 
-                    <p className="text-lg text-muted-foreground text-center max-w-2xl mx-auto mb-12 leading-relaxed">
+                    <p className="text-base text-muted-foreground text-center max-w-2xl mx-auto mb-8 leading-relaxed">
                         We accept practical, good-quality items that help students settle into their new homes.
                         The categories below show what is most needed and most useful.
                     </p>
 
-                    <div className="space-y-8">
+                    <div className="space-y-6">
 
                         {/* CATEGORY BLOCK */}
-                        <div className="rounded-2xl bg-white/70 backdrop-blur-sm border shadow-sm p-8">
-                            <h3 className="text-xl font-semibold text-foreground mb-4">
+                        <div className="rounded-2xl bg-white/70 backdrop-blur-sm border shadow-sm p-6">
+                            <h3 className="text-lg font-semibold text-foreground mb-3">
                                 Household & Bedding
                             </h3>
-                            <ul className="grid md:grid-cols-2 gap-y-3 gap-x-6 text-muted-foreground text-lg leading-relaxed">
+                            <ul className="grid md:grid-cols-2 gap-y-2 gap-x-4 text-muted-foreground text-base leading-relaxed">
                                 <li>Duvets and pillows</li>
                                 <li>Bed sheets and blankets</li>
                                 <li>Curtains</li>
@@ -197,11 +194,11 @@ export function Donate() {
                         </div>
 
                         {/* CATEGORY BLOCK */}
-                        <div className="rounded-2xl bg-white/70 backdrop-blur-sm border shadow-sm p-8">
-                            <h3 className="text-xl font-semibold text-foreground mb-4">
+                        <div className="rounded-2xl bg-white/70 backdrop-blur-sm border shadow-sm p-6">
+                            <h3 className="text-lg font-semibold text-foreground mb-3">
                                 Kitchen Equipment
                             </h3>
-                            <ul className="grid md:grid-cols-2 gap-y-3 gap-x-6 text-muted-foreground text-lg leading-relaxed">
+                            <ul className="grid md:grid-cols-2 gap-y-2 gap-x-4 text-muted-foreground text-base leading-relaxed">
                                 <li>Pots and pans</li>
                                 <li>Cutlery and cooking utensils</li>
                                 <li>Plates, bowls, cups and glasses</li>
@@ -210,11 +207,11 @@ export function Donate() {
                         </div>
 
                         {/* CATEGORY BLOCK */}
-                        <div className="rounded-2xl bg-white/70 backdrop-blur-sm border shadow-sm p-8">
-                            <h3 className="text-xl font-semibold text-foreground mb-4">
+                        <div className="rounded-2xl bg-white/70 backdrop-blur-sm border shadow-sm p-6">
+                            <h3 className="text-lg font-semibold text-foreground mb-3">
                                 Electronics
                             </h3>
-                            <ul className="grid md:grid-cols-2 gap-y-3 gap-x-6 text-muted-foreground text-lg leading-relaxed">
+                            <ul className="grid md:grid-cols-2 gap-y-2 gap-x-4 text-muted-foreground text-base leading-relaxed">
                                 <li>Routers and basic Wi-Fi equipment</li>
                                 <li>Extension cords and power strips</li>
                                 <li>Desk lamps and floor lamps</li>
@@ -223,11 +220,11 @@ export function Donate() {
                         </div>
 
                         {/* CATEGORY BLOCK */}
-                        <div className="rounded-2xl bg-white/70 backdrop-blur-sm border shadow-sm p-8">
-                            <h3 className="text-xl font-semibold text-foreground mb-4">
+                        <div className="rounded-2xl bg-white/70 backdrop-blur-sm border shadow-sm p-6">
+                            <h3 className="text-lg font-semibold text-foreground mb-3">
                                 And Many Other Items Such As...
                             </h3>
-                            <ul className="grid md:grid-cols-2 gap-y-3 gap-x-6 text-muted-foreground text-lg leading-relaxed">
+                            <ul className="grid md:grid-cols-2 gap-y-2 gap-x-4 text-muted-foreground text-base leading-relaxed">
                                 <li>Small shelves and storage containers</li>
                                 <li>Mirrors and decoration</li>
                                 <li>Laundry racks and hangers</li>
@@ -237,7 +234,7 @@ export function Donate() {
 
                     </div>
 
-                    <p className="text-lg text-muted-foreground text-center mt-12 leading-relaxed">
+                    <p className="text-base text-muted-foreground text-center mt-8 leading-relaxed">
                         If you're unsure whether an item is suitable, feel free to contact us on Instagram for guidance.
                     </p>
                 </div>

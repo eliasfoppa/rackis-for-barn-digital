@@ -91,7 +91,9 @@ export function HeroSection() {
           </h1>
 
           <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto mb-10 animate-fade-up delay-200 leading-relaxed">
-            Donated items become affordable finds for fellow students, and all profit goes directly to{" "}
+            Donated items become affordable finds for fellow students
+            <br /> 
+            all profit goes directly to{" "}
             <span className="font-semibold text-foreground">Barncancerfonden</span> and{" "}
             <span className="font-semibold text-foreground">RBU</span>.
           </p>

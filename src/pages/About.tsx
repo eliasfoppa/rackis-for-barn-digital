@@ -65,10 +65,10 @@ const About = () => {
   return (
     <Layout>
       {/* Hero */}
-      <section className="bg-hero-gradient section-padding relative overflow-hidden min-h-[60vh] flex flex-col items-center justify-center">
+      <section className="bg-hero-gradient py-8 md:py-12 relative overflow-hidden min-h-[30vh] flex flex-col items-center justify-center">
         {/* Background blobs */}
-        <div className="absolute top-20 right-[10%] w-48 h-48 bg-primary/10 blob animate-float" />
-        <div className="absolute bottom-10 left-[5%] w-32 h-32 bg-warm/10 blob animate-wiggle" />
+        <div className="absolute top-10 right-[10%] w-32 h-32 bg-primary/10 blob animate-float" />
+        <div className="absolute bottom-5 left-[5%] w-24 h-24 bg-warm/10 blob animate-wiggle" />
 
         {/* Floating hearts */}
         {hearts.map((h, i) => (
@@ -88,25 +88,25 @@ const About = () => {
 
         <div className="container relative z-10 text-center">
           <div className="max-w-3xl mx-auto">
-            <h1 className="font-display text-4xl md:text-6xl font-bold text-foreground mb-6 animate-fade-up">
+            <h1 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-4 animate-fade-up">
               About Rackis for Barn
             </h1>
-            <p className="text-xl text-muted-foreground animate-fade-up delay-100 leading-relaxed">
-              We were all once new students in Uppsala, and quickly noticed how difficult it was to find second-hand items like bedding for our new rooms. At the same time, many students moving out were throwing away perfectly good items. Since then, we’ve been working every day to tackle both of these problems.
+            <p className="text-lg text-muted-foreground animate-fade-up delay-100 leading-relaxed">
+              We were all once new students in Uppsala, and quickly noticed how difficult it was to find second-hand items like bedding for our new rooms. At the same time, many students moving out were throwing away perfectly good items. Since then, we've been working every day to tackle both of these problems.
             </p>
           </div>
         </div>
       </section>
 
       {/* What We Are */}
-      <section className="section-padding">
+      <section className="py-8 md:py-12">
         <div className="container-narrow">
           <div className="max-w-none">
-            <span className="inline-block text-sm font-bold text-primary uppercase tracking-wider mb-4">Who we are</span>
-            <h2 className="font-display text-2xl md:text-4xl font-bold text-foreground mb-8">
+            <span className="inline-block text-sm font-bold text-primary uppercase tracking-wider mb-3">Who we are</span>
+            <h2 className="font-display text-xl md:text-3xl font-bold text-foreground mb-6">
               More than just a second-hand store
             </h2>
-            <div className="space-y-6 text-lg text-muted-foreground leading-relaxed">
+            <div className="space-y-4 text-base text-muted-foreground leading-relaxed">
               <p>
                 Rackis for Barn is a student-run non-profit organization designed specifically for students in Uppsala to exchange second-hand items during move-ins and move-outs. We believe in creating a sustainable cycle where useful items find new homes instead of being discarded.
               </p>
@@ -122,13 +122,13 @@ const About = () => {
       </section>
 
       {/* Name Meaning */}
-      <section className="section-padding bg-section-alt">
+      <section className="py-8 md:py-12 bg-section-alt">
         <div className="container-narrow text-center">
           <span className="inline-block text-sm font-bold text-accent uppercase tracking-wider mb-2">Our name</span>
-          <h2 className="font-display text-2xl md:text-4xl font-bold text-foreground mb-4">
+          <h2 className="font-display text-xl md:text-3xl font-bold text-foreground mb-3">
             What "Rackis for Barn" means
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+          <p className="text-base text-muted-foreground max-w-2xl mx-auto leading-relaxed">
             "Rackis" is short for <span className="font-semibold text-foreground">Rackarbergsgatan</span>, the student housing area where our journey began.
             "Barn" means <span className="font-semibold text-foreground">children</span> in Swedish, reflecting our mission to support children in need.
           </p>
@@ -136,54 +136,54 @@ const About = () => {
       </section>
 
       {/* Team */}
-      <section className="section-padding bg-section-warm">
+      <section className="py-8 md:py-12 bg-section-warm">
         <div className="container-narrow">
-          <div className="text-center mb-12">
-            <span className="inline-block text-sm font-bold text-primary uppercase tracking-wider mb-4">The people behind it</span>
-            <h2 className="font-display text-2xl md:text-4xl font-bold text-foreground mb-6">
+          <div className="text-center mb-8">
+            <span className="inline-block text-sm font-bold text-primary uppercase tracking-wider mb-3">The people behind it</span>
+            <h2 className="font-display text-xl md:text-3xl font-bold text-foreground mb-4">
               Our Team
             </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
+            <p className="text-base text-muted-foreground max-w-2xl mx-auto mb-6">
               We are a group of dedicated students in Uppsala who believe in sustainability, community, and making a difference.
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-3 gap-6 mb-6">
+          <div className="grid sm:grid-cols-3 gap-4 mb-4">
             {boardMembers.map((member) => (
               <div key={member.name} className="card-warm text-center">
                 <img
                   src={member.img}
                   alt={member.name}
-                  className="mx-auto w-32 h-32 object-cover rounded-full mb-4"
+                  className="mx-auto w-24 h-24 object-cover rounded-full mb-3"
                 />
-                <h3 className="text-lg font-bold text-foreground">{member.name}</h3>
+                <h3 className="text-base font-bold text-foreground">{member.name}</h3>
                 <p className="text-sm text-muted-foreground">{member.role}</p>
               </div>
             ))}
           </div>
 
-          <p className="text-center text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-center text-base text-muted-foreground max-w-2xl mx-auto">
             In addition to our board, many amazing volunteers contribute their time and effort to make Rackis for Barn possible.
           </p>
         </div>
       </section>
 
       {/* Values */}
-      <section className="section-padding">
+      <section className="py-8 md:py-12">
         <div className="container">
-          <div className="text-center mb-12">
-            <span className="inline-block text-sm font-bold text-accent uppercase tracking-wider mb-4">What drives us</span>
-            <h2 className="font-display text-2xl md:text-4xl font-bold text-foreground">
+          <div className="text-center mb-8">
+            <span className="inline-block text-sm font-bold text-accent uppercase tracking-wider mb-3">What drives us</span>
+            <h2 className="font-display text-xl md:text-3xl font-bold text-foreground">
               Our Values
             </h2>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {values.map((value, index) => (
               <div key={value.title} className="card-warm text-center" style={{ animationDelay: `${index * 50}ms` }}>
-                <div className="w-14 h-14 mx-auto rounded-xl bg-primary/10 flex items-center justify-center mb-4">
-                  <value.icon className="h-7 w-7 text-primary" />
+                <div className="w-12 h-12 mx-auto rounded-xl bg-primary/10 flex items-center justify-center mb-3">
+                  <value.icon className="h-6 w-6 text-primary" />
                 </div>
-                <h3 className="text-lg font-bold text-foreground mb-2">{value.title}</h3>
+                <h3 className="text-base font-bold text-foreground mb-2">{value.title}</h3>
                 <p className="text-sm text-muted-foreground">{value.description}</p>
               </div>
             ))}
