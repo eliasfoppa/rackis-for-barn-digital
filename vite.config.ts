@@ -7,7 +7,7 @@ import path from "path";
 const BASE_PATH = process.env.VITE_APP_BASE || '/';
 
 export default defineConfig({
-  // 🔑 Use the dynamic BASE_PATH here 🔑
+  // Use the dynamic BASE_PATH here
   base: BASE_PATH, 
   plugins: [react()],
   resolve: {

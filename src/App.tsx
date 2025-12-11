@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ScrollToTop } from "@/components/ScrollToTop";
+import GitHubRedirectHandler from "@/components/GitHubRedirectHandler";
 import Index from "./pages/Index";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
@@ -24,7 +25,8 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter basename={BASENAME}>
-        <ScrollToTop />  {/* THIS MAKES EVERY PAGE LOAD AT THE TOP */}
+        <GitHubRedirectHandler /> 
+        <ScrollToTop />  
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/about" element={<About />} />
