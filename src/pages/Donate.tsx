@@ -136,6 +136,8 @@ export function Donate() {
                         </div>
                     </div>
 
+                    <br />
+
                     <h2 className="font-display text-2xl md:text-4xl font-bold text-foreground mb-8">
                         Donation Rules
                     </h2>
