@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Redirecting...</title>
+    <base href="/rackis-for-barn-digital/">
+    <script>
+      // 1. Save the intended path. This is what the React component reads.
+      sessionStorage.setItem('redirectPath', window.location.pathname);
+      
+      // 2. Redirect the browser to load the main SPA entry point (index.html).
+      window.location.replace('/rackis-for-barn-digital/'); 
+    </script>
+  </head>
+  <body>
+    If you are not redirected automatically, please wait, or click this 
+    <a href='/rackis-for-barn-digital/'>link to the homepage</a>.
+  </body>
+</html>
