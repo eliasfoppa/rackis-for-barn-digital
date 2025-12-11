@@ -1,73 +1,66 @@
-# Welcome to your Lovable project
+# Rackis för Barn
 
-## Project info
+A second-hand store website for students in Uppsala, where donated items get a second life and all profits support children's charities.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## About
 
-## How can I edit this code?
+Rackis för Barn is a student-run initiative that:
+- Accepts donations of household items, bikes, and more from students moving out
+- Sells quality second-hand items at affordable, student-friendly prices
+- Donates 100% of profits to **Barncancerfonden** and **RBU**
 
-There are several ways of editing your application.
+**Location:** Rackarbergsgatan 32, Uppsala
 
-**Use Lovable**
+## Tech Stack
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+- **React** with TypeScript
+- **Vite** for build tooling
+- **Tailwind CSS** for styling
+- **shadcn/ui** for UI components
+- **Lucide React** for icons
 
-Changes made via Lovable will be committed automatically to this repo.
+## Getting Started
 
-**Use your preferred IDE**
+### Prerequisites
+- Node.js (install via [nvm](https://github.com/nvm-sh/nvm))
+- npm
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+### Installation
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
+# Clone the repository
 git clone <YOUR_GIT_URL>
 
-# Step 2: Navigate to the project directory.
+# Navigate to project directory
 cd <YOUR_PROJECT_NAME>
 
-# Step 3: Install the necessary dependencies.
-npm i
+# Install dependencies
+npm install
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Start development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+## Project Structure
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+```
+src/
+├── components/     # React components
+├── pages/          # Page components
+├── lib/            # Utility functions
+└── styles/         # Global styles
+```
 
-**Use GitHub Codespaces**
+## Connect With Us
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+- Instagram: [@rackis_for_barn](https://instagram.com/rackis_for_barn)
+- Website: Visit us to browse our current inventory
 
-## What technologies are used for this project?
+## Charities We Support
 
-This project is built with:
+- **Barncancerfonden** - Supporting children with cancer and their families
+- **RBU** - Helping children and young people with mobility impairments
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+---
 
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Made with 💛 by students, for students

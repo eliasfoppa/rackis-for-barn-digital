@@ -128,40 +128,80 @@ export function HowItWorksSection() {
       icon: ShoppingBag,
       title: "Shop",
       description: "Moving in? We've got you covered for your first days in Uppsala (and beyond).",
-      color: "bg-green-100" // background stays light
+      color: "bg-green-100",
+      action: { type: "link", to: "/buy" }
     },
     {
       icon: Heart,
       title: "Support",
       description: "All profits from your purchase go directly to Barncancerfonden and RBU, supporting children in need.",
-      color: "bg-warm/10 text-warm"
+      color: "bg-warm/10 text-warm",
+      action: { type: "scroll", target: "charities" }
     },
     {
       icon: Gift,
       title: "Donate",
-      description: "Moving out? Do not throw away useful items. Give them to us! We accept duvets, curtains, bikes, kitchen gear, and more.",
-      color: "bg-primary/10 text-primary"
+      description: "Moving out? Don’t throw away useful items. Give them to us! We accept duvets, curtains, bikes, kitchen gear, and more.",
+      color: "bg-primary/10 text-primary",
+      action: { type: "link", to: "/donate" }
     },
   ];
+
+  // Smooth scroll handler
+  const scrollToSection = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   return (
     <section className="section-padding relative overflow-hidden">
       <div className="container relative z-10">
         <div className="text-center max-w-2xl mx-auto mb-16">
-          <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground mb-6">How it works</h2>
-          <p className="text-lg text-muted-foreground">A simple cycle that helps students, reduces waste, and supports a great cause.</p>
+          <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground mb-6">
+            How it works
+          </h2>
+          <p className="text-lg text-muted-foreground">
+            A simple cycle that helps students, reduces waste, and supports a great cause.
+          </p>
         </div>
+
         <div className="grid md:grid-cols-3 gap-8 lg:gap-12">
           {steps.map((step, index) => (
-            <div key={step.title} className="card-warm text-center group">
-              <div className={`w-16 h-16 rounded-2xl ${step.color} flex items-center justify-center mx-auto mb-6 transform group-hover:scale-110 transition-transform`}>
-                <step.icon
-                  className={`h-8 w-8 ${step.title === "Shop" ? "text-green-600" : ""}`}
-                />
+            <div key={step.title} className="card-warm text-center group flex flex-col">
+              <div
+                className={`w-16 h-16 rounded-2xl ${step.color} flex items-center justify-center mx-auto mb-6 transform group-hover:scale-110 transition-transform`}
+              >
+                <step.icon className={`h-8 w-8 ${step.title === "Shop" ? "text-green-600" : ""}`} />
               </div>
-              <span className="inline-block text-sm font-bold text-muted-foreground/60 mb-2">Step {index + 1}</span>
+
+              <span className="inline-block text-sm font-bold text-muted-foreground/60 mb-2">
+                Step {index + 1}
+              </span>
+
               <h3 className="text-2xl font-bold text-foreground mb-3">{step.title}</h3>
-              <p className="text-muted-foreground leading-relaxed">{step.description}</p>
+
+              <p className="text-muted-foreground leading-relaxed mb-6">
+                {step.description}
+              </p>
+
+              {/* BUTTON */}
+              {step.action.type === "link" ? (
+                <Link
+                  to={step.action.to}
+                  className="mt-auto inline-block px-5 py-2 rounded-xl bg-primary/10 text-primary font-semibold hover:bg-primary/20 transition"
+                >
+                  Learn more →
+                </Link>
+              ) : (
+                <button
+                  onClick={() => scrollToSection(step.action.target)}
+                  className="mt-auto inline-block px-5 py-2 rounded-xl bg-primary/10 text-primary font-semibold hover:bg-primary/20 transition"
+                >
+                  Learn more →
+                </button>
+              )}
             </div>
           ))}
         </div>
@@ -169,6 +209,7 @@ export function HowItWorksSection() {
     </section>
   );
 }
+
 
 export function WhyChooseUsSection() {
   const benefits = [
@@ -205,7 +246,7 @@ export function WhyChooseUsSection() {
 
 export function AboutCharitiesSection() {
   return (
-    <section className="section-padding">
+    <section id="charities" className="section-padding">
       <div className="container">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
