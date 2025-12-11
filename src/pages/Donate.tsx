@@ -189,10 +189,10 @@ export function Donate() {
                                 Household & Bedding
                             </h3>
                             <ul className="grid md:grid-cols-2 gap-y-3 gap-x-6 text-muted-foreground text-lg leading-relaxed">
-                                <li>Duvets, pillows and mattress toppers</li>
-                                <li>Bedding sets, sheets and blankets</li>
-                                <li>Curtains and simple window coverings</li>
-                                <li>Throws and small household textiles</li>
+                                <li>Duvets and pillows</li>
+                                <li>Bed sheets and blankets</li>
+                                <li>Curtains</li>
+                                <li>Small household textiles</li>
                             </ul>
                         </div>
 
@@ -202,7 +202,7 @@ export function Donate() {
                                 Kitchen Equipment
                             </h3>
                             <ul className="grid md:grid-cols-2 gap-y-3 gap-x-6 text-muted-foreground text-lg leading-relaxed">
-                                <li>Pots, pans and basic cookware</li>
+                                <li>Pots and pans</li>
                                 <li>Cutlery and cooking utensils</li>
                                 <li>Plates, bowls, cups and glasses</li>
                                 <li>Food storage containers</li>
@@ -228,9 +228,9 @@ export function Donate() {
                                 And Many Other Items Such As...
                             </h3>
                             <ul className="grid md:grid-cols-2 gap-y-3 gap-x-6 text-muted-foreground text-lg leading-relaxed">
-                                <li>Small shelves and storage units</li>
-                                <li>Mirrors and simple decoration</li>
-                                <li>Laundry racks, shoe racks and hangers</li>
+                                <li>Small shelves and storage containers</li>
+                                <li>Mirrors and decoration</li>
+                                <li>Laundry racks and hangers</li>
                                 <li>Bicycles in working condition</li>
                             </ul>
                         </div>

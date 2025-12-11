@@ -76,7 +76,7 @@ export function Buy() {
               Buy Items
             </h1>
             <p className="text-xl text-muted-foreground animate-fade-up delay-100 leading-relaxed">
-              At the beginning of each semester, we host a large sale for students moving in. Browse a variety of second-hand items at student-friendly prices!
+              At the beginning of each semester, we host a large sale for students moving in. Stop by for a variety of second-hand items at student-friendly prices!
             </p>
           </div>
         </div>
@@ -86,7 +86,7 @@ export function Buy() {
       <section className="section-padding relative z-10">
         <div className="container max-w-3xl mx-auto text-center space-y-6">
           <p className="text-lg text-muted-foreground animate-fade-up delay-200">
-            The sale happens in the basement storage units at <span className="font-semibold">Rackarbergsgatan 32</span>. Bedding will also be sold in <span className="font-semibold">Flogsta</span> during move-in days.
+            The sale happens in the basement storage units at <span className="font-semibold">Rackarbergsgatan 32</span>. Only bedding will be sold in <span className="font-semibold">Flogsta</span> during the move-in days.
           </p>
 
           <p className="text-lg text-muted-foreground animate-fade-up delay-300">
@@ -112,15 +112,16 @@ export function Buy() {
         </div>
       </section>
 
-      {/* Examples of What We Sell */}
+      {/* What You Can Donate */}
       <section className="section-padding bg-section-alt">
         <div className="container max-w-4xl mx-auto">
           <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground text-center mb-6">
-            Examples of What We Sell
+            What You Can Donate
           </h2>
 
           <p className="text-lg text-muted-foreground text-center max-w-2xl mx-auto mb-12 leading-relaxed">
-            These are practical, student-friendly items that help new students settle into their homes. Categories below highlight the most popular and useful items.
+            We accept practical, good-quality items that help students settle into their new homes.
+            The categories below show what is most needed and most useful.
           </p>
 
           <div className="space-y-8">
@@ -131,10 +132,10 @@ export function Buy() {
                 Household & Bedding
               </h3>
               <ul className="grid md:grid-cols-2 gap-y-3 gap-x-6 text-muted-foreground text-lg leading-relaxed">
-                <li>Duvets, pillows and mattress toppers</li>
-                <li>Bedding sets, sheets and blankets</li>
-                <li>Curtains and simple window coverings</li>
-                <li>Throws and small household textiles</li>
+                <li>Duvets and pillows</li>
+                <li>Bed sheets and blankets</li>
+                <li>Curtains</li>
+                <li>Small household textiles</li>
               </ul>
             </div>
 
@@ -144,7 +145,7 @@ export function Buy() {
                 Kitchen Equipment
               </h3>
               <ul className="grid md:grid-cols-2 gap-y-3 gap-x-6 text-muted-foreground text-lg leading-relaxed">
-                <li>Pots, pans and basic cookware</li>
+                <li>Pots and pans</li>
                 <li>Cutlery and cooking utensils</li>
                 <li>Plates, bowls, cups and glasses</li>
                 <li>Food storage containers</li>
@@ -170,9 +171,9 @@ export function Buy() {
                 And Many Other Items Such As...
               </h3>
               <ul className="grid md:grid-cols-2 gap-y-3 gap-x-6 text-muted-foreground text-lg leading-relaxed">
-                <li>Small shelves and storage units</li>
-                <li>Mirrors and simple decoration</li>
-                <li>Laundry racks, shoe racks and hangers</li>
+                <li>Small shelves and storage containers</li>
+                <li>Mirrors and decoration</li>
+                <li>Laundry racks and hangers</li>
                 <li>Bicycles in working condition</li>
               </ul>
             </div>
@@ -180,7 +181,7 @@ export function Buy() {
           </div>
 
           <p className="text-lg text-muted-foreground text-center mt-12 leading-relaxed">
-            If you're unsure whether an item is available, feel free to contact us on Instagram for guidance.
+            Stop by during our sale days to see the full range of items available for purchase!
           </p>
         </div>
       </section>
