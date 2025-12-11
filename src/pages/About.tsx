@@ -56,10 +56,11 @@ const About = () => {
   ];
 
   const boardMembers = [
-    { name: "Jacob Lehmann", role: "President & Founder", img: jacobImg },
+    { name: "Jacob Lehmann", role: "President & Founder", /* img: jacobImg */ img: "https://via.placeholder.com/128?text=Jacob" }, // TODO: replace with jacobImg
     { name: "Elias Foppa", role: "Vice President & Treasurer", img: eliasImg },
-    { name: "Lea Poewe", role: "Secretary & Head of Marketing", img: leaImg },
+    { name: "Lea Poewe", role: "Secretary & Head of Marketing", /* img: leaImg */ img: "https://via.placeholder.com/128?text=Lea" }, // TODO: replace with leaImg
   ];
+
 
   return (
     <Layout>
@@ -110,7 +111,7 @@ const About = () => {
                 Rackis för Barn is a student-run non-profit organization designed specifically for students in Uppsala to exchange second-hand items during move-ins and move-outs. We believe in creating a sustainable cycle where useful items find new homes instead of being discarded.
               </p>
               <p>
-                When students move out, instead of throwing away items that are still useful, they donate them to us. We collect many items like duvets, curtains, bikes, kitchen equipment, lamps, small furniture, decoration, and much more. Then, students moving into new places can browse our collection and find everything they need at fair, student-friendly prices.
+                When students move out, instead of throwing away items that are still useful, they donate them to us. We collect many items like bedding, curtains, bikes, kitchen equipment, lamps, small furniture, decoration, and much more. Then, students moving into new places can browse our collection and find everything they need at fair, student-friendly prices.
               </p>
               <p className="text-foreground font-semibold">
                 All profits from sales go directly to Barncancerfonden and RBU, supporting children and their families.
