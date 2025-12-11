@@ -122,6 +122,9 @@ export function HeroSection() {
   );
 }
 
+// Keep other sections (HeroSection, CTASection, etc.) as they were originally, 
+// since we know they are not crashing the app.
+
 export function HowItWorksSection() {
   const steps = [
     {

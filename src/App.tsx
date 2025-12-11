@@ -20,36 +20,19 @@ const queryClient = new QueryClient();
 const BASENAME = '';
 
 const App = () => (
-  // START ISOLATION: Remove external providers one by one if necessary
-  
-  // Keep the most necessary provider, but remove others if this still fails.
   <QueryClientProvider client={queryClient}>
-    {/* Temporarily remove TooltipProvider if the red test box does not show up */}
-    <TooltipProvider> 
+    <TooltipProvider>
       <Toaster />
       <Sonner />
-      
       <BrowserRouter basename={BASENAME}>
-        {/* CRITICAL STEP: TEMPORARILY COMMENT OUT THE CUSTOM HANDLER. 
-           This is the most likely culprit for an application-wide crash. */}
+        {/* Make sure the GitHubRedirectHandler is still commented out if it was causing issues */}
         {/* <GitHubRedirectHandler /> */}
-        
-        <ScrollToTop />  
-        
+        <ScrollToTop />
+
         <Routes>
-          {/* CRITICAL TEST: Replace <Index /> with guaranteed visible HTML */}
-          <Route path="/" element={
-            <div style={{ 
-              padding: '50px', 
-              backgroundColor: 'red', 
-              color: 'white', 
-              fontSize: '24px',
-              textAlign: 'center'
-            }}>
-                DEPLOYMENT FIXED! IF YOU SEE THIS, THE ISSUE IS IN Index.tsx
-            </div>
-          } />
-          
+          {/* CRITICAL: Must render the Index component to test it */}
+          <Route path="/" element={<Index />} />
+          <Route path="/about" element={<About />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/impressum" element={<Impressum />} />
@@ -62,7 +45,6 @@ const App = () => (
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
-  // END ISOLATION
 );
 
 export default App;

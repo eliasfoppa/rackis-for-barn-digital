@@ -1,7 +1,8 @@
+// pages/Index.tsx - Restored to original structure
 import { Layout } from "@/components/layout/Layout";
 import { 
   HeroSection, 
-  HowItWorksSection, 
+  HowItWorksSection, // Must be imported for the fix to run
   WhyChooseUsSection, 
   AboutCharitiesSection,
   CTASection 
