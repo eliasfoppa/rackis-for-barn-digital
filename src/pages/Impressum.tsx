@@ -49,6 +49,10 @@ const Impressum = () => {
               <p>
                 Rackis för Barn is a student-run nonprofit organization registered in Sweden. All proceeds go to Barncancerfonden and Riksförbundet för Rörelsehindrade Barn och Ungdomar (RBU).
               </p>
+              <br />
+              <p>
+                Organisationsnummer: 802554-2773
+              </p>
             </section>
           </div>
         </div>

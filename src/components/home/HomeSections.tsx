@@ -225,7 +225,7 @@ export function WhyChooseUsSection() {
     <section className="section-padding bg-section-warm">
       <div className="container">
         <div className="text-center max-w-2xl mx-auto mb-16">
-          <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground mb-6">Why makes Rackis för Barn unique?</h2>
+          <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground mb-6">What makes Rackis för Barn unique?</h2>
           <p className="text-lg text-muted-foreground">More than just a second-hand store. We are building a sustainable student community.</p>
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
