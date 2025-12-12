@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import eliasImg from "@/assets/elias.png";
 import jacobImg from "@/assets/jacob.png";
 import leaImg from "@/assets/lea.png";
+import lenkaImg from "@/assets/lenka.png";
+import lukasImg from "@/assets/lukas.png";
 
 // Generate hearts on a jittered grid like homepage
 function generateJitteredHearts(
@@ -11,14 +13,14 @@ function generateJitteredHearts(
   cols: number,
   width = 100,
   height = 100,
-  sizeRange: [number, number] = [16, 30] // pixel sizes like homepage
+  sizeRange: [number, number] = [16, 30]
 ) {
   const hearts: { x: number; y: number; size: number; delay: number }[] = [];
 
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < cols; c++) {
-      const baseX = (c + 0.5) / cols * width;
-      const baseY = (r + 0.5) / rows * height;
+      const baseX = ((c + 0.5) / cols) * width;
+      const baseY = ((r + 0.5) / rows) * height;
       const jitterX = (Math.random() - 0.5) * (width / cols);
       const jitterY = (Math.random() - 0.5) * (height / rows);
       const x = baseX + jitterX;
@@ -33,7 +35,8 @@ function generateJitteredHearts(
 }
 
 const About = () => {
-  const [hearts, setHearts] = useState<{ x: number; y: number; size: number; delay: number }[]>([]);
+  const [hearts, setHearts] =
+    useState<{ x: number; y: number; size: number; delay: number }[]>([]);
 
   useEffect(() => {
     const updateHearts = () => {
@@ -49,24 +52,39 @@ const About = () => {
   }, []);
 
   const values = [
-    { icon: Recycle, title: "Sustainability", description: "We believe in reducing waste and giving items a second chance at life." },
-    { icon: Heart, title: "Compassion", description: "Every action we take is driven by our desire to help children in need." },
-    { icon: Users, title: "Community", description: "Built by students, for students. We understand the Uppsala student life." },
-    { icon: Award, title: "Transparency", description: "100% of our profits go directly to Barncancerfonden and RBU." },
+    {
+      icon: Recycle,
+      title: "Sustainability",
+      description:
+        "We believe in reducing waste and giving items a second chance at life.",
+    },
+    {
+      icon: Heart,
+      title: "Compassion",
+      description: "Every action we take is driven by our desire to help children in need.",
+    },
+    {
+      icon: Users,
+      title: "Community",
+      description: "Built by students, for students. We understand the Uppsala student life.",
+    },
+    {
+      icon: Award,
+      title: "Transparency",
+      description: "100% of our profits go directly to Barncancerfonden and RBU.",
+    },
   ];
 
   const boardMembers = [
     { name: "Jacob Lehmann", role: "President & Founder", img: jacobImg },
     { name: "Elias Foppa", role: "Vice President & Treasurer", img: eliasImg },
-    { name: "Lea Poewe", role: "Secretary & Head of Marketing", /* img: leaImg */ img: "https://via.placeholder.com/128?text=Lea" }, // TODO: replace with leaImg
+    { name: "Lea Poewe", role: "Secretary & Head of Marketing", img: leaImg },
   ];
-
 
   return (
     <Layout>
       {/* Hero */}
       <section className="bg-hero-gradient py-8 md:py-12 relative overflow-hidden min-h-[30vh] flex flex-col items-center justify-center">
-        {/* Background blobs */}
         <div className="absolute top-10 right-[10%] w-32 h-32 bg-primary/10 blob animate-float" />
         <div className="absolute bottom-5 left-[5%] w-24 h-24 bg-warm/10 blob animate-wiggle" />
 
@@ -92,7 +110,9 @@ const About = () => {
               About Rackis for Barn
             </h1>
             <p className="text-lg text-muted-foreground animate-fade-up delay-100 leading-relaxed">
-              As new students in Uppsala, we struggled to find second-hand essentials, while others moving out were throwing away perfectly good items. We’ve been working ever since to tackle these problems.
+              As new students in Uppsala, we struggled to find second-hand essentials,
+              while others moving out were throwing away perfectly good items.
+              We’ve been working ever since to tackle these problems.
             </p>
           </div>
         </div>
@@ -102,19 +122,29 @@ const About = () => {
       <section className="py-8 md:py-12">
         <div className="container-narrow">
           <div className="max-w-none">
-            <span className="inline-block text-sm font-bold text-primary uppercase tracking-wider mb-3">Who we are</span>
+            <span className="inline-block text-sm font-bold text-primary uppercase tracking-wider mb-3">
+              Who we are
+            </span>
             <h2 className="font-display text-xl md:text-3xl font-bold text-foreground mb-6">
               More than just a second-hand store
             </h2>
             <div className="space-y-4 text-base text-muted-foreground leading-relaxed">
               <p>
-                Rackis for Barn is a student-run non-profit organization designed specifically for students in Uppsala to exchange second-hand items during move-ins and move-outs. We believe in creating a sustainable cycle where useful items find new homes instead of being discarded.
+                Rackis for Barn is a student-run non-profit organization designed
+                specifically for students in Uppsala to exchange second-hand items
+                during move-ins and move-outs. We believe in creating a sustainable
+                cycle where useful items find new homes instead of being discarded.
               </p>
               <p>
-                When students move out, instead of throwing away items that are still useful, they donate them to us. We collect many items like bedding, curtains, bikes, kitchen equipment, lamps, small furniture, decoration, and much more. Then, students moving into new places can browse our collection and find everything they need at fair, student-friendly prices.
+                When students move out, instead of throwing away items that are still
+                useful, they donate them to us. We collect many items like bedding,
+                curtains, bikes, kitchen equipment, lamps, small furniture, decoration,
+                and much more. Then, students moving into new places can browse our
+                collection and find everything they need at fair, student-friendly prices.
               </p>
               <p className="text-foreground font-semibold">
-                All profits from sales go directly to Barncancerfonden and RBU, supporting children and their families.
+                All profits from sales go directly to Barncancerfonden and RBU,
+                supporting children and their families.
               </p>
             </div>
           </div>
@@ -124,13 +154,19 @@ const About = () => {
       {/* Name Meaning */}
       <section className="py-8 md:py-12 bg-section-alt">
         <div className="container-narrow text-center">
-          <span className="inline-block text-sm font-bold text-accent uppercase tracking-wider mb-2">Our name</span>
+          <span className="inline-block text-sm font-bold text-accent uppercase tracking-wider mb-2">
+            Our name
+          </span>
           <h2 className="font-display text-xl md:text-3xl font-bold text-foreground mb-3">
             What "Rackis for Barn" means
           </h2>
           <p className="text-base text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            "Rackis" is short for <span className="font-semibold text-foreground">Rackarbergsgatan</span>, the student housing area where our journey began.
-            "Barn" means <span className="font-semibold text-foreground">children</span> in Swedish, reflecting our mission to support children in need.
+            "Rackis" is short for{" "}
+            <span className="font-semibold text-foreground">Rackarbergsgatan</span>,
+            the student housing area where our journey began.
+            "Barn" means{" "}
+            <span className="font-semibold text-foreground">children</span> in Swedish,
+            reflecting our mission to support children in need.
           </p>
         </div>
       </section>
@@ -139,15 +175,19 @@ const About = () => {
       <section className="py-8 md:py-12 bg-section-warm">
         <div className="container-narrow">
           <div className="text-center mb-8">
-            <span className="inline-block text-sm font-bold text-primary uppercase tracking-wider mb-3">The people behind it</span>
+            <span className="inline-block text-sm font-bold text-primary uppercase tracking-wider mb-3">
+              The people behind it
+            </span>
             <h2 className="font-display text-xl md:text-3xl font-bold text-foreground mb-4">
               Our Team
             </h2>
             <p className="text-base text-muted-foreground max-w-2xl mx-auto mb-6">
-              We are a group of dedicated students in Uppsala who believe in sustainability, community, and making a difference.
+              We are a group of dedicated students in Uppsala who believe in
+              sustainability, community, and making a difference.
             </p>
           </div>
 
+          {/* First row of 3 board members */}
           <div className="grid sm:grid-cols-3 gap-4 mb-4">
             {boardMembers.map((member) => (
               <div key={member.name} className="card-warm text-center">
@@ -162,8 +202,32 @@ const About = () => {
             ))}
           </div>
 
+          {/* Second row: new organization members (centered, same card size) */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 justify-center gap-4 mb-4 max-w-xl mx-auto">
+            <div className="card-warm text-center">
+              <img
+                src={lenkaImg}
+                alt="Lenka Benková"
+                className="mx-auto w-24 h-24 object-cover rounded-full mb-3"
+              />
+              <h3 className="text-base font-bold text-foreground">Lenka Benková</h3>
+              <p className="text-sm text-muted-foreground">Organization Member</p>
+            </div>
+
+            <div className="card-warm text-center">
+              <img
+                src={lukasImg}
+                alt="Lukas Idman"
+                className="mx-auto w-24 h-24 object-cover rounded-full mb-3"
+              />
+              <h3 className="text-base font-bold text-foreground">Lukas Idman</h3>
+              <p className="text-sm text-muted-foreground">Organization Member</p>
+            </div>
+          </div>
+
           <p className="text-center text-base text-muted-foreground max-w-2xl mx-auto">
-            In addition to our board, many amazing volunteers contribute their time and effort to make Rackis for Barn possible.
+            In addition to our board, many amazing volunteers contribute their time
+            and effort to make Rackis for Barn possible.
           </p>
         </div>
       </section>
@@ -172,18 +236,26 @@ const About = () => {
       <section className="py-8 md:py-12">
         <div className="container">
           <div className="text-center mb-8">
-            <span className="inline-block text-sm font-bold text-accent uppercase tracking-wider mb-3">What drives us</span>
+            <span className="inline-block text-sm font-bold text-accent uppercase tracking-wider mb-3">
+              What drives us
+            </span>
             <h2 className="font-display text-xl md:text-3xl font-bold text-foreground">
               Our Values
             </h2>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {values.map((value, index) => (
-              <div key={value.title} className="card-warm text-center" style={{ animationDelay: `${index * 50}ms` }}>
+              <div
+                key={value.title}
+                className="card-warm text-center"
+                style={{ animationDelay: `${index * 50}ms` }}
+              >
                 <div className="w-12 h-12 mx-auto rounded-xl bg-primary/10 flex items-center justify-center mb-3">
                   <value.icon className="h-6 w-6 text-primary" />
                 </div>
-                <h3 className="text-base font-bold text-foreground mb-2">{value.title}</h3>
+                <h3 className="text-base font-bold text-foreground mb-2">
+                  {value.title}
+                </h3>
                 <p className="text-sm text-muted-foreground">{value.description}</p>
               </div>
             ))}
