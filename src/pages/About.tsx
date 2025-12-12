@@ -211,7 +211,7 @@ const About = () => {
                 className="mx-auto w-24 h-24 object-cover rounded-full mb-3"
               />
               <h3 className="text-base font-bold text-foreground">Lenka Benková</h3>
-              <p className="text-sm text-muted-foreground">Organization Member</p>
+              <p className="text-sm text-muted-foreground">Founding Member</p>
             </div>
 
             <div className="card-warm text-center">
@@ -221,7 +221,7 @@ const About = () => {
                 className="mx-auto w-24 h-24 object-cover rounded-full mb-3"
               />
               <h3 className="text-base font-bold text-foreground">Lukas Idman</h3>
-              <p className="text-sm text-muted-foreground">Organization Member</p>
+              <p className="text-sm text-muted-foreground">Founding Member</p>
             </div>
           </div>
 
