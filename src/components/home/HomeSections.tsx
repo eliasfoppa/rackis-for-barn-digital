@@ -146,7 +146,7 @@ export function HowItWorksSection() {
     {
       icon: Gift,
       title: "Donate",
-      description: "Moving out? Don’t throw away useful items. Give them to us! We accept duvets, curtains, bikes, kitchen gear, and more.",
+      description: "Moving out? Don’t throw away useful items. Give them to us! We accept bedding, curtains, bikes, kitchen gear, and more.",
       color: "bg-primary/10 text-primary",
       action: { type: "link", to: "/donate" }
     },
@@ -219,9 +219,9 @@ export function HowItWorksSection() {
 export function WhyChooseUsSection() {
   const benefits = [
     { icon: Recycle, title: "Sustainable", description: "Reduce waste by giving items a second life." },
-    { icon: ShoppingBag, title: "Affordable", description: "Quality items at student-friendly prices." },
     { icon: Heart, title: "Charitable", description: "Every purchase supports children in need." },
     { icon: Home, title: "Convenient", description: "Directly buy from student housing locations." },
+    { icon: ShoppingBag, title: "Affordable", description: "Quality items at student-friendly prices." }, 
     { icon: Users, title: "Community", description: "Run by students, for students." },
     { icon: Bike, title: "Variety", description: "From bedsheets to bikes, we have it all." },
   ];
@@ -231,7 +231,7 @@ export function WhyChooseUsSection() {
       <div className="container">
         <div className="text-center max-w-2xl mx-auto mb-16">
           <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground mb-6">What makes Rackis for Barn unique?</h2>
-          <p className="text-lg text-muted-foreground">More than just a second-hand store. We are building a sustainable student community.</p>
+          <p className="text-lg text-muted-foreground">More than just a second-hand store.</p>
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {benefits.map((benefit) => (

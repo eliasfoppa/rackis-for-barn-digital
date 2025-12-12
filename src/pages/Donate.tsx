@@ -36,9 +36,9 @@ export function Donate() {
     useEffect(() => {
         const updateHearts = () => {
             if (window.innerWidth < 768) {
-                setHearts(generateJitteredHearts(3, 5, 100, 100, [12, 20]));
+                setHearts(generateJitteredHearts(2, 4, 100, 100, [12, 20]));
             } else {
-                setHearts(generateJitteredHearts(4, 6, 100, 100, [16, 30]));
+                setHearts(generateJitteredHearts(3, 5, 100, 100, [16, 30]));
             }
         };
         updateHearts();
