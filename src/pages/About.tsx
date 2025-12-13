@@ -132,15 +132,17 @@ const About = () => {
               <p>
                 Rackis for Barn is a student-run non-profit organization designed
                 specifically for students in Uppsala to exchange second-hand items
-                during move-ins and move-outs. We believe in creating a sustainable
-                cycle where useful items find new homes instead of being discarded.
+                during move-ins and move-outs. What makes us unique is that we collect
+                and sell second-hand items directly at student housing locations,
+                making settling into Uppsala more convenient and sustainable.
+
               </p>
               <p>
-                When students move out, instead of throwing away items that are still
-                useful, they donate them to us. We collect many items like bedding,
+                When students move out, instead of throwing away items 
+                they donate them to us. We collect many items like bedding,
                 curtains, bikes, kitchen equipment, lamps, small furniture, decoration,
-                and much more. Then, students moving into new places can browse our
-                collection and find everything they need at fair, student-friendly prices.
+                and much more. Then, students moving into new places can 
+                find everything they need at fair prices.
               </p>
               <p className="text-foreground font-semibold">
                 All profits from sales go directly to Barncancerfonden and RBU,
