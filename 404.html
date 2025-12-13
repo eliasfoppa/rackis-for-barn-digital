@@ -5,18 +5,19 @@
     <title>Redirecting...</title>
     <script>
       (function() {
-        // 1. Save the requested path (e.g., /about)
+        // Save the requested path (e.g., /about)
         sessionStorage.setItem('gh-pages-path', location.pathname);
 
-        // 2. Save the current scroll position before redirecting
-        sessionStorage.setItem('gh-pages-scroll-y', window.scrollY);
-
-        // 3. Redirect to the root of the custom domain (/)
-        window.location.replace('/');
+        // Redirect to the root of the custom domain (https://www.rackisforbarn.com/)
+        // The router will then use the path saved in sessionStorage.
+        window.location.replace(
+          location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') + '/'
+        );
       })();
     </script>
 </head>
 <body>
-    If you are not redirected automatically, please wait.
+    If you are not redirected automatically, please wait, or click this 
+    <a href='/'>link to the homepage</a>.
 </body>
 </html>
