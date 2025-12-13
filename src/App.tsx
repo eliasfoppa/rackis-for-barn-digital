@@ -2,8 +2,9 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { ScrollToTop } from "@/components/ScrollToTop";
+
 import Index from "./pages/Index";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
@@ -16,33 +17,25 @@ import Donate from "./pages/Donate";
 
 const queryClient = new QueryClient();
 
-// Keep BASENAME fixed to the root path
-const BASENAME = '';
-
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter basename={BASENAME}>
-        {/* Make sure the GitHubRedirectHandler is still commented out if it was causing issues */}
-        {/* <GitHubRedirectHandler /> */}
-        <ScrollToTop />
 
-        <Routes>
-          {/* CRITICAL: Must render the Index component to test it */}
-          <Route path="/" element={<Index />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/impressum" element={<Impressum />} />
-          <Route path="/privacy" element={<Privacy />} />
-          <Route path="/terms" element={<Terms />} />
-          <Route path="/buy" element={<Buy />} />
-          <Route path="/donate" element={<Donate />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+      <ScrollToTop />
+
+      <Routes>
+        <Route path="/" element={<Index />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/impressum" element={<Impressum />} />
+        <Route path="/privacy" element={<Privacy />} />
+        <Route path="/terms" element={<Terms />} />
+        <Route path="/buy" element={<Buy />} />
+        <Route path="/donate" element={<Donate />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
     </TooltipProvider>
   </QueryClientProvider>
 );
