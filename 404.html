@@ -1,16 +1,24 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>Redirecting...</title>
-    <script>
-      // 1. Save the requested path (e.g., /about) to session storage
+
+<head>
+  <meta charset="utf-8">
+  <title>Redirecting...</title>
+  <script>
+    (function () {
+      // Save the requested path (e.g., /about)
       sessionStorage.setItem('gh-pages-path', location.pathname);
 
-      // 2. Redirect to the root of the site to load the React app
+      // NEW: Save the current scroll position before redirecting
+      sessionStorage.setItem('gh-pages-scroll-y', window.scrollY);
+
+      // Redirect to the root of the custom domain
       window.location.replace('/');
-    </script>
-  </head>
-  <body>
-  </body>
+    })();
+  </script>
+</head>
+
+<body>
+</body>
+
 </html>
