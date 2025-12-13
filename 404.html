@@ -1,23 +1,16 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <meta charset="utf-8">
     <title>Redirecting...</title>
     <script>
-      (function() {
-        // Save the requested path (e.g., /about)
-        sessionStorage.setItem('gh-pages-path', location.pathname);
+      // 1. Save the requested path (e.g., /about) to session storage
+      sessionStorage.setItem('gh-pages-path', location.pathname);
 
-        // Redirect to the root of the custom domain (https://www.rackisforbarn.com/)
-        // The router will then use the path saved in sessionStorage.
-        window.location.replace(
-          location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') + '/'
-        );
-      })();
+      // 2. Redirect to the root of the site to load the React app
+      window.location.replace('/');
     </script>
-</head>
-<body>
-    If you are not redirected automatically, please wait, or click this 
-    <a href='/'>link to the homepage</a>.
-</body>
+  </head>
+  <body>
+  </body>
 </html>
