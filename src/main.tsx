@@ -1,9 +1,9 @@
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
-import App from "./App.tsx";
+import App from "./App";
 import "./index.css";
 
-// Restore route after GitHub Pages refresh
+// Restore route after GH Pages redirect
 const savedPath = sessionStorage.getItem("gh-pages-path");
 if (savedPath) {
   sessionStorage.removeItem("gh-pages-path");
