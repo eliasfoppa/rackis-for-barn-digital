@@ -92,7 +92,7 @@ export function HeroSection() {
 
           <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto mb-10 animate-fade-up delay-200 leading-relaxed">
             Donated items become affordable finds for fellow students
-            <br /> 
+            <br />
             all profit goes directly to{" "}
             <span className="font-semibold text-foreground">Barncancerfonden</span> and{" "}
             <span className="font-semibold text-foreground">RBU</span>
@@ -221,7 +221,7 @@ export function WhyChooseUsSection() {
     { icon: Recycle, title: "Sustainable", description: "Reduce waste by giving items a second life." },
     { icon: Heart, title: "Charitable", description: "Every purchase supports children in need." },
     { icon: Home, title: "Convenient", description: "Directly buy from student housing locations." },
-    { icon: ShoppingBag, title: "Affordable", description: "Quality items at student-friendly prices." }, 
+    { icon: ShoppingBag, title: "Affordable", description: "Quality items at student-friendly prices." },
     { icon: Users, title: "Community", description: "Run by students, for students." },
     { icon: Bike, title: "Variety", description: "From bedsheets to bikes, we have it all." },
   ];
@@ -248,6 +248,58 @@ export function WhyChooseUsSection() {
     </section>
   );
 }
+
+export function PartnersSection() {
+  const partners = [
+    {
+      name: "Uppsala University Innovation",
+      logo: "/src/assets/uu-innovation.png",
+      description: "Uppsala University Innovation provides guidance and resources to help Rackis for Barn expand its reach and positive impact.",
+      url: "https://www.uuinnovation.uu.se",
+    },
+    {
+      name: "Uppsalahem",
+      logo: "/src/assets/uppsalahem.png",
+      description: "Generously provides access to storage units, enabling us to collect and sell items directly at student housing locations.",
+      url: "https://www.uppsalahem.se",
+    },
+  ];
+
+   return (
+    <section className="section-padding bg-section-light">
+      <div className="container text-center">
+        <span className="inline-block text-sm font-bold text-primary uppercase tracking-wider mb-3">
+          In collaboration with
+        </span>
+        <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-8">
+          Our Supportive Partners
+        </h2>
+        <div className="flex flex-wrap justify-center gap-16 items-center">
+          {partners.map((partner) => (
+            <a
+              key={partner.name}
+              href={partner.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex flex-col items-center max-w-xs hover:scale-105 transition-transform"
+            >
+              {/* Bigger container for larger logos */}
+              <div className="flex items-center justify-center w-64 h-32 mb-3">
+                <img
+                  src={partner.logo}
+                  alt={`${partner.name} Logo`}
+                  className="max-h-full max-w-full object-contain"
+                />
+              </div>
+              <p className="text-muted-foreground text-center">{partner.description}</p>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 
 export function AboutCharitiesSection() {
   return (
