@@ -1,4 +1,3 @@
-// pages/Index.tsx - Restored to original structure
 import { Layout } from "@/components/layout/Layout";
 import { 
   HeroSection, 

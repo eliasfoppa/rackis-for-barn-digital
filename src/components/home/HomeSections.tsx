@@ -124,85 +124,250 @@ export function HeroSection() {
   );
 }
 
-// Keep other sections (HeroSection, CTASection, etc.) as they were originally, 
-// since we know they are not crashing the app.
-
 export function HowItWorksSection() {
   const steps = [
     {
       icon: ShoppingBag,
       title: "Shop",
-      description: "Moving in? We've got you covered for your first days in Uppsala (and beyond).",
+      description:
+        "Moving in? We've got you covered for your first days in Uppsala (and beyond).",
       color: "bg-green-100",
-      action: { type: "link", to: "/buy" }
+      action: { type: "link", to: "/buy" },
     },
     {
       icon: Heart,
       title: "Support",
-      description: "All profits from your purchase go directly to Barncancerfonden and RBU, supporting children in need.",
+      description:
+        "All profits from your purchase go directly to Barncancerfonden and RBU, supporting children in need.",
       color: "bg-warm/10 text-warm",
-      action: { type: "scroll", target: "charities" }
+      action: { type: "scroll", target: "charities" },
     },
     {
       icon: Gift,
       title: "Donate",
-      description: "Moving out? Don’t throw away useful items. Give them to us! We accept bedding, curtains, bikes, kitchen gear, and more.",
+      description:
+        "Moving out? Give items a second life. We accept everything from bedding to bikes and more.",
       color: "bg-primary/10 text-primary",
-      action: { type: "link", to: "/donate" }
+      action: { type: "link", to: "/donate" },
     },
   ];
 
-  // Smooth scroll handler
   const scrollToSection = (id: string) => {
     const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth" });
-    }
+    if (el) el.scrollIntoView({ behavior: "smooth" });
   };
+
+  /* ======================
+      GEOMETRY CONSTANTS
+   ====================== */
+
+  const containerWidth = 1200;
+  const containerHeight = 830;
+  const boxWidth = 350;
+  const boxHeight = 350;
+
+  // Box positions
+  const box1Left = (containerWidth - boxWidth) / 2; // ~425
+  const box1Top = 30;
+
+  const box2Left = containerWidth - 80 - boxWidth; // ~770
+  const box2Top = 430;
+
+  const box3Left = 80; // ~80
+  const box3Top = 430;
+
+  const boxes = [
+    { x: box1Left, y: box1Top },
+    { x: box2Left, y: box2Top },
+    { x: box3Left, y: box3Top },
+  ];
+
+  // Circle Geometry (Kept from the previous fix for perfect arrow placement)
+  const circleCX = 600;
+  const circleCY = 471;
+  const circleR = 347;
+
+  /* ======================
+      ARROW PLACEMENT
+   ====================== */
+
+  // Helper to get point on circle and tangent rotation
+  const getArrowOnCircle = (
+    targetX: number,
+    targetY: number,
+    side: "left" | "top" | "right"
+  ) => {
+    let x = targetX;
+    let y = targetY;
+
+    // 1. Calculate intersection point on the circle edge closest to the box
+    if (side === "left") {
+      // Find Y given X (left edge of box)
+      const dx = targetX - circleCX;
+      // Top half of circle for Shop box
+      y = circleCY - Math.sqrt(Math.pow(circleR, 2) - Math.pow(dx, 2));
+    } else if (side === "top") {
+      // Find X given Y (top edge of box)
+      const dy = targetY - circleCY;
+      // Right half of circle for Support box
+      x = circleCX + Math.sqrt(Math.pow(circleR, 2) - Math.pow(dy, 2));
+    } else if (side === "right") {
+      // Find Y given X (right edge of box)
+      const dx = targetX - circleCX;
+      // Bottom half of circle for Donate box
+      y = circleCY + Math.sqrt(Math.pow(circleR, 2) - Math.pow(dx, 2));
+    }
+
+    // 2. Calculate Angle from center
+    const angleRad = Math.atan2(y - circleCY, x - circleCX);
+
+    // 3. Tangent Angle (Clockwise flow = angle + 90deg)
+    const rotation = (angleRad * 180) / Math.PI + 90;
+
+    return { x, y, rotation };
+  };
+
+  // Define where arrows should hit the boxes
+  const arrows = [
+    // Arrow 1: Hits Box 1 (Shop) on its Left edge
+    getArrowOnCircle(box1Left, 0, "left"),
+
+    // Arrow 2: Hits Box 2 (Support) on its Top edge
+    getArrowOnCircle(0, box2Top, "top"),
+
+    // Arrow 3: Hits Box 3 (Donate) on its Right edge
+    getArrowOnCircle(box3Left + boxWidth, 0, "right"),
+  ];
 
   return (
     <section className="section-padding relative overflow-hidden">
       <div className="container relative z-10">
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground mb-6">
+        <div className="text-center max-w-2xl mx-auto mb-12">
+          <h2 className="font-display text-3xl md:text-5xl font-bold mb-6">
             How it works
           </h2>
           <p className="text-lg text-muted-foreground">
-            A simple cycle that helps students, reduces waste, and supports a great cause.
+            A simple cycle that helps students, reduces waste, and supports a
+            great cause.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8 lg:gap-12">
-          {steps.map((step, index) => (
-            <div key={step.title} className="card-warm text-center group flex flex-col">
-              <div
-                className={`w-16 h-16 rounded-2xl ${step.color} flex items-center justify-center mx-auto mb-6 transform group-hover:scale-110 transition-transform`}
+        {/* DESKTOP LAYOUT (Visible lg+) */}
+        <div
+          className="hidden lg:block relative mx-auto"
+          style={{ width: containerWidth, height: containerHeight }}
+        >
+          {/* Circle Path */}
+          <svg
+            className="absolute inset-0 w-full h-full pointer-events-none"
+            style={{ zIndex: 1 }}
+          >
+            <circle
+              cx={circleCX}
+              cy={circleCY}
+              r={circleR}
+              stroke="#0024a8"
+              strokeWidth="4"
+              fill="none"
+              opacity="0.2"
+            />
+          </svg>
+
+          {/* Independent Arrowheads (Bigger size retained from previous request) */}
+          <svg
+            className="absolute inset-0 w-full h-full pointer-events-none"
+            style={{ zIndex: 4 }}
+          >
+            {arrows.map((arrow, i) => (
+              <g
+                key={i}
+                transform={`translate(${arrow.x}, ${arrow.y}) rotate(${arrow.rotation})`}
               >
-                <step.icon className={`h-8 w-8 ${step.title === "Shop" ? "text-green-600" : ""}`} />
+                {/* Arrowhead shape */}
+                <path
+                  d="M-8,-11 L14,0 L-8,11 L-8,-11 Z"
+                  fill="#0024a8"
+                />
+              </g>
+            ))}
+          </svg>
+
+          {/* Boxes (Restored original text styles) */}
+          {boxes.map((b, i) => {
+            const Icon = steps[i].icon;
+            return (
+              <div
+                key={i}
+                // Restored original card classes
+                className="absolute card-warm text-center flex flex-col"
+                style={{
+                  left: b.x,
+                  top: b.y,
+                  width: boxWidth,
+                  zIndex: 2,
+                }}
+              >
+                <div
+                  className={`w-16 h-16 rounded-2xl ${steps[i].color} mx-auto mb-6 flex items-center justify-center`}
+                >
+                  <Icon className="h-8 w-8" />
+                </div>
+                {/* Restored original Step text style */}
+                <span className="text-sm font-bold text-muted-foreground/60 mb-2">
+                  Step {i + 1}
+                </span>
+                <h3 className="text-2xl font-bold mb-3">{steps[i].title}</h3>
+                {/* Restored original Description text style */}
+                <p className="text-muted-foreground mb-6">
+                  {steps[i].description}
+                </p>
+                {steps[i].action.type === "link" ? (
+                  <a
+                    href={steps[i].action.to}
+                    // Restored original button/link style
+                    className="mt-auto px-5 py-2 rounded-xl bg-primary/10 text-primary font-semibold hover:bg-primary/20 transition"
+                  >
+                    Learn more →
+                  </a>
+                ) : (
+                  <button
+                    onClick={() => scrollToSection(steps[i].action.target)}
+                    // Restored original button/link style
+                    className="mt-auto px-5 py-2 rounded-xl bg-primary/10 text-primary font-semibold hover:bg-primary/20 transition"
+                  >
+                    Learn more →
+                  </button>
+                )}
               </div>
+            );
+          })}
+        </div>
 
-              <span className="inline-block text-sm font-bold text-muted-foreground/60 mb-2">
-                Step {index + 1}
+        {/* MOBILE / TABLET LAYOUT (< lg) - Keeping mobile part original */}
+        <div className="grid md:grid-cols-3 gap-8 lg:hidden z-20 relative">
+          {steps.map((step, i) => (
+            <div key={step.title} className="card-warm text-center flex flex-col">
+              <div
+                className={`w-16 h-16 rounded-2xl ${step.color} mx-auto mb-6 flex items-center justify-center`}
+              >
+                <step.icon className="h-8 w-8" />
+              </div>
+              <span className="text-sm font-bold text-muted-foreground/60 mb-2">
+                Step {i + 1}
               </span>
-
-              <h3 className="text-2xl font-bold text-foreground mb-3">{step.title}</h3>
-
-              <p className="text-muted-foreground leading-relaxed mb-6">
-                {step.description}
-              </p>
-
-              {/* BUTTON */}
+              <h3 className="text-2xl font-bold mb-3">{step.title}</h3>
+              <p className="text-muted-foreground mb-6">{step.description}</p>
               {step.action.type === "link" ? (
-                <Link
-                  to={step.action.to}
-                  className="mt-auto inline-block px-5 py-2 rounded-xl bg-primary/10 text-primary font-semibold hover:bg-primary/20 transition"
+                <a
+                  href={step.action.to}
+                  className="mt-auto px-5 py-2 rounded-xl bg-primary/10 text-primary font-semibold hover:bg-primary/20 transition"
                 >
                   Learn more →
-                </Link>
+                </a>
               ) : (
                 <button
                   onClick={() => scrollToSection(step.action.target)}
-                  className="mt-auto inline-block px-5 py-2 rounded-xl bg-primary/10 text-primary font-semibold hover:bg-primary/20 transition"
+                  className="mt-auto px-5 py-2 rounded-xl bg-primary/10 text-primary font-semibold hover:bg-primary/20 transition"
                 >
                   Learn more →
                 </button>
@@ -214,7 +379,6 @@ export function HowItWorksSection() {
     </section>
   );
 }
-
 
 export function WhyChooseUsSection() {
   const benefits = [
