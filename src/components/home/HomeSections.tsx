@@ -122,15 +122,17 @@ export function HeroSection() {
   );
 }
 
+// --- HOW IT WORKS SECTION (Fixed: Pixel-Perfect Centering & Dots) ---
 export function HowItWorksSection() {
   const [currentStep, setCurrentStep] = useState(0);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const cardWidthRef = useRef(0);
-  
-  // State
+  const visualCardWidthRef = useRef(0); 
+  const paddingLeftRef = useRef(0); // Stores container padding
   const isAnimatingRef = useRef(false);
   const rafRef = useRef<number | null>(null);
   const touchStartRef = useRef(0);
+  const touchStartTimeRef = useRef(0);
 
   const steps = [
     {
@@ -156,15 +158,20 @@ export function HowItWorksSection() {
     },
   ];
 
-  // Standard Clone for Mobile: [Last, ...Real, First]
-  const scrollData = [...steps.slice(-1), ...steps, ...steps.slice(0, 1)];
+  const scrollData = [steps[1], steps[2], ...steps, steps[0], steps[1]];
+  const START_INDEX = 2;
 
   const scrollToSection = (id: string) => {
     const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: "smooth" });
   };
 
-  /* ====================== LARGE DESKTOP GEOMETRY ====================== */
+  const getCenterOffset = (container: HTMLElement, visualWidth: number) => {
+    const containerWidth = container.clientWidth;
+    return (containerWidth - visualWidth) / 2;
+  };
+
+  /* ====================== DESKTOP GEOMETRY ====================== */
   const containerWidth = 1200;
   const containerHeight = 830;
   const boxWidth = 350;
@@ -204,32 +211,40 @@ export function HowItWorksSection() {
 
   // --- INIT SCROLL ---
   useEffect(() => {
-    requestAnimationFrame(() => {
+    const timer = setTimeout(() => {
         const container = scrollContainerRef.current;
         if (container && container.firstElementChild) {
           const firstCard = container.firstElementChild as HTMLElement;
           const style = window.getComputedStyle(container);
           const gap = parseFloat(style.gap) || 16;
-          cardWidthRef.current = firstCard.offsetWidth + gap;
-          container.scrollLeft = cardWidthRef.current;
+          
+          visualCardWidthRef.current = firstCard.offsetWidth;
+          cardWidthRef.current = firstCard.offsetWidth + gap; 
+          paddingLeftRef.current = parseFloat(style.paddingLeft) || 0;
+          
+          const offset = getCenterOffset(container, visualCardWidthRef.current);
+          
+          // Formula: (Padding + Index*Stride) - CenterOffset
+          container.scrollLeft = (paddingLeftRef.current + (cardWidthRef.current * START_INDEX)) - offset;
         }
-    });
-    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
+    }, 50);
+    return () => clearTimeout(timer);
   }, []);
 
-  // --- INFINITE LOOP CHECK ---
   const checkInfiniteLoop = (container: HTMLElement) => {
-    const cardWidth = cardWidthRef.current;
-    if (!cardWidth) return;
+    const totalWidth = cardWidthRef.current;
+    const visualWidth = visualCardWidthRef.current;
+    const paddingLeft = paddingLeftRef.current;
+    if (!totalWidth) return;
 
-    const scrollLeft = container.scrollLeft;
-    // Buffer of 10px to catch it early
-    if (scrollLeft <= 10) {
-      // Near Clone Last -> Jump to Real Last
-      container.scrollLeft = cardWidth * steps.length + scrollLeft;
-    } else if (scrollLeft >= (cardWidth * (scrollData.length - 1)) - 10) {
-      // Near Clone First -> Jump to Real First
-      container.scrollLeft = scrollLeft - (cardWidth * steps.length);
+    const offset = getCenterOffset(container, visualWidth);
+    // Reverse Formula: (Scroll + Offset - Padding) / Stride
+    const rawIndex = Math.round((container.scrollLeft + offset - paddingLeft) / totalWidth);
+
+    if (rawIndex >= scrollData.length - 2) {
+      container.scrollLeft = (paddingLeft + (totalWidth * (rawIndex - steps.length))) - offset;
+    } else if (rawIndex <= 1) {
+      container.scrollLeft = (paddingLeft + (totalWidth * (rawIndex + steps.length))) - offset;
     }
   };
 
@@ -240,7 +255,7 @@ export function HowItWorksSection() {
 
     const startX = container.scrollLeft;
     const distance = targetX - startX;
-    const duration = 400; 
+    const duration = 300; 
     const startTime = performance.now();
 
     isAnimatingRef.current = true;
@@ -258,7 +273,6 @@ export function HowItWorksSection() {
         rafRef.current = requestAnimationFrame(animate);
       } else {
         container.style.overflowX = 'auto';
-        container.style.scrollSnapType = 'x mandatory';
         isAnimatingRef.current = false;
         rafRef.current = null;
         checkInfiniteLoop(container);
@@ -268,18 +282,18 @@ export function HowItWorksSection() {
   };
 
   const handleTouchStart = (e: React.TouchEvent) => {
-    if (scrollContainerRef.current) scrollContainerRef.current.style.overflowX = 'auto';
-
-    if (rafRef.current || isAnimatingRef.current) {
-        if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
         rafRef.current = null;
         isAnimatingRef.current = false;
-        if (scrollContainerRef.current) scrollContainerRef.current.style.scrollSnapType = 'x mandatory';
     }
-
-    if (scrollContainerRef.current) checkInfiniteLoop(scrollContainerRef.current);
-
+    if (scrollContainerRef.current) {
+        scrollContainerRef.current.style.overflowX = 'auto';
+        scrollContainerRef.current.style.scrollSnapType = 'none';
+        checkInfiniteLoop(scrollContainerRef.current);
+    }
     touchStartRef.current = e.touches[0].clientX;
+    touchStartTimeRef.current = performance.now();
   };
 
   const handleTouchEnd = (e: React.TouchEvent) => {
@@ -287,46 +301,62 @@ export function HowItWorksSection() {
     if (!container) return;
 
     const touchEnd = e.changedTouches[0].clientX;
+    const touchTime = performance.now() - touchStartTimeRef.current;
     const diff = touchStartRef.current - touchEnd;
-    const cardWidth = cardWidthRef.current;
-
-    const isFlick = Math.abs(diff) > 30;
-    const isDrag = Math.abs(diff) > cardWidth / 3;
-
-    if (isFlick || isDrag) {
-      const currentScroll = container.scrollLeft;
-      const currentExactIndex = currentScroll / cardWidth;
-      const baseIndex = Math.round(currentExactIndex);
-
-      let targetIndex = baseIndex;
-      if (diff > 0) targetIndex = diff > 0 && currentExactIndex > baseIndex ? baseIndex + 1 : baseIndex + 1;
-      else targetIndex = diff < 0 && currentExactIndex < baseIndex ? baseIndex - 1 : baseIndex - 1;
-
-      if (isFlick) {
-        if (diff > 0) targetIndex = Math.floor(currentExactIndex) + 1;
-        else targetIndex = Math.ceil(currentExactIndex) - 1;
-      }
-
-      targetIndex = Math.max(0, Math.min(targetIndex, scrollData.length - 1));
-      glideTo(targetIndex * cardWidth);
+    
+    // Refresh measurements
+    if (container.firstElementChild) {
+        const firstCard = container.firstElementChild as HTMLElement;
+        const style = window.getComputedStyle(container);
+        const gap = parseFloat(style.gap) || 16;
+        visualCardWidthRef.current = firstCard.offsetWidth;
+        cardWidthRef.current = firstCard.offsetWidth + gap;
+        paddingLeftRef.current = parseFloat(style.paddingLeft) || 0;
     }
+    
+    const totalWidth = cardWidthRef.current;
+    const visualWidth = visualCardWidthRef.current;
+    const paddingLeft = paddingLeftRef.current;
+
+    const offset = getCenterOffset(container, visualWidth);
+    const rawIndex = Math.round((container.scrollLeft + offset - paddingLeft) / totalWidth);
+
+    const isFlick = touchTime < 250 && Math.abs(diff) > 20;
+    let targetIndex = rawIndex;
+    
+    // Explicit Directional Check for flick
+    // We compare rawIndex (float) before rounding vs after to determine drift
+    const exactIndex = (container.scrollLeft + offset - paddingLeft) / totalWidth;
+
+    if (isFlick) {
+      if (diff > 0) targetIndex = Math.floor(exactIndex) + 1;
+      else targetIndex = Math.ceil(exactIndex) - 1;
+    } else {
+       if (diff > 0 && exactIndex > rawIndex) targetIndex = rawIndex + 1;
+       else if (diff < 0 && exactIndex < rawIndex) targetIndex = rawIndex - 1;
+    }
+
+    targetIndex = Math.max(0, Math.min(targetIndex, scrollData.length - 1));
+    
+    // Correct Target Calculation: (Padding + Index*Width) - CenteredOffset
+    glideTo((paddingLeft + (targetIndex * totalWidth)) - offset);
   };
 
   const handleScroll = () => {
     if (!scrollContainerRef.current) return;
+    if (!isAnimatingRef.current) checkInfiniteLoop(scrollContainerRef.current);
+
+    const totalWidth = cardWidthRef.current || 1;
+    const visualWidth = visualCardWidthRef.current || totalWidth;
+    const paddingLeft = paddingLeftRef.current;
     
-    if (!isAnimatingRef.current) {
-        checkInfiniteLoop(scrollContainerRef.current);
-    }
+    const offset = getCenterOffset(scrollContainerRef.current, visualWidth);
+    
+    // Calc raw index
+    const rawIndex = Math.round((scrollContainerRef.current.scrollLeft + offset - paddingLeft) / totalWidth);
 
-    const scrollLeft = scrollContainerRef.current.scrollLeft;
-    const cardWidth = cardWidthRef.current;
-    if (cardWidth === 0) return;
-
-    const rawIndex = Math.round(scrollLeft / cardWidth);
-    let visualStep = rawIndex - 1;
-    if (rawIndex === 0) visualStep = steps.length - 1;
-    if (rawIndex >= scrollData.length - 1) visualStep = 0;
+    let visualStep = (rawIndex - START_INDEX);
+    visualStep = ((visualStep % steps.length) + steps.length) % steps.length;
     
     if (visualStep !== currentStep) setCurrentStep(visualStep);
   };
@@ -341,12 +371,10 @@ export function HowItWorksSection() {
           </p>
         </div>
 
-        {/* 
-            1. LARGE DESKTOP (XL - >1280px) 
-            Only shows on truly large screens.
-        */}
+        {/* Desktop XL and MD/LG ... (unchanged) */}
         <div className="hidden xl:block relative mx-auto" style={{ width: containerWidth, height: containerHeight }}>
-          <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 1 }}>
+            {/* ... SVG and boxes ... */}
+             <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 1 }}>
             <circle cx={circleCX} cy={circleCY} r={circleR} stroke="#0024a8" strokeWidth="4" fill="none" opacity="0.2" />
           </svg>
           <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 4 }}>
@@ -375,12 +403,7 @@ export function HowItWorksSection() {
             );
           })}
         </div>
-
-        {/* 
-            2. STATIC GRID (Medium/Tablet/Desktop Mode - 768px to 1280px)
-            This replaces the scrollable area with a simple, static row of cards.
-            No scrolling means no bugs.
-        */}
+        
         <div className="hidden md:flex xl:hidden justify-center gap-6 px-4">
           {steps.map((step, i) => {
             const Icon = step.icon;
@@ -404,33 +427,35 @@ export function HowItWorksSection() {
           })}
         </div>
 
-        {/* 
-            3. MOBILE (Small - <768px)
-            Standard infinite scroll carousel.
-        */}
+        {/* 3. MOBILE (Fixed) */}
         <div className="md:hidden relative">
           <div
             ref={scrollContainerRef}
             onScroll={handleScroll}
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
-            className="flex overflow-x-auto snap-x snap-mandatory pb-8 gap-4 px-4 scrollbar-hide"
+            className="flex overflow-x-auto pb-8 gap-4 px-4 scrollbar-hide select-none"
             style={{
+              scrollSnapType: 'none',
               scrollbarWidth: "none",
               msOverflowStyle: "none",
               overscrollBehaviorX: "contain",
-              overflowX: "auto",
+              WebkitTapHighlightColor: "transparent",
             }}
           >
             {scrollData.map((step, i) => {
-              const displayIndex = i === 0 ? steps.length : i === scrollData.length - 1 ? 1 : i;
+              const realStepNumber = steps.indexOf(step) + 1;
               return (
-                <div key={`${step.title}-${i}`} className="snap-center snap-always shrink-0 w-[85vw] max-w-[350px]">
+                <div 
+                  key={`${step.title}-${i}`} 
+                  className="shrink-0 w-[85vw] max-w-[350px] transform-gpu"
+                  style={{ WebkitTapHighlightColor: "transparent" }}
+                >
                   <div className="card-warm text-center flex flex-col h-full shadow-md border border-stone-100/50">
                     <div className={`w-16 h-16 rounded-2xl ${step.color} mx-auto mb-6 flex items-center justify-center`}>
                       <step.icon className="h-8 w-8" />
                     </div>
-                    <span className="text-sm font-bold text-muted-foreground/60 mb-2">Step {displayIndex}</span>
+                    <span className="text-sm font-bold text-muted-foreground/60 mb-2">Step {realStepNumber}</span>
                     <h3 className="text-2xl font-bold mb-3">{step.title}</h3>
                     <p className="text-muted-foreground mb-6">{step.description}</p>
                     {step.action.type === "link" ? (
@@ -460,14 +485,17 @@ export function HowItWorksSection() {
   );
 }
 
-// --- WHY CHOOSE US SECTION ---
+// --- WHY CHOOSE US SECTION (Fixed: Pixel-Perfect Centering & Dots) ---
 export function WhyChooseUsSection() {
   const [currentStep, setCurrentStep] = useState(0);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const cardWidthRef = useRef(0);
+  const visualCardWidthRef = useRef(0);
+  const paddingLeftRef = useRef(0);
   const isAnimatingRef = useRef(false);
   const rafRef = useRef<number | null>(null);
   const touchStartRef = useRef(0);
+  const touchStartTimeRef = useRef(0);
 
   const benefits = [
     { icon: Recycle, title: "Sustainable", description: "Reduce waste by giving items a second life." },
@@ -478,33 +506,48 @@ export function WhyChooseUsSection() {
     { icon: Bike, title: "Variety", description: "From bedsheets to bikes, we have it all." },
   ];
 
-  const scrollData = [...benefits.slice(-1), ...benefits, ...benefits.slice(0, 1)];
+  const scrollData = [benefits[benefits.length - 2], benefits[benefits.length - 1], ...benefits, benefits[0], benefits[1]];
+  const START_INDEX = 2;
 
-  // --- INIT ---
+  const getCenterOffset = (container: HTMLElement, visualWidth: number) => {
+    const containerWidth = container.clientWidth;
+    return (containerWidth - visualWidth) / 2;
+  };
+
   useEffect(() => {
-    requestAnimationFrame(() => {
-        const container = scrollContainerRef.current;
-        if (container && container.firstElementChild) {
-          const firstCard = container.firstElementChild as HTMLElement;
-          const style = window.getComputedStyle(container);
-          const gap = parseFloat(style.gap) || 16; 
-          cardWidthRef.current = firstCard.offsetWidth + gap;
-          container.scrollLeft = cardWidthRef.current;
-        }
-    });
-    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
+    const timer = setTimeout(() => {
+      const container = scrollContainerRef.current;
+      if (container && container.firstElementChild) {
+        const firstCard = container.firstElementChild as HTMLElement;
+        const style = window.getComputedStyle(container);
+        const gap = parseFloat(style.gap) || 16; 
+        
+        visualCardWidthRef.current = firstCard.offsetWidth;
+        cardWidthRef.current = firstCard.offsetWidth + gap;
+        paddingLeftRef.current = parseFloat(style.paddingLeft) || 0;
+        
+        const offset = getCenterOffset(container, visualCardWidthRef.current);
+        // Padding fix applied
+        container.scrollLeft = (paddingLeftRef.current + (cardWidthRef.current * START_INDEX)) - offset;
+      }
+    }, 50);
+    return () => clearTimeout(timer);
   }, []);
 
-  // --- LOOP CHECK ---
   const checkInfiniteLoop = (container: HTMLElement) => {
-    const cardWidth = cardWidthRef.current;
-    if (!cardWidth) return;
+    const totalWidth = cardWidthRef.current;
+    const visualWidth = visualCardWidthRef.current;
+    const paddingLeft = paddingLeftRef.current;
+    if (!totalWidth) return;
 
-    const scrollLeft = container.scrollLeft;
-    if (scrollLeft <= 10) {
-      container.scrollLeft = cardWidth * benefits.length + scrollLeft;
-    } else if (scrollLeft >= (cardWidth * (scrollData.length - 1)) - 10) {
-      container.scrollLeft = scrollLeft - (cardWidth * benefits.length);
+    const offset = getCenterOffset(container, visualWidth);
+    const rawIndex = Math.round((container.scrollLeft + offset - paddingLeft) / totalWidth);
+
+    if (rawIndex >= scrollData.length - 2) {
+      container.scrollLeft = (paddingLeft + (totalWidth * (rawIndex - benefits.length))) - offset;
+    } 
+    else if (rawIndex <= 1) {
+      container.scrollLeft = (paddingLeft + (totalWidth * (rawIndex + benefits.length))) - offset;
     }
   };
 
@@ -515,7 +558,7 @@ export function WhyChooseUsSection() {
 
     const startX = container.scrollLeft;
     const distance = targetX - startX;
-    const duration = 400;
+    const duration = 300; 
     const startTime = performance.now();
 
     isAnimatingRef.current = true;
@@ -533,7 +576,6 @@ export function WhyChooseUsSection() {
         rafRef.current = requestAnimationFrame(animate);
       } else {
         container.style.overflowX = 'auto';
-        container.style.scrollSnapType = 'x mandatory';
         isAnimatingRef.current = false;
         rafRef.current = null;
         checkInfiniteLoop(container);
@@ -543,64 +585,76 @@ export function WhyChooseUsSection() {
   };
 
   const handleTouchStart = (e: React.TouchEvent) => {
-    if (scrollContainerRef.current) scrollContainerRef.current.style.overflowX = 'auto';
-
-    if (rafRef.current || isAnimatingRef.current) {
-        if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
         rafRef.current = null;
         isAnimatingRef.current = false;
-        if (scrollContainerRef.current) scrollContainerRef.current.style.scrollSnapType = 'x mandatory';
     }
-    
-    // Teleport Instantly
-    if (scrollContainerRef.current) checkInfiniteLoop(scrollContainerRef.current);
+
+    if (scrollContainerRef.current) {
+        scrollContainerRef.current.style.overflowX = 'auto';
+        scrollContainerRef.current.style.scrollSnapType = 'none';
+        checkInfiniteLoop(scrollContainerRef.current);
+    }
 
     touchStartRef.current = e.touches[0].clientX;
+    touchStartTimeRef.current = performance.now();
   };
 
   const handleTouchEnd = (e: React.TouchEvent) => {
     const container = scrollContainerRef.current;
     if (!container) return;
+    
     const touchEnd = e.changedTouches[0].clientX;
+    const touchTime = performance.now() - touchStartTimeRef.current;
     const diff = touchStartRef.current - touchEnd;
-    const cardWidth = cardWidthRef.current;
-
-    const isFlick = Math.abs(diff) > 30;
-    const isDrag = Math.abs(diff) > cardWidth / 3;
-
-    if (isFlick || isDrag) {
-      const currentScroll = container.scrollLeft;
-      const currentExactIndex = currentScroll / cardWidth;
-      const baseIndex = Math.round(currentExactIndex);
-      let targetIndex = baseIndex;
-      
-      if (diff > 0) targetIndex = diff > 0 && currentExactIndex > baseIndex ? baseIndex + 1 : baseIndex + 1;
-      else targetIndex = diff < 0 && currentExactIndex < baseIndex ? baseIndex - 1 : baseIndex - 1;
-
-      if (isFlick) {
-        if (diff > 0) targetIndex = Math.floor(currentExactIndex) + 1;
-        else targetIndex = Math.ceil(currentExactIndex) - 1;
-      }
-      targetIndex = Math.max(0, Math.min(targetIndex, scrollData.length - 1));
-      glideTo(targetIndex * cardWidth);
+    
+    if (container.firstElementChild) {
+        const firstCard = container.firstElementChild as HTMLElement;
+        const style = window.getComputedStyle(container);
+        const gap = parseFloat(style.gap) || 16;
+        visualCardWidthRef.current = firstCard.offsetWidth;
+        cardWidthRef.current = firstCard.offsetWidth + gap;
+        paddingLeftRef.current = parseFloat(style.paddingLeft) || 0;
     }
+
+    const totalWidth = cardWidthRef.current;
+    const visualWidth = visualCardWidthRef.current;
+    const paddingLeft = paddingLeftRef.current;
+    
+    const offset = getCenterOffset(container, visualWidth);
+    const exactIndex = (container.scrollLeft + offset - paddingLeft) / totalWidth;
+    const rawIndex = Math.round(exactIndex);
+
+    const isFlick = touchTime < 250 && Math.abs(diff) > 20;
+    
+    let targetIndex = rawIndex;
+    if (isFlick) {
+      if (diff > 0) targetIndex = Math.floor(exactIndex) + 1;
+      else targetIndex = Math.ceil(exactIndex) - 1;
+    } else {
+       if (diff > 0 && exactIndex > rawIndex) targetIndex = rawIndex + 1;
+       else if (diff < 0 && exactIndex < rawIndex) targetIndex = rawIndex - 1;
+    }
+      
+    targetIndex = Math.max(0, Math.min(targetIndex, scrollData.length - 1));
+    glideTo((paddingLeft + (targetIndex * totalWidth)) - offset);
   };
 
   const handleScroll = () => {
     if (!scrollContainerRef.current) return;
-    
-    // Live check
-    if (!isAnimatingRef.current) {
-        checkInfiniteLoop(scrollContainerRef.current);
-    }
+    if (!isAnimatingRef.current) checkInfiniteLoop(scrollContainerRef.current);
 
-    const scrollLeft = scrollContainerRef.current.scrollLeft;
-    const cardWidth = cardWidthRef.current;
-    if (cardWidth === 0) return;
-    const rawIndex = Math.round(scrollLeft / cardWidth);
-    let visualStep = rawIndex - 1;
-    if (rawIndex === 0) visualStep = benefits.length - 1;
-    if (rawIndex >= scrollData.length - 1) visualStep = 0;
+    const totalWidth = cardWidthRef.current || 1;
+    const visualWidth = visualCardWidthRef.current || totalWidth;
+    const paddingLeft = paddingLeftRef.current;
+    
+    const offset = getCenterOffset(scrollContainerRef.current, visualWidth);
+    const rawIndex = Math.round((scrollContainerRef.current.scrollLeft + offset - paddingLeft) / totalWidth);
+
+    let visualStep = (rawIndex - START_INDEX);
+    visualStep = ((visualStep % benefits.length) + benefits.length) % benefits.length;
+    
     if (visualStep !== currentStep) setCurrentStep(visualStep);
   };
 
@@ -616,26 +670,23 @@ export function WhyChooseUsSection() {
           </p>
         </div>
 
-        {/* MOBILE (md:hidden) */}
         <div className="md:hidden relative">
           <div
             ref={scrollContainerRef}
             onScroll={handleScroll}
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
-            className="flex overflow-x-auto snap-x snap-mandatory pb-8 gap-4 px-4 scrollbar-hide"
+            className="flex overflow-x-auto pb-8 gap-4 px-4 scrollbar-hide select-none"
             style={{
+              scrollSnapType: 'none',
               scrollbarWidth: "none",
               msOverflowStyle: "none",
               overscrollBehaviorX: "contain",
-              overflowX: "auto",
+              WebkitTapHighlightColor: "transparent",
             }}
           >
             {scrollData.map((benefit, i) => (
-              <div
-                key={`${benefit.title}-${i}`}
-                className="snap-center snap-always shrink-0 w-[85vw] max-w-[350px]"
-              >
+              <div key={`${benefit.title}-${i}`} className="shrink-0 w-[85vw] max-w-[350px] transform-gpu" style={{ WebkitTapHighlightColor: "transparent" }}>
                 <div className="h-full p-6 rounded-2xl bg-card/80 backdrop-blur border border-border flex flex-col items-center text-center shadow-sm">
                   <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
                     <benefit.icon className="h-7 w-7 text-primary" />
@@ -659,7 +710,6 @@ export function WhyChooseUsSection() {
           </div>
         </div>
 
-        {/* DESKTOP (md:grid) - This section is responsive and fine */}
         <div className="hidden md:grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {benefits.map((benefit) => (
             <div key={benefit.title} className="group p-6 rounded-2xl bg-card/80 backdrop-blur border border-border hover:border-primary/30 transition-all duration-300">
@@ -695,27 +745,13 @@ export function PartnersSection() {
   return (
     <section className="section-padding bg-section-light">
       <div className="container text-center">
-        <span className="inline-block text-sm font-bold text-primary uppercase tracking-wider mb-3">
-          In collaboration with
-        </span>
-        <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-8">
-          Our Supportive Partners
-        </h2>
+        <span className="inline-block text-sm font-bold text-primary uppercase tracking-wider mb-3">In collaboration with</span>
+        <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-8">Our Supportive Partners</h2>
         <div className="flex flex-wrap justify-center gap-16 items-center">
           {partners.map((partner) => (
-            <a
-              key={partner.name}
-              href={partner.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex flex-col items-center max-w-xs hover:scale-105 transition-transform"
-            >
+            <a key={partner.name} href={partner.url} target="_blank" rel="noopener noreferrer" className="flex flex-col items-center max-w-xs hover:scale-105 transition-transform">
               <div className="flex items-center justify-center w-64 h-32 mb-3">
-                <img
-                  src={partner.logo}
-                  alt={`${partner.name} Logo`}
-                  className="max-h-full max-w-full object-contain"
-                />
+                <img src={partner.logo} alt={`${partner.name} Logo`} className="max-h-full max-w-full object-contain" />
               </div>
               <p className="text-muted-foreground text-center">{partner.description}</p>
             </a>
@@ -735,39 +771,26 @@ export function AboutCharitiesSection() {
             <span className="inline-block text-sm font-bold text-accent uppercase tracking-wider mb-4">Our cause</span>
             <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-6">Supporting children in need</h2>
           </div>
-
           <div className="grid md:grid-cols-2 gap-8">
             <div className="card-warm">
               <h3 className="text-xl font-bold text-foreground mb-4">Barncancerfonden</h3>
               <p className="text-muted-foreground leading-relaxed mb-4">
                 Sweden's leading organization dedicated to supporting children with cancer and their families. Through research funding and family support programs, they work to improve outcomes for young cancer patients.
               </p>
-              <a
-                href="https://www.barncancerfonden.se"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center text-primary font-semibold hover:underline"
-              >
+              <a href="https://www.barncancerfonden.se" target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-primary font-semibold hover:underline">
                 Learn more at barncancerfonden.se
               </a>
             </div>
-
             <div className="card-warm">
               <h3 className="text-xl font-bold text-foreground mb-4">RBU</h3>
               <p className="text-muted-foreground leading-relaxed mb-4">
                 Riksförbundet för Rörelsehindrade Barn och Ungdomar works to improve the lives of children and young people with mobility impairments in Sweden through advocacy and support programs.
               </p>
-              <a
-                href="https://www.rbu.se"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center text-primary font-semibold hover:underline"
-              >
+              <a href="https://www.rbu.se" target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-primary font-semibold hover:underline">
                 Learn more at rbu.se
               </a>
             </div>
           </div>
-
           <div className="mt-12 text-center">
             <div className="inline-flex items-center gap-3 px-8 py-4 rounded-2xl bg-primary/10">
               <Heart className="h-8 w-8 text-warm" fill="currentColor" />

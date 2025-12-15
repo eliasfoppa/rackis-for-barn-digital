@@ -1,16 +1,15 @@
 import { Layout } from "@/components/layout/Layout";
 import { Heart, Target, Users, Award, Recycle, MapPin } from "lucide-react";
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import eliasImg from "@/assets/elias.png";
 import jacobImg from "@/assets/jacob.png";
 import leaImg from "@/assets/lea.png";
 import lenkaImg from "@/assets/lenka.png";
 import lukasImg from "@/assets/lukas.png";
 
-// --- PHYSICS ENGINE: Ease-Out-Quartic ---
+// --- PHYSICS: Ease-Out-Quart (Smooth Glide) ---
 const easeOutQuart = (t: number) => 1 - Math.pow(1 - t, 4);
 
-// Generate hearts on a jittered grid like homepage
 function generateJitteredHearts(
   rows: number,
   cols: number,
@@ -19,7 +18,6 @@ function generateJitteredHearts(
   sizeRange: [number, number] = [16, 30]
 ) {
   const hearts: { x: number; y: number; size: number; delay: number }[] = [];
-
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < cols; c++) {
       const baseX = ((c + 0.5) / cols) * width;
@@ -33,34 +31,49 @@ function generateJitteredHearts(
       hearts.push({ x, y, size, delay });
     }
   }
-
   return hearts;
 }
 
 const About = () => {
   const [hearts, setHearts] = useState<{ x: number; y: number; size: number; delay: number }[]>([]);
-
-  // --- VALUES SCROLL STATE (MOBILE) ---
   const [currentStep, setCurrentStep] = useState(0);
+  
+  // Refs
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const cardWidthRef = useRef(0);
+  const visualCardWidthRef = useRef(0);
+  const paddingLeftRef = useRef(0);
   
   // Animation State
   const isAnimatingRef = useRef(false);
   const rafRef = useRef<number | null>(null);
   const touchStartRef = useRef(0);
+  const touchStartTimeRef = useRef(0);
 
   useEffect(() => {
-    const updateHearts = () => {
+    const handleResize = () => {
+      // 1. Update Hearts
       if (window.innerWidth < 768) {
         setHearts(generateJitteredHearts(2, 4, 100, 100, [12, 20]));
       } else {
         setHearts(generateJitteredHearts(3, 5, 100, 100, [16, 30]));
       }
+
+      // 2. Update Dimensions
+      if (scrollContainerRef.current && scrollContainerRef.current.firstElementChild) {
+        const firstCard = scrollContainerRef.current.firstElementChild as HTMLElement;
+        const style = window.getComputedStyle(scrollContainerRef.current);
+        const gap = parseFloat(style.gap) || 16;
+        
+        visualCardWidthRef.current = firstCard.offsetWidth;
+        cardWidthRef.current = firstCard.offsetWidth + gap;
+        paddingLeftRef.current = parseFloat(style.paddingLeft) || 0;
+      }
     };
-    updateHearts();
-    window.addEventListener("resize", updateHearts);
-    return () => window.removeEventListener("resize", updateHearts);
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   const values = [
@@ -86,8 +99,9 @@ const About = () => {
     },
   ];
 
-  // Mobile Clone Data for Infinite Loop
-  const scrollData = [...values.slice(-1), ...values, ...values.slice(0, 1)];
+  // --- DOUBLE BUFFERING ---
+  const scrollData = [values[2], values[3], ...values, values[0], values[1]];
+  const START_INDEX = 2; 
 
   const boardMembers = [
     { name: "Jacob Lehmann", role: "President & Founder", img: jacobImg },
@@ -95,38 +109,53 @@ const About = () => {
     { name: "Lea Poewe", role: "Secretary & Head of Marketing", img: leaImg },
   ];
 
-  // --- MOBILE EFFECT: Initialize Scroll ---
+  // --- CENTER OFFSET HELPER ---
+  const getCenterOffset = (container: HTMLElement, visualWidth: number) => {
+    const containerWidth = container.clientWidth;
+    return (containerWidth - visualWidth) / 2;
+  };
+
+  // --- INITIAL POSITION ---
   useEffect(() => {
-    requestAnimationFrame(() => {
-        const container = scrollContainerRef.current;
-        if (container && container.firstElementChild) {
+    const timer = setTimeout(() => {
+      const container = scrollContainerRef.current;
+      if (container && container.firstElementChild) {
           const firstCard = container.firstElementChild as HTMLElement;
           const style = window.getComputedStyle(container);
           const gap = parseFloat(style.gap) || 16;
+          
+          visualCardWidthRef.current = firstCard.offsetWidth;
           cardWidthRef.current = firstCard.offsetWidth + gap;
-          container.scrollLeft = cardWidthRef.current;
-        }
-    });
-    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
+          paddingLeftRef.current = parseFloat(style.paddingLeft) || 0;
+          
+          const offset = getCenterOffset(container, visualCardWidthRef.current);
+          container.scrollLeft = (paddingLeftRef.current + (cardWidthRef.current * START_INDEX)) - offset;
+      }
+    }, 50);
+    return () => clearTimeout(timer);
   }, []);
 
-  // --- INFINITE LOOP LOGIC (Instant Teleport) ---
+  // --- INFINITE LOOP LOGIC (Teleport) ---
   const checkInfiniteLoop = (container: HTMLElement) => {
-    const cardWidth = cardWidthRef.current;
-    if (!cardWidth) return;
+    const totalWidth = cardWidthRef.current;
+    const visualWidth = visualCardWidthRef.current;
+    const paddingLeft = paddingLeftRef.current;
+    if (!totalWidth) return;
 
-    const scrollLeft = container.scrollLeft;
-    // Buffer of 10px to detect edges early
-    if (scrollLeft <= 10) {
-      // Hit Left Edge (Clone Last) -> Jump to Real Last
-      container.scrollLeft = cardWidth * values.length + scrollLeft;
-    } else if (scrollLeft >= (cardWidth * (scrollData.length - 1)) - 10) {
-      // Hit Right Edge (Clone First) -> Jump to Real First
-      container.scrollLeft = scrollLeft - (cardWidth * values.length);
+    const offset = getCenterOffset(container, visualWidth);
+    const rawIndex = Math.round((container.scrollLeft + offset - paddingLeft) / totalWidth);
+
+    // Right Edge: [..., Real 4, Clone 1, Clone 2] -> Jump to Real 1
+    if (rawIndex >= scrollData.length - 2) {
+      container.scrollLeft = (paddingLeft + (totalWidth * (rawIndex - values.length))) - offset;
+    } 
+    // Left Edge: [Clone 3, Clone 4, Real 1...] -> Jump to Real 4
+    else if (rawIndex <= 1) {
+      container.scrollLeft = (paddingLeft + (totalWidth * (rawIndex + values.length))) - offset;
     }
   };
 
-  // --- GLIDE ENGINE ---
+  // --- SMOOTH GLIDE ENGINE ---
   const glideTo = (targetX: number) => {
     const container = scrollContainerRef.current;
     if (!container) return;
@@ -134,12 +163,12 @@ const About = () => {
 
     const startX = container.scrollLeft;
     const distance = targetX - startX;
-    const duration = 400; // Fast and smooth
+    const duration = 300; 
     const startTime = performance.now();
 
     isAnimatingRef.current = true;
-    container.style.overflowX = 'hidden'; // Lock for smoothness
     container.style.scrollSnapType = 'none';
+    container.style.overflowX = 'hidden';
 
     const animate = (currentTime: number) => {
       const elapsed = currentTime - startTime;
@@ -151,8 +180,7 @@ const About = () => {
       if (progress < 1) {
         rafRef.current = requestAnimationFrame(animate);
       } else {
-        container.style.overflowX = 'auto'; // Unlock
-        container.style.scrollSnapType = 'x mandatory';
+        container.style.overflowX = 'auto';
         isAnimatingRef.current = false;
         rafRef.current = null;
         checkInfiniteLoop(container);
@@ -161,19 +189,22 @@ const About = () => {
     rafRef.current = requestAnimationFrame(animate);
   };
 
+  // --- TOUCH HANDLERS ---
   const handleTouchStart = (e: React.TouchEvent) => {
-    if (scrollContainerRef.current) scrollContainerRef.current.style.overflowX = 'auto';
-
-    if (rafRef.current || isAnimatingRef.current) {
-        if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
         rafRef.current = null;
         isAnimatingRef.current = false;
-        if (scrollContainerRef.current) scrollContainerRef.current.style.scrollSnapType = 'x mandatory';
+    }
+    
+    if (scrollContainerRef.current) {
+        scrollContainerRef.current.style.overflowX = 'auto';
+        scrollContainerRef.current.style.scrollSnapType = 'none';
+        checkInfiniteLoop(scrollContainerRef.current);
     }
 
-    if (scrollContainerRef.current) checkInfiniteLoop(scrollContainerRef.current);
-
     touchStartRef.current = e.touches[0].clientX;
+    touchStartTimeRef.current = performance.now();
   };
 
   const handleTouchEnd = (e: React.TouchEvent) => {
@@ -181,51 +212,65 @@ const About = () => {
     if (!container) return;
 
     const touchEnd = e.changedTouches[0].clientX;
+    const touchTime = performance.now() - touchStartTimeRef.current;
     const diff = touchStartRef.current - touchEnd;
-    const cardWidth = cardWidthRef.current;
-
-    const isFlick = Math.abs(diff) > 30;
-    const isDrag = Math.abs(diff) > cardWidth / 3;
-
-    if (isFlick || isDrag) {
-      const currentScroll = container.scrollLeft;
-      const currentExactIndex = currentScroll / cardWidth;
-      const baseIndex = Math.round(currentExactIndex);
-
-      let targetIndex = baseIndex;
-      if (diff > 0) targetIndex = diff > 0 && currentExactIndex > baseIndex ? baseIndex + 1 : baseIndex + 1;
-      else targetIndex = diff < 0 && currentExactIndex < baseIndex ? baseIndex - 1 : baseIndex - 1;
-
-      if (isFlick) {
-        if (diff > 0) targetIndex = Math.floor(currentExactIndex) + 1;
-        else targetIndex = Math.ceil(currentExactIndex) - 1;
-      }
-
-      targetIndex = Math.max(0, Math.min(targetIndex, scrollData.length - 1));
-      glideTo(targetIndex * cardWidth);
+    
+    // Refresh measurements
+    if (container.firstElementChild) {
+        const firstCard = container.firstElementChild as HTMLElement;
+        const style = window.getComputedStyle(container);
+        const gap = parseFloat(style.gap) || 16;
+        visualCardWidthRef.current = firstCard.offsetWidth;
+        cardWidthRef.current = firstCard.offsetWidth + gap;
+        paddingLeftRef.current = parseFloat(style.paddingLeft) || 0;
     }
+
+    const totalWidth = cardWidthRef.current;
+    const visualWidth = visualCardWidthRef.current;
+    const paddingLeft = paddingLeftRef.current;
+
+    const offset = getCenterOffset(container, visualWidth);
+    const exactIndex = (container.scrollLeft + offset - paddingLeft) / totalWidth;
+    const rawIndex = Math.round(exactIndex);
+
+    const isFlick = touchTime < 250 && Math.abs(diff) > 20;
+    
+    let targetIndex = rawIndex;
+
+    if (isFlick) {
+        if (diff > 0) targetIndex = Math.floor(exactIndex) + 1;
+        else targetIndex = Math.ceil(exactIndex) - 1;
+    } else {
+        if (diff > 0 && exactIndex > rawIndex) targetIndex = rawIndex + 1;
+        else if (diff < 0 && exactIndex < rawIndex) targetIndex = rawIndex - 1;
+    }
+
+    targetIndex = Math.max(0, Math.min(targetIndex, scrollData.length - 1));
+    
+    // GLIDE to the CENTERED position: (Padding + Index*Width) - Offset
+    glideTo((paddingLeft + (targetIndex * totalWidth)) - offset);
   };
 
   const handleScroll = () => {
     if (!scrollContainerRef.current) return;
     
-    // Live Loop Check
+    // Allow visual updates during animation! Only block physics loop.
     if (!isAnimatingRef.current) {
-       checkInfiniteLoop(scrollContainerRef.current);
+        checkInfiniteLoop(scrollContainerRef.current);
     }
 
-    const scrollLeft = scrollContainerRef.current.scrollLeft;
-    const cardWidth = cardWidthRef.current;
-    if (cardWidth === 0) return;
-
-    const rawIndex = Math.round(scrollLeft / cardWidth);
-    let visualStep = rawIndex - 1;
-    if (rawIndex === 0) visualStep = values.length - 1;
-    if (rawIndex >= scrollData.length - 1) visualStep = 0;
+    const totalWidth = cardWidthRef.current || 1;
+    const visualWidth = visualCardWidthRef.current || totalWidth;
+    const paddingLeft = paddingLeftRef.current;
     
-    if (visualStep !== currentStep) {
-        setCurrentStep(visualStep);
-    }
+    const offset = getCenterOffset(scrollContainerRef.current, visualWidth);
+    const rawIndex = Math.round((scrollContainerRef.current.scrollLeft + offset - paddingLeft) / totalWidth);
+    
+    // Robust Dot Calculation
+    let visualStep = (rawIndex - START_INDEX);
+    visualStep = ((visualStep % values.length) + values.length) % values.length;
+    
+    if (visualStep !== currentStep) setCurrentStep(visualStep);
   };
 
   return (
@@ -234,8 +279,6 @@ const About = () => {
       <section className="bg-hero-gradient py-8 md:py-12 relative overflow-hidden min-h-[30vh] flex flex-col items-center justify-center">
         <div className="absolute top-10 right-[10%] w-32 h-32 bg-primary/10 blob animate-float" />
         <div className="absolute bottom-5 left-[5%] w-24 h-24 bg-warm/10 blob animate-wiggle" />
-
-        {/* Floating hearts */}
         {hearts.map((h, i) => (
           <Heart
             key={i}
@@ -250,7 +293,6 @@ const About = () => {
             }}
           />
         ))}
-
         <div className="container relative z-10 text-center">
           <div className="max-w-3xl mx-auto">
             <h1 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-4 animate-fade-up">
@@ -265,7 +307,7 @@ const About = () => {
         </div>
       </section>
 
-      {/* What We Are */}
+      {/* Info Sections */}
       <section className="py-8 md:py-12">
         <div className="container-narrow">
           <div className="max-w-none">
@@ -299,7 +341,6 @@ const About = () => {
         </div>
       </section>
 
-      {/* Name Meaning */}
       <section className="py-8 md:py-12 bg-section-alt">
         <div className="container-narrow text-center">
           <span className="inline-block text-sm font-bold text-accent uppercase tracking-wider mb-2">
@@ -378,7 +419,7 @@ const About = () => {
         </div>
       </section>
 
-      {/* Values (Enhanced with STATIC Grid for Intermediate Sizes) */}
+      {/* Values Section */}
       <section className="py-8 md:py-12 overflow-hidden">
         <div className="container">
           <div className="text-center mb-8">
@@ -390,13 +431,7 @@ const About = () => {
             </h2>
           </div>
 
-          {/* 
-              STATIC GRID LAYOUT
-              - Hidden on small mobile (< 768px)
-              - Visible as 2-col grid on Tablet/Desktop Mode (768px - 1024px)
-              - Visible as 4-col grid on Large Desktop (> 1024px)
-              This ensures NO SCROLLING on intermediate sizes.
-           */}
+          {/* STATIC GRID (Tablet/Desktop) */}
           <div className="hidden md:grid grid-cols-2 lg:grid-cols-4 gap-4">
             {values.map((value, index) => (
               <div
@@ -415,29 +450,29 @@ const About = () => {
             ))}
           </div>
 
-          {/* 
-              MOBILE LAYOUT (Swipeable)
-              - Hidden on Tablet/Desktop (>= 768px)
-              - Only visible on small phones
-          */}
+          {/* MOBILE LAYOUT (Custom Smooth Glide + Centered) */}
           <div className="md:hidden relative">
             <div
               ref={scrollContainerRef}
               onScroll={handleScroll}
               onTouchStart={handleTouchStart}
               onTouchEnd={handleTouchEnd}
-              className="flex overflow-x-auto snap-x snap-mandatory pb-8 gap-4 px-4 scrollbar-hide"
+              className="flex overflow-x-auto pb-8 gap-4 px-4 scrollbar-hide select-none"
               style={{
+                scrollSnapType: 'none',
                 scrollbarWidth: "none",
                 msOverflowStyle: "none",
                 overscrollBehaviorX: "contain",
-                overflowX: "auto",
+                WebkitTapHighlightColor: "transparent",
               }}
             >
               {scrollData.map((value, i) => (
                 <div
                   key={`${value.title}-${i}`}
-                  className="snap-center snap-always shrink-0 w-[85vw] max-w-[300px]"
+                  className="shrink-0 w-[85vw] max-w-[300px] transform-gpu"
+                  style={{
+                    WebkitTapHighlightColor: "transparent", 
+                  }}
                 >
                   <div className="card-warm text-center h-full flex flex-col items-center justify-center">
                     <div className="w-12 h-12 mx-auto rounded-xl bg-primary/10 flex items-center justify-center mb-3">
