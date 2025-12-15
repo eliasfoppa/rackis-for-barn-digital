@@ -127,7 +127,7 @@ export function Donate() {
                                 <div>
                                     <p className="font-bold text-foreground text-lg mb-1">When to come</p>
                                     <p className="text-muted-foreground text-base">Every day from <span className="font-semibold text-foreground">18:00 - 19:00</span></p>
-                                    <p className="text-xs text-muted-foreground mt-0.5 italic opacity-70">(Closed on Christmas Eve/Day)</p>
+                                    <p className="text-xs text-muted-foreground mt-0.5 italic opacity-70">(Closed on Christmas)</p>
                                 </div>
                             </div>
 
@@ -140,7 +140,7 @@ export function Donate() {
                                 </div>
                                 <div>
                                     <p className="font-bold text-foreground text-lg mb-1">How it works</p>
-                                    <p className="text-muted-foreground text-base">Send us a DM on Instagram to let us know you are coming, then just stop by!</p>
+                                    <p className="text-muted-foreground text-base">Send us a DM on Instagram in advance to let us know you are coming!</p>
                                 </div>
                             </div>
 
