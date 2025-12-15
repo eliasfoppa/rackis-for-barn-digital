@@ -8,7 +8,7 @@ import lenkaImg from "@/assets/lenka.png";
 import lukasImg from "@/assets/lukas.png";
 // --- PARTNER LOGO IMPORTS ---
 import uuInnovationLogo from "@/assets/uu-innovation.png";
-import uppsalahemLogo from "@/assets/uppsalahem.png";
+// import uppsalahemLogo from "@/assets/uppsalahem.png";
 
 // --- PHYSICS: Ease-Out-Quart (Smooth Glide) ---
 const easeOutQuart = (t: number) => 1 - Math.pow(1 - t, 4);
@@ -52,7 +52,6 @@ const About = () => {
   const touchStartTimeRef = useRef(0);
 
   // --- PARTNERS CAROUSEL STATE ---
-  // We need SEPARATE refs for the partners carousel so they don't conflict
   const [partnerStep, setPartnerStep] = useState(0);
   const partnerScrollRef = useRef<HTMLDivElement>(null);
   const partnerCardWidthRef = useRef(0);
@@ -129,12 +128,6 @@ const About = () => {
       description: "Uppsala University Innovation provides guidance and resources to help Rackis for Barn expand its reach and positive impact.",
       url: "https://www.uuinnovation.uu.se",
     },
-    // {
-    //   name: "Uppsalahem",
-    //   logo: uppsalahemLogo, 
-    //   description: "Generously provides access to storage units...",
-    //   url: "https://www.uppsalahem.se",
-    // },
   ];
 
   const isPartnerSingle = partners.length === 1;
@@ -198,10 +191,7 @@ const About = () => {
   }, [partners.length, isPartnerSingle]);
 
 
-  // =========================================================
-  //  GENERIC ANIMATION HELPERS (Reused for both carousels)
-  // =========================================================
-
+  // --- GENERIC ANIMATION HELPERS ---
   const checkLoop = (
     container: HTMLElement, 
     totalWidth: number, 
@@ -292,21 +282,15 @@ const About = () => {
     }
 
     targetIndex = Math.max(0, Math.min(targetIndex, dataLen - 1));
-    glide(container, (paddingLeft + (targetIndex * totalWidth)) - offset, animRef, rafRef, () => {
-        // onComplete check loop
-        // We need to pass the checkLoop params again here, or simplify by calling it in handleScroll
-    });
+    glide(container, (paddingLeft + (targetIndex * totalWidth)) - offset, animRef, rafRef, () => {});
   };
 
-  // =========================================================
-  //  VALUES CAROUSEL HANDLERS
-  // =========================================================
+  // --- VALUES CAROUSEL HANDLERS ---
   const handleValuesScroll = () => {
     if (!scrollContainerRef.current) return;
     if (!isAnimatingRef.current) {
         checkLoop(scrollContainerRef.current, cardWidthRef.current, visualCardWidthRef.current, paddingLeftRef.current, valuesScrollData.length, values.length, false);
     }
-    // Update Dots
     const offset = getCenterOffset(scrollContainerRef.current, visualCardWidthRef.current);
     const rawIndex = Math.round((scrollContainerRef.current.scrollLeft + offset - paddingLeftRef.current) / cardWidthRef.current);
     let visualStep = (rawIndex - VALUES_START);
@@ -324,15 +308,12 @@ const About = () => {
     handleTouchEndGeneric(e, scrollContainerRef.current!, touchStartRef.current, touchStartTimeRef.current, cardWidthRef.current, visualCardWidthRef.current, paddingLeftRef.current, valuesScrollData.length, false, isAnimatingRef, rafRef);
   };
 
-  // =========================================================
-  //  PARTNERS CAROUSEL HANDLERS
-  // =========================================================
+  // --- PARTNERS CAROUSEL HANDLERS ---
   const handlePartnersScroll = () => {
     if (!partnerScrollRef.current || isPartnerSingle) return;
     if (!partnerAnimatingRef.current) {
         checkLoop(partnerScrollRef.current, partnerCardWidthRef.current, partnerVisualWidthRef.current, partnerPaddingRef.current, partnersScrollData.length, partners.length, isPartnerSingle);
     }
-    // Update Dots
     const offset = getCenterOffset(partnerScrollRef.current, partnerVisualWidthRef.current);
     const rawIndex = Math.round((partnerScrollRef.current.scrollLeft + offset - partnerPaddingRef.current) / partnerCardWidthRef.current);
     let visualStep = (rawIndex - PARTNER_START);
@@ -621,7 +602,7 @@ const About = () => {
         </div>
       </section>
 
-      {/* --- PARTNERS SECTION (Added at the bottom) --- */}
+      {/* --- PARTNERS SECTION --- */}
       <section className="section-padding bg-section-light">
         <div className="container">
           <div className="text-center mb-8">
@@ -630,13 +611,16 @@ const About = () => {
           </div>
 
           {/* --- MOBILE (SCROLLING) --- */}
-          <div className="md:hidden relative">
+          <div className="md:hidden relative w-full flex flex-col items-center"> {/* FIXED PARENT */}
             <div
               ref={partnerScrollRef}
               onScroll={handlePartnersScroll}
               onTouchStart={handlePartnersTouchStart}
               onTouchEnd={handlePartnersTouchEnd}
-              className={`flex pb-8 gap-4 px-4 scrollbar-hide select-none ${isPartnerSingle ? 'overflow-hidden justify-center' : 'overflow-x-auto'}`}
+              className={`
+                flex pb-8 gap-4 px-4 scrollbar-hide select-none w-full
+                ${isPartnerSingle ? 'justify-center overflow-hidden' : 'overflow-x-auto justify-start'} 
+              `}
               style={{
                 scrollSnapType: 'none',
                 scrollbarWidth: "none",

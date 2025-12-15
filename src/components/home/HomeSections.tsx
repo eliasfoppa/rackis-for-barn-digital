@@ -2,9 +2,9 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Heart, Recycle, ShoppingBag, MapPin, Instagram, Bike, Home, Users, Gift } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState, useEffect, useRef, useCallback } from "react";
-import Logo from "@/assets/logo.png"; 
+import Logo from "@/assets/logo.png";
 import uuInnovationLogo from "@/assets/uu-innovation.png";
-import uppsalahemLogo from "@/assets/uppsalahem.png"; 
+import uppsalahemLogo from "@/assets/uppsalahem.png";
 
 // --- PHYSICS: Ease-Out-Quart (Stable, Smooth) ---
 const easeOutQuart = (t: number) => 1 - Math.pow(1 - t, 4);
@@ -43,9 +43,9 @@ export function HeroSection() {
   useEffect(() => {
     const updateHearts = () => {
       if (window.innerWidth < 768) {
-        setHearts(generateJitteredHearts(3, 5, 100, 100, [12, 20])); 
+        setHearts(generateJitteredHearts(3, 5, 100, 100, [12, 20]));
       } else {
-        setHearts(generateJitteredHearts(4, 7, 100, 100, [16, 30])); 
+        setHearts(generateJitteredHearts(4, 7, 100, 100, [16, 30]));
       }
     };
 
@@ -124,7 +124,6 @@ export function HeroSection() {
   );
 }
 
-// --- HOW IT WORKS SECTION (Fixed: Pixel-Perfect Centering & Dots) ---
 export function HowItWorksSection() {
   const [currentStep, setCurrentStep] = useState(0);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -147,14 +146,14 @@ export function HowItWorksSection() {
     {
       icon: Heart,
       title: "Support",
-      description: "All profits from your purchase go directly to Barncancerfonden and RBU, supporting children in need.",
+      description: "All profits from your purchase go directly to Barncancerfonden and RBU.",
       color: "bg-warm/10 text-warm",
       action: { type: "scroll", target: "charities" },
     },
     {
       icon: Gift,
       title: "Donate",
-      description: "Moving out? Give items a second life. We accept everything from bedding to bikes and more.",
+      description: "Moving out? Give items a second life. We accept everything from bedding to bikes.",
       color: "bg-primary/10 text-primary",
       action: { type: "link", to: "/donate" },
     },
@@ -326,8 +325,6 @@ export function HowItWorksSection() {
     const isFlick = touchTime < 250 && Math.abs(diff) > 20;
     let targetIndex = rawIndex;
     
-    // Explicit Directional Check for flick
-    // We compare rawIndex (float) before rounding vs after to determine drift
     const exactIndex = (container.scrollLeft + offset - paddingLeft) / totalWidth;
 
     if (isFlick) {
@@ -339,8 +336,6 @@ export function HowItWorksSection() {
     }
 
     targetIndex = Math.max(0, Math.min(targetIndex, scrollData.length - 1));
-    
-    // Correct Target Calculation: (Padding + Index*Width) - CenteredOffset
     glideTo((paddingLeft + (targetIndex * totalWidth)) - offset);
   };
 
@@ -354,7 +349,6 @@ export function HowItWorksSection() {
     
     const offset = getCenterOffset(scrollContainerRef.current, visualWidth);
     
-    // Calc raw index
     const rawIndex = Math.round((scrollContainerRef.current.scrollLeft + offset - paddingLeft) / totalWidth);
 
     let visualStep = (rawIndex - START_INDEX);
@@ -373,9 +367,8 @@ export function HowItWorksSection() {
           </p>
         </div>
 
-        {/* Desktop XL and MD/LG ... (unchanged) */}
+        {/* Desktop XL ... (unchanged) */}
         <div className="hidden xl:block relative mx-auto" style={{ width: containerWidth, height: containerHeight }}>
-            {/* ... SVG and boxes ... */}
              <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 1 }}>
             <circle cx={circleCX} cy={circleCY} r={circleR} stroke="#0024a8" strokeWidth="4" fill="none" opacity="0.2" />
           </svg>
@@ -406,6 +399,7 @@ export function HowItWorksSection() {
           })}
         </div>
         
+        {/* MD/LG Layout (unchanged) */}
         <div className="hidden md:flex xl:hidden justify-center gap-6 px-4">
           {steps.map((step, i) => {
             const Icon = step.icon;
@@ -429,7 +423,7 @@ export function HowItWorksSection() {
           })}
         </div>
 
-        {/* 3. MOBILE (Fixed) */}
+        {/* MOBILE (Fixed width to max-w-[300px]) */}
         <div className="md:hidden relative">
           <div
             ref={scrollContainerRef}
@@ -450,7 +444,8 @@ export function HowItWorksSection() {
               return (
                 <div 
                   key={`${step.title}-${i}`} 
-                  className="shrink-0 w-[85vw] max-w-[350px] transform-gpu"
+                  // CHANGED: max-w-[350px] -> max-w-[300px]
+                  className="shrink-0 w-[85vw] max-w-[300px] transform-gpu"
                   style={{ WebkitTapHighlightColor: "transparent" }}
                 >
                   <div className="card-warm text-center flex flex-col h-full shadow-md border border-stone-100/50">
@@ -487,7 +482,6 @@ export function HowItWorksSection() {
   );
 }
 
-// --- WHY CHOOSE US SECTION (Fixed: Pixel-Perfect Centering & Dots) ---
 export function WhyChooseUsSection() {
   const [currentStep, setCurrentStep] = useState(0);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -522,12 +516,12 @@ export function WhyChooseUsSection() {
       if (container && container.firstElementChild) {
         const firstCard = container.firstElementChild as HTMLElement;
         const style = window.getComputedStyle(container);
-        const gap = parseFloat(style.gap) || 16; 
-        
+        const gap = parseFloat(style.gap) || 16;
+
         visualCardWidthRef.current = firstCard.offsetWidth;
         cardWidthRef.current = firstCard.offsetWidth + gap;
         paddingLeftRef.current = parseFloat(style.paddingLeft) || 0;
-        
+
         const offset = getCenterOffset(container, visualCardWidthRef.current);
         // Padding fix applied
         container.scrollLeft = (paddingLeftRef.current + (cardWidthRef.current * START_INDEX)) - offset;
@@ -547,7 +541,7 @@ export function WhyChooseUsSection() {
 
     if (rawIndex >= scrollData.length - 2) {
       container.scrollLeft = (paddingLeft + (totalWidth * (rawIndex - benefits.length))) - offset;
-    } 
+    }
     else if (rawIndex <= 1) {
       container.scrollLeft = (paddingLeft + (totalWidth * (rawIndex + benefits.length))) - offset;
     }
@@ -560,11 +554,11 @@ export function WhyChooseUsSection() {
 
     const startX = container.scrollLeft;
     const distance = targetX - startX;
-    const duration = 300; 
+    const duration = 300;
     const startTime = performance.now();
 
     isAnimatingRef.current = true;
-    container.style.overflowX = 'hidden'; 
+    container.style.overflowX = 'hidden';
     container.style.scrollSnapType = 'none';
 
     const animate = (currentTime: number) => {
@@ -588,15 +582,15 @@ export function WhyChooseUsSection() {
 
   const handleTouchStart = (e: React.TouchEvent) => {
     if (rafRef.current) {
-        cancelAnimationFrame(rafRef.current);
-        rafRef.current = null;
-        isAnimatingRef.current = false;
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+      isAnimatingRef.current = false;
     }
 
     if (scrollContainerRef.current) {
-        scrollContainerRef.current.style.overflowX = 'auto';
-        scrollContainerRef.current.style.scrollSnapType = 'none';
-        checkInfiniteLoop(scrollContainerRef.current);
+      scrollContainerRef.current.style.overflowX = 'auto';
+      scrollContainerRef.current.style.scrollSnapType = 'none';
+      checkInfiniteLoop(scrollContainerRef.current);
     }
 
     touchStartRef.current = e.touches[0].clientX;
@@ -606,39 +600,39 @@ export function WhyChooseUsSection() {
   const handleTouchEnd = (e: React.TouchEvent) => {
     const container = scrollContainerRef.current;
     if (!container) return;
-    
+
     const touchEnd = e.changedTouches[0].clientX;
     const touchTime = performance.now() - touchStartTimeRef.current;
     const diff = touchStartRef.current - touchEnd;
-    
+
     if (container.firstElementChild) {
-        const firstCard = container.firstElementChild as HTMLElement;
-        const style = window.getComputedStyle(container);
-        const gap = parseFloat(style.gap) || 16;
-        visualCardWidthRef.current = firstCard.offsetWidth;
-        cardWidthRef.current = firstCard.offsetWidth + gap;
-        paddingLeftRef.current = parseFloat(style.paddingLeft) || 0;
+      const firstCard = container.firstElementChild as HTMLElement;
+      const style = window.getComputedStyle(container);
+      const gap = parseFloat(style.gap) || 16;
+      visualCardWidthRef.current = firstCard.offsetWidth;
+      cardWidthRef.current = firstCard.offsetWidth + gap;
+      paddingLeftRef.current = parseFloat(style.paddingLeft) || 0;
     }
 
     const totalWidth = cardWidthRef.current;
     const visualWidth = visualCardWidthRef.current;
     const paddingLeft = paddingLeftRef.current;
-    
+
     const offset = getCenterOffset(container, visualWidth);
     const exactIndex = (container.scrollLeft + offset - paddingLeft) / totalWidth;
     const rawIndex = Math.round(exactIndex);
 
     const isFlick = touchTime < 250 && Math.abs(diff) > 20;
-    
+
     let targetIndex = rawIndex;
     if (isFlick) {
       if (diff > 0) targetIndex = Math.floor(exactIndex) + 1;
       else targetIndex = Math.ceil(exactIndex) - 1;
     } else {
-       if (diff > 0 && exactIndex > rawIndex) targetIndex = rawIndex + 1;
-       else if (diff < 0 && exactIndex < rawIndex) targetIndex = rawIndex - 1;
+      if (diff > 0 && exactIndex > rawIndex) targetIndex = rawIndex + 1;
+      else if (diff < 0 && exactIndex < rawIndex) targetIndex = rawIndex - 1;
     }
-      
+
     targetIndex = Math.max(0, Math.min(targetIndex, scrollData.length - 1));
     glideTo((paddingLeft + (targetIndex * totalWidth)) - offset);
   };
@@ -650,13 +644,13 @@ export function WhyChooseUsSection() {
     const totalWidth = cardWidthRef.current || 1;
     const visualWidth = visualCardWidthRef.current || totalWidth;
     const paddingLeft = paddingLeftRef.current;
-    
+
     const offset = getCenterOffset(scrollContainerRef.current, visualWidth);
     const rawIndex = Math.round((scrollContainerRef.current.scrollLeft + offset - paddingLeft) / totalWidth);
 
     let visualStep = (rawIndex - START_INDEX);
     visualStep = ((visualStep % benefits.length) + benefits.length) % benefits.length;
-    
+
     if (visualStep !== currentStep) setCurrentStep(visualStep);
   };
 
@@ -688,7 +682,12 @@ export function WhyChooseUsSection() {
             }}
           >
             {scrollData.map((benefit, i) => (
-              <div key={`${benefit.title}-${i}`} className="shrink-0 w-[85vw] max-w-[350px] transform-gpu" style={{ WebkitTapHighlightColor: "transparent" }}>
+              <div
+                key={`${benefit.title}-${i}`}
+                // CHANGED: max-w-[350px] -> max-w-[300px] to match About page style
+                className="shrink-0 w-[85vw] max-w-[300px] transform-gpu"
+                style={{ WebkitTapHighlightColor: "transparent" }}
+              >
                 <div className="h-full p-6 rounded-2xl bg-card/80 backdrop-blur border border-border flex flex-col items-center text-center shadow-sm">
                   <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
                     <benefit.icon className="h-7 w-7 text-primary" />
@@ -704,9 +703,8 @@ export function WhyChooseUsSection() {
             {benefits.map((_, i) => (
               <div
                 key={i}
-                className={`h-2 rounded-full transition-all duration-300 ${
-                  currentStep === i ? "w-8 bg-primary" : "w-2 bg-primary/20"
-                }`}
+                className={`h-2 rounded-full transition-all duration-300 ${currentStep === i ? "w-8 bg-primary" : "w-2 bg-primary/20"
+                  }`}
               />
             ))}
           </div>
@@ -771,13 +769,13 @@ export function AboutCharitiesSection() {
 
 export function PartnersSection() {
   const [currentStep, setCurrentStep] = useState(0);
-  
+
   // Refs
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const cardWidthRef = useRef(0);
   const visualCardWidthRef = useRef(0);
   const paddingLeftRef = useRef(0);
-  
+
   // Animation State
   const isAnimatingRef = useRef(false);
   const rafRef = useRef<number | null>(null);
@@ -787,14 +785,13 @@ export function PartnersSection() {
   const partners = [
     {
       name: "Uppsala University Innovation",
-      // 2. USE THE IMPORTED VARIABLE (No quotes!)
-      logo: uuInnovationLogo, 
+      logo: uuInnovationLogo,
       description: "Uppsala University Innovation provides guidance and resources to help Rackis for Barn expand its reach and positive impact.",
       url: "https://www.uuinnovation.uu.se",
     },
     // {
     //   name: "Uppsalahem",
-    //   logo: uppsalahemLogo, // Ready for when you uncomment
+    //   logo: uppsalahemLogo, 
     //   description: "Generously provides access to storage units, enabling us to collect and sell items directly at student housing locations.",
     //   url: "https://www.uppsalahem.se",
     // },
@@ -805,17 +802,16 @@ export function PartnersSection() {
 
   // --- DOUBLE BUFFERING (Only if > 1) ---
   const len = partners.length;
-  // If single, just show the one item. If multiple, create the loop buffer.
-  const scrollData = isSingle 
-    ? partners 
+  const scrollData = isSingle
+    ? partners
     : [
-        partners[(len - 2 + len) % len],
-        partners[(len - 1 + len) % len],
-        ...partners,
-        partners[0],
-        partners[1 % len]
-      ];
-      
+      partners[(len - 2 + len) % len],
+      partners[(len - 1 + len) % len],
+      ...partners,
+      partners[0],
+      partners[1 % len]
+    ];
+
   const START_INDEX = isSingle ? 0 : 2;
 
   // --- CENTER OFFSET HELPER ---
@@ -832,26 +828,23 @@ export function PartnersSection() {
         const firstCard = container.firstElementChild as HTMLElement;
         const style = window.getComputedStyle(container);
         const gap = parseFloat(style.gap) || 16;
-        
+
         visualCardWidthRef.current = firstCard.offsetWidth;
         cardWidthRef.current = firstCard.offsetWidth + gap;
         paddingLeftRef.current = parseFloat(style.paddingLeft) || 0;
-        
+
         const offset = getCenterOffset(container, visualCardWidthRef.current);
-        
-        // If single, we just want it centered (Index 0). 
-        // If loop, we start at the buffer index.
         const targetIndex = isSingle ? 0 : START_INDEX;
-        
+
         container.scrollLeft = (paddingLeftRef.current + (cardWidthRef.current * targetIndex)) - offset;
       }
     }, 50);
     return () => clearTimeout(timer);
-  }, [partners.length, isSingle]); 
+  }, [partners.length, isSingle]);
 
   // --- INFINITE LOOP LOGIC ---
   const checkInfiniteLoop = (container: HTMLElement) => {
-    if (isSingle) return; // Disable loop for single item
+    if (isSingle) return;
 
     const totalWidth = cardWidthRef.current;
     const visualWidth = visualCardWidthRef.current;
@@ -876,7 +869,7 @@ export function PartnersSection() {
 
     const startX = container.scrollLeft;
     const distance = targetX - startX;
-    const duration = 300; 
+    const duration = 300;
     const startTime = performance.now();
 
     isAnimatingRef.current = true;
@@ -904,18 +897,18 @@ export function PartnersSection() {
 
   // --- TOUCH HANDLERS ---
   const handleTouchStart = (e: React.TouchEvent) => {
-    if (isSingle) return; // Disable touch logic for single item
+    if (isSingle) return;
 
     if (rafRef.current) {
-        cancelAnimationFrame(rafRef.current);
-        rafRef.current = null;
-        isAnimatingRef.current = false;
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+      isAnimatingRef.current = false;
     }
-    
+
     if (scrollContainerRef.current) {
-        scrollContainerRef.current.style.overflowX = 'auto';
-        scrollContainerRef.current.style.scrollSnapType = 'none';
-        checkInfiniteLoop(scrollContainerRef.current);
+      scrollContainerRef.current.style.overflowX = 'auto';
+      scrollContainerRef.current.style.scrollSnapType = 'none';
+      checkInfiniteLoop(scrollContainerRef.current);
     }
 
     touchStartRef.current = e.touches[0].clientX;
@@ -923,7 +916,7 @@ export function PartnersSection() {
   };
 
   const handleTouchEnd = (e: React.TouchEvent) => {
-    if (isSingle) return; // Disable touch logic for single item
+    if (isSingle) return;
 
     const container = scrollContainerRef.current;
     if (!container) return;
@@ -931,15 +924,14 @@ export function PartnersSection() {
     const touchEnd = e.changedTouches[0].clientX;
     const touchTime = performance.now() - touchStartTimeRef.current;
     const diff = touchStartRef.current - touchEnd;
-    
-    // Refresh measurements
+
     if (container.firstElementChild) {
-        const firstCard = container.firstElementChild as HTMLElement;
-        const style = window.getComputedStyle(container);
-        const gap = parseFloat(style.gap) || 16;
-        visualCardWidthRef.current = firstCard.offsetWidth;
-        cardWidthRef.current = firstCard.offsetWidth + gap;
-        paddingLeftRef.current = parseFloat(style.paddingLeft) || 0;
+      const firstCard = container.firstElementChild as HTMLElement;
+      const style = window.getComputedStyle(container);
+      const gap = parseFloat(style.gap) || 16;
+      visualCardWidthRef.current = firstCard.offsetWidth;
+      cardWidthRef.current = firstCard.offsetWidth + gap;
+      paddingLeftRef.current = parseFloat(style.paddingLeft) || 0;
     }
 
     const totalWidth = cardWidthRef.current;
@@ -951,15 +943,14 @@ export function PartnersSection() {
     const rawIndex = Math.round(exactIndex);
 
     const isFlick = touchTime < 250 && Math.abs(diff) > 20;
-    
     let targetIndex = rawIndex;
 
     if (isFlick) {
-        if (diff > 0) targetIndex = Math.floor(exactIndex) + 1;
-        else targetIndex = Math.ceil(exactIndex) - 1;
+      if (diff > 0) targetIndex = Math.floor(exactIndex) + 1;
+      else targetIndex = Math.ceil(exactIndex) - 1;
     } else {
-        if (diff > 0 && exactIndex > rawIndex) targetIndex = rawIndex + 1;
-        else if (diff < 0 && exactIndex < rawIndex) targetIndex = rawIndex - 1;
+      if (diff > 0 && exactIndex > rawIndex) targetIndex = rawIndex + 1;
+      else if (diff < 0 && exactIndex < rawIndex) targetIndex = rawIndex - 1;
     }
 
     targetIndex = Math.max(0, Math.min(targetIndex, scrollData.length - 1));
@@ -968,41 +959,43 @@ export function PartnersSection() {
 
   const handleScroll = () => {
     if (!scrollContainerRef.current || isSingle) return;
-    
+
     if (!isAnimatingRef.current) {
-        checkInfiniteLoop(scrollContainerRef.current);
+      checkInfiniteLoop(scrollContainerRef.current);
     }
 
     const totalWidth = cardWidthRef.current || 1;
     const visualWidth = visualCardWidthRef.current || totalWidth;
     const paddingLeft = paddingLeftRef.current;
-    
+
     const offset = getCenterOffset(scrollContainerRef.current, visualWidth);
     const rawIndex = Math.round((scrollContainerRef.current.scrollLeft + offset - paddingLeft) / totalWidth);
-    
+
     let visualStep = (rawIndex - START_INDEX);
     visualStep = ((visualStep % partners.length) + partners.length) % partners.length;
-    
+
     if (visualStep !== currentStep) setCurrentStep(visualStep);
   };
 
   return (
-    <section className="section-padding bg-section-light">
+    <section className="pt-8 pb-20 md:pt-12 md:pb-32 bg-section-light">
       <div className="container">
         <div className="text-center mb-8">
-            <span className="inline-block text-sm font-bold text-primary uppercase tracking-wider mb-3">In collaboration with</span>
-            <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground">Our Supportive Partners</h2>
+          <span className="inline-block text-sm font-bold text-primary uppercase tracking-wider mb-3">In collaboration with</span>
+          <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground">Our Supportive Partners</h2>
         </div>
 
         {/* --- MOBILE (SCROLLING) --- */}
-        <div className="md:hidden relative">
+        <div className="md:hidden relative w-full flex flex-col items-center"> {/* FIXED PARENT */}
           <div
             ref={scrollContainerRef}
             onScroll={handleScroll}
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
-            // Use 'overflow-hidden' if single to lock it, 'overflow-x-auto' if multiple
-            className={`flex pb-8 gap-4 px-4 scrollbar-hide select-none ${isSingle ? 'overflow-hidden justify-center' : 'overflow-x-auto'}`}
+            className={`
+              flex pb-8 gap-4 px-4 scrollbar-hide select-none w-full
+              ${isSingle ? 'justify-center overflow-hidden' : 'overflow-x-auto justify-start'} 
+            `}
             style={{
               scrollSnapType: 'none',
               scrollbarWidth: "none",
@@ -1012,43 +1005,42 @@ export function PartnersSection() {
             }}
           >
             {scrollData.map((partner, i) => (
-               <div
-                  key={`${partner.name}-${i}`}
-                  className="shrink-0 w-[85vw] max-w-[300px] transform-gpu"
-                  style={{ WebkitTapHighlightColor: "transparent" }}
-               >
-                  <a 
-                    href={partner.url} 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    className="flex flex-col items-center justify-center h-full p-6 rounded-2xl bg-white/50 backdrop-blur border border-transparent active:scale-95 transition-transform"
-                  >
-                    <div className="flex items-center justify-center w-full h-32 mb-3">
-                      <img src={partner.logo} alt={`${partner.name} Logo`} className="max-h-full max-w-full object-contain" />
-                    </div>
-                    <p className="text-muted-foreground text-center text-sm">{partner.description}</p>
-                  </a>
-               </div>
+              <div
+                key={`${partner.name}-${i}`}
+                className="shrink-0 w-[85vw] max-w-[300px] transform-gpu"
+                style={{ WebkitTapHighlightColor: "transparent" }}
+              >
+                <a
+                  href={partner.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex flex-col items-center justify-center h-full p-6 rounded-2xl bg-white/50 backdrop-blur border border-transparent active:scale-95 transition-transform"
+                >
+                  <div className="flex items-center justify-center w-full h-32 mb-3">
+                    <img src={partner.logo} alt={`${partner.name} Logo`} className="max-h-full max-w-full object-contain" />
+                  </div>
+                  <p className="text-muted-foreground text-center text-sm">{partner.description}</p>
+                </a>
+              </div>
             ))}
             {!isSingle && <div className="w-4 shrink-0" />}
           </div>
 
-          {/* Dots Indicator - Only Show if Multiple */}
+          {/* Dots Indicator */}
           {!isSingle && (
             <div className="flex justify-center gap-2 mt-2">
-                {partners.map((_, i) => (
+              {partners.map((_, i) => (
                 <div
-                    key={i}
-                    className={`h-2 rounded-full transition-all duration-300 ${
-                    currentStep === i ? "w-8 bg-primary" : "w-2 bg-primary/20"
+                  key={i}
+                  className={`h-2 rounded-full transition-all duration-300 ${currentStep === i ? "w-8 bg-primary" : "w-2 bg-primary/20"
                     }`}
                 />
-                ))}
+              ))}
             </div>
           )}
         </div>
 
-        {/* --- DESKTOP (GRID - Unchanged) --- */}
+        {/* --- DESKTOP (GRID) --- */}
         <div className="hidden md:flex flex-wrap justify-center gap-16 items-center">
           {partners.map((partner) => (
             <a key={partner.name} href={partner.url} target="_blank" rel="noopener noreferrer" className="flex flex-col items-center max-w-xs hover:scale-105 transition-transform">
