@@ -3,8 +3,8 @@ import {
   HeroSection, 
   HowItWorksSection, // Must be imported for the fix to run
   WhyChooseUsSection, 
-  PartnersSection,
   AboutCharitiesSection,
+  PartnersSection,
   CTASection 
 } from "@/components/home/HomeSections";
 
@@ -14,8 +14,8 @@ const Index = () => {
       <HeroSection />
       <HowItWorksSection />
       <WhyChooseUsSection />
-      {/* <PartnersSection /> */}
       <AboutCharitiesSection />
+      <PartnersSection />
       <CTASection />
     </Layout>
   );

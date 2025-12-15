@@ -726,42 +726,6 @@ export function WhyChooseUsSection() {
   );
 }
 
-export function PartnersSection() {
-  const partners = [
-    {
-      name: "Uppsala University Innovation",
-      logo: "/src/assets/uu-innovation.png",
-      description: "Uppsala University Innovation provides guidance and resources to help Rackis for Barn expand its reach and positive impact.",
-      url: "https://www.uuinnovation.uu.se",
-    },
-    {
-      name: "Uppsalahem",
-      logo: "/src/assets/uppsalahem.png",
-      description: "Generously provides access to storage units, enabling us to collect and sell items directly at student housing locations.",
-      url: "https://www.uppsalahem.se",
-    },
-  ];
-
-  return (
-    <section className="section-padding bg-section-light">
-      <div className="container text-center">
-        <span className="inline-block text-sm font-bold text-primary uppercase tracking-wider mb-3">In collaboration with</span>
-        <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-8">Our Supportive Partners</h2>
-        <div className="flex flex-wrap justify-center gap-16 items-center">
-          {partners.map((partner) => (
-            <a key={partner.name} href={partner.url} target="_blank" rel="noopener noreferrer" className="flex flex-col items-center max-w-xs hover:scale-105 transition-transform">
-              <div className="flex items-center justify-center w-64 h-32 mb-3">
-                <img src={partner.logo} alt={`${partner.name} Logo`} className="max-h-full max-w-full object-contain" />
-              </div>
-              <p className="text-muted-foreground text-center">{partner.description}</p>
-            </a>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
 export function AboutCharitiesSection() {
   return (
     <section id="charities" className="section-padding">
@@ -797,6 +761,300 @@ export function AboutCharitiesSection() {
               <p className="font-display text-xl font-bold text-foreground">100% of profits go to these charities</p>
             </div>
           </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export function PartnersSection() {
+  const [currentStep, setCurrentStep] = useState(0);
+  
+  // Refs
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const cardWidthRef = useRef(0);
+  const visualCardWidthRef = useRef(0);
+  const paddingLeftRef = useRef(0);
+  
+  // Animation State
+  const isAnimatingRef = useRef(false);
+  const rafRef = useRef<number | null>(null);
+  const touchStartRef = useRef(0);
+  const touchStartTimeRef = useRef(0);
+
+  const partners = [
+    {
+      name: "Uppsala University Innovation",
+      logo: "/src/assets/uu-innovation.png", 
+      description: "Uppsala University Innovation provides guidance and resources to help Rackis for Barn expand its reach and positive impact.",
+      url: "https://www.uuinnovation.uu.se",
+    },
+    // {
+    //   name: "Uppsalahem",
+    //   logo: "/src/assets/uppsalahem.png",
+    //   description: "Generously provides access to storage units, enabling us to collect and sell items directly at student housing locations.",
+    //   url: "https://www.uppsalahem.se",
+    // },
+  ];
+
+  // --- LOGIC SWITCH ---
+  const isSingle = partners.length === 1;
+
+  // --- DOUBLE BUFFERING (Only if > 1) ---
+  const len = partners.length;
+  // If single, just show the one item. If multiple, create the loop buffer.
+  const scrollData = isSingle 
+    ? partners 
+    : [
+        partners[(len - 2 + len) % len],
+        partners[(len - 1 + len) % len],
+        ...partners,
+        partners[0],
+        partners[1 % len]
+      ];
+      
+  const START_INDEX = isSingle ? 0 : 2;
+
+  // --- CENTER OFFSET HELPER ---
+  const getCenterOffset = (container: HTMLElement, visualWidth: number) => {
+    const containerWidth = container.clientWidth;
+    return (containerWidth - visualWidth) / 2;
+  };
+
+  // --- INITIAL POSITION ---
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const container = scrollContainerRef.current;
+      if (container && container.firstElementChild) {
+        const firstCard = container.firstElementChild as HTMLElement;
+        const style = window.getComputedStyle(container);
+        const gap = parseFloat(style.gap) || 16;
+        
+        visualCardWidthRef.current = firstCard.offsetWidth;
+        cardWidthRef.current = firstCard.offsetWidth + gap;
+        paddingLeftRef.current = parseFloat(style.paddingLeft) || 0;
+        
+        const offset = getCenterOffset(container, visualCardWidthRef.current);
+        
+        // If single, we just want it centered (Index 0). 
+        // If loop, we start at the buffer index.
+        const targetIndex = isSingle ? 0 : START_INDEX;
+        
+        container.scrollLeft = (paddingLeftRef.current + (cardWidthRef.current * targetIndex)) - offset;
+      }
+    }, 50);
+    return () => clearTimeout(timer);
+  }, [partners.length, isSingle]); 
+
+  // --- INFINITE LOOP LOGIC ---
+  const checkInfiniteLoop = (container: HTMLElement) => {
+    if (isSingle) return; // Disable loop for single item
+
+    const totalWidth = cardWidthRef.current;
+    const visualWidth = visualCardWidthRef.current;
+    const paddingLeft = paddingLeftRef.current;
+    if (!totalWidth) return;
+
+    const offset = getCenterOffset(container, visualWidth);
+    const rawIndex = Math.round((container.scrollLeft + offset - paddingLeft) / totalWidth);
+
+    if (rawIndex >= scrollData.length - 2) {
+      container.scrollLeft = (paddingLeft + (totalWidth * (rawIndex - partners.length))) - offset;
+    } else if (rawIndex <= 1) {
+      container.scrollLeft = (paddingLeft + (totalWidth * (rawIndex + partners.length))) - offset;
+    }
+  };
+
+  // --- SMOOTH GLIDE ENGINE ---
+  const glideTo = (targetX: number) => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+
+    const startX = container.scrollLeft;
+    const distance = targetX - startX;
+    const duration = 300; 
+    const startTime = performance.now();
+
+    isAnimatingRef.current = true;
+    container.style.scrollSnapType = 'none';
+    container.style.overflowX = 'hidden';
+
+    const animate = (currentTime: number) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const ease = easeOutQuart(progress);
+
+      container.scrollLeft = startX + (distance * ease);
+
+      if (progress < 1) {
+        rafRef.current = requestAnimationFrame(animate);
+      } else {
+        container.style.overflowX = 'auto';
+        isAnimatingRef.current = false;
+        rafRef.current = null;
+        checkInfiniteLoop(container);
+      }
+    };
+    rafRef.current = requestAnimationFrame(animate);
+  };
+
+  // --- TOUCH HANDLERS ---
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (isSingle) return; // Disable touch logic for single item
+
+    if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+        rafRef.current = null;
+        isAnimatingRef.current = false;
+    }
+    
+    if (scrollContainerRef.current) {
+        scrollContainerRef.current.style.overflowX = 'auto';
+        scrollContainerRef.current.style.scrollSnapType = 'none';
+        checkInfiniteLoop(scrollContainerRef.current);
+    }
+
+    touchStartRef.current = e.touches[0].clientX;
+    touchStartTimeRef.current = performance.now();
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (isSingle) return; // Disable touch logic for single item
+
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    const touchEnd = e.changedTouches[0].clientX;
+    const touchTime = performance.now() - touchStartTimeRef.current;
+    const diff = touchStartRef.current - touchEnd;
+    
+    // Refresh measurements
+    if (container.firstElementChild) {
+        const firstCard = container.firstElementChild as HTMLElement;
+        const style = window.getComputedStyle(container);
+        const gap = parseFloat(style.gap) || 16;
+        visualCardWidthRef.current = firstCard.offsetWidth;
+        cardWidthRef.current = firstCard.offsetWidth + gap;
+        paddingLeftRef.current = parseFloat(style.paddingLeft) || 0;
+    }
+
+    const totalWidth = cardWidthRef.current;
+    const visualWidth = visualCardWidthRef.current;
+    const paddingLeft = paddingLeftRef.current;
+
+    const offset = getCenterOffset(container, visualWidth);
+    const exactIndex = (container.scrollLeft + offset - paddingLeft) / totalWidth;
+    const rawIndex = Math.round(exactIndex);
+
+    const isFlick = touchTime < 250 && Math.abs(diff) > 20;
+    
+    let targetIndex = rawIndex;
+
+    if (isFlick) {
+        if (diff > 0) targetIndex = Math.floor(exactIndex) + 1;
+        else targetIndex = Math.ceil(exactIndex) - 1;
+    } else {
+        if (diff > 0 && exactIndex > rawIndex) targetIndex = rawIndex + 1;
+        else if (diff < 0 && exactIndex < rawIndex) targetIndex = rawIndex - 1;
+    }
+
+    targetIndex = Math.max(0, Math.min(targetIndex, scrollData.length - 1));
+    glideTo((paddingLeft + (targetIndex * totalWidth)) - offset);
+  };
+
+  const handleScroll = () => {
+    if (!scrollContainerRef.current || isSingle) return;
+    
+    if (!isAnimatingRef.current) {
+        checkInfiniteLoop(scrollContainerRef.current);
+    }
+
+    const totalWidth = cardWidthRef.current || 1;
+    const visualWidth = visualCardWidthRef.current || totalWidth;
+    const paddingLeft = paddingLeftRef.current;
+    
+    const offset = getCenterOffset(scrollContainerRef.current, visualWidth);
+    const rawIndex = Math.round((scrollContainerRef.current.scrollLeft + offset - paddingLeft) / totalWidth);
+    
+    let visualStep = (rawIndex - START_INDEX);
+    visualStep = ((visualStep % partners.length) + partners.length) % partners.length;
+    
+    if (visualStep !== currentStep) setCurrentStep(visualStep);
+  };
+
+  return (
+    <section className="section-padding bg-section-light">
+      <div className="container">
+        <div className="text-center mb-8">
+            <span className="inline-block text-sm font-bold text-primary uppercase tracking-wider mb-3">In collaboration with</span>
+            <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground">Our Supportive Partners</h2>
+        </div>
+
+        {/* --- MOBILE (SCROLLING) --- */}
+        <div className="md:hidden relative">
+          <div
+            ref={scrollContainerRef}
+            onScroll={handleScroll}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+            // Use 'overflow-hidden' if single to lock it, 'overflow-x-auto' if multiple
+            className={`flex pb-8 gap-4 px-4 scrollbar-hide select-none ${isSingle ? 'overflow-hidden justify-center' : 'overflow-x-auto'}`}
+            style={{
+              scrollSnapType: 'none',
+              scrollbarWidth: "none",
+              msOverflowStyle: "none",
+              overscrollBehaviorX: "contain",
+              WebkitTapHighlightColor: "transparent",
+            }}
+          >
+            {scrollData.map((partner, i) => (
+               <div
+                  key={`${partner.name}-${i}`}
+                  className="shrink-0 w-[85vw] max-w-[300px] transform-gpu"
+                  style={{ WebkitTapHighlightColor: "transparent" }}
+               >
+                  <a 
+                    href={partner.url} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="flex flex-col items-center justify-center h-full p-6 rounded-2xl bg-white/50 backdrop-blur border border-transparent active:scale-95 transition-transform"
+                  >
+                    <div className="flex items-center justify-center w-full h-32 mb-3">
+                      <img src={partner.logo} alt={`${partner.name} Logo`} className="max-h-full max-w-full object-contain" />
+                    </div>
+                    <p className="text-muted-foreground text-center text-sm">{partner.description}</p>
+                  </a>
+               </div>
+            ))}
+            {!isSingle && <div className="w-4 shrink-0" />}
+          </div>
+
+          {/* Dots Indicator - Only Show if Multiple */}
+          {!isSingle && (
+            <div className="flex justify-center gap-2 mt-2">
+                {partners.map((_, i) => (
+                <div
+                    key={i}
+                    className={`h-2 rounded-full transition-all duration-300 ${
+                    currentStep === i ? "w-8 bg-primary" : "w-2 bg-primary/20"
+                    }`}
+                />
+                ))}
+            </div>
+          )}
+        </div>
+
+        {/* --- DESKTOP (GRID - Unchanged) --- */}
+        <div className="hidden md:flex flex-wrap justify-center gap-16 items-center">
+          {partners.map((partner) => (
+            <a key={partner.name} href={partner.url} target="_blank" rel="noopener noreferrer" className="flex flex-col items-center max-w-xs hover:scale-105 transition-transform">
+              <div className="flex items-center justify-center w-64 h-32 mb-3">
+                <img src={partner.logo} alt={`${partner.name} Logo`} className="max-h-full max-w-full object-contain" />
+              </div>
+              <p className="text-muted-foreground text-center">{partner.description}</p>
+            </a>
+          ))}
         </div>
       </div>
     </section>
