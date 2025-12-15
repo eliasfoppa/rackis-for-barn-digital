@@ -7,19 +7,11 @@ import leaImg from "@/assets/lea.png";
 import lenkaImg from "@/assets/lenka.png";
 import lukasImg from "@/assets/lukas.png";
 
-// --- PHYSICS ENGINE: Ease-Out-Quartic ---
+// --- PHYSICS: Ease-Out-Quart (Stable, Smooth) ---
 const easeOutQuart = (t: number) => 1 - Math.pow(1 - t, 4);
 
-// Generate hearts on a jittered grid like homepage
-function generateJitteredHearts(
-  rows: number,
-  cols: number,
-  width = 100,
-  height = 100,
-  sizeRange: [number, number] = [16, 30]
-) {
+function generateJitteredHearts(rows: number, cols: number, width = 100, height = 100, sizeRange: [number, number] = [16, 30]) {
   const hearts: { x: number; y: number; size: number; delay: number }[] = [];
-
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < cols; c++) {
       const baseX = ((c + 0.5) / cols) * width;
@@ -33,19 +25,17 @@ function generateJitteredHearts(
       hearts.push({ x, y, size, delay });
     }
   }
-
   return hearts;
 }
 
 const About = () => {
   const [hearts, setHearts] = useState<{ x: number; y: number; size: number; delay: number }[]>([]);
-
-  // --- VALUES SCROLL STATE (MOBILE) ---
   const [currentStep, setCurrentStep] = useState(0);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const cardWidthRef = useRef(0);
-  const isJumpingRef = useRef(false);
-  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  
+  // Animation State
+  const isAnimatingRef = useRef(false);
   const rafRef = useRef<number | null>(null);
   const touchStartRef = useRef(0);
 
@@ -63,29 +53,13 @@ const About = () => {
   }, []);
 
   const values = [
-    {
-      icon: Recycle,
-      title: "Sustainability",
-      description: "We believe in reducing waste and giving items a second chance at life.",
-    },
-    {
-      icon: Heart,
-      title: "Compassion",
-      description: "Every action we take is driven by our desire to help children in need.",
-    },
-    {
-      icon: Users,
-      title: "Community",
-      description: "Built by students, for students. We understand the Uppsala student life.",
-    },
-    {
-      icon: Award,
-      title: "Transparency",
-      description: "100% of our profits go directly to Barncancerfonden and RBU.",
-    },
+    { icon: Recycle, title: "Sustainability", description: "We believe in reducing waste and giving items a second chance at life." },
+    { icon: Heart, title: "Compassion", description: "Every action we take is driven by our desire to help children in need." },
+    { icon: Users, title: "Community", description: "Built by students, for students. We understand the Uppsala student life." },
+    { icon: Award, title: "Transparency", description: "100% of our profits go directly to Barncancerfonden and RBU." },
   ];
 
-  // Mobile Clone Data for Infinite Loop
+  // CLONES: [Last, ...Real, First]
   const scrollData = [...values.slice(-1), ...values, ...values.slice(0, 1)];
 
   const boardMembers = [
@@ -94,20 +68,20 @@ const About = () => {
     { name: "Lea Poewe", role: "Secretary & Head of Marketing", img: leaImg },
   ];
 
-  // --- MOBILE EFFECT: Initialize Scroll ---
+  // --- INIT SCROLL ---
   useEffect(() => {
-    const container = scrollContainerRef.current;
-    if (container && container.firstElementChild) {
-      const firstCard = container.firstElementChild as HTMLElement;
-      const style = window.getComputedStyle(container);
-      const gap = parseFloat(style.gap) || 16;
-      cardWidthRef.current = firstCard.offsetWidth + gap;
-      container.scrollLeft = cardWidthRef.current;
-    }
-    return () => {
-      if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    };
+    requestAnimationFrame(() => {
+        const container = scrollContainerRef.current;
+        if (container && container.firstElementChild) {
+          const firstCard = container.firstElementChild as HTMLElement;
+          const style = window.getComputedStyle(container);
+          const gap = parseFloat(style.gap) || 16;
+          
+          cardWidthRef.current = firstCard.offsetWidth + gap;
+          container.scrollLeft = cardWidthRef.current; // Start at Index 1
+        }
+    });
+    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
   }, []);
 
   // --- GLIDE ENGINE ---
@@ -118,9 +92,11 @@ const About = () => {
 
     const startX = container.scrollLeft;
     const distance = targetX - startX;
-    const duration = 450;
+    const duration = 400;
     const startTime = performance.now();
 
+    isAnimatingRef.current = true;
+    container.style.overflowX = 'hidden'; // CHROME FIX (Only during glide)
     container.style.scrollSnapType = 'none';
 
     const animate = (currentTime: number) => {
@@ -133,29 +109,54 @@ const About = () => {
       if (progress < 1) {
         rafRef.current = requestAnimationFrame(animate);
       } else {
+        // Animation Done
+        container.style.overflowX = 'auto'; // Unlock
         container.style.scrollSnapType = 'x mandatory';
+        isAnimatingRef.current = false;
         rafRef.current = null;
-        handleScrollEnd();
+        
+        // Force Check Loop at end of glide
+        checkInfiniteLoop(container);
       }
     };
     rafRef.current = requestAnimationFrame(animate);
   };
 
-  const handleTouchStart = (e: React.TouchEvent) => {
-    if (rafRef.current) {
-        cancelAnimationFrame(rafRef.current);
-        rafRef.current = null;
-        if (scrollContainerRef.current) {
-            scrollContainerRef.current.style.scrollSnapType = 'x mandatory';
-        }
+  // --- INFINITE LOOP LOGIC ---
+  // This is called constantly during scroll to teleport you instantly
+  const checkInfiniteLoop = (container: HTMLElement) => {
+    const cardWidth = cardWidthRef.current;
+    if (!cardWidth) return;
+
+    const scrollLeft = container.scrollLeft;
+    // We use a small buffer (10px) to detect edges before you hit them hard
+    if (scrollLeft <= 10) {
+      // Hit Left Edge (Clone Last) -> Jump to Real Last
+      container.scrollLeft = cardWidth * values.length + (scrollLeft); 
+    } else if (scrollLeft >= (cardWidth * (scrollData.length - 1)) - 10) {
+      // Hit Right Edge (Clone First) -> Jump to Real First
+      container.scrollLeft = cardWidth + (scrollLeft - (cardWidth * (scrollData.length - 1)));
     }
-    if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    // 1. Force Unlock
+    if (scrollContainerRef.current) scrollContainerRef.current.style.overflowX = 'auto';
+
+    // 2. Stop Animation
+    if (rafRef.current || isAnimatingRef.current) {
+        if (rafRef.current) cancelAnimationFrame(rafRef.current);
+        rafRef.current = null;
+        isAnimatingRef.current = false;
+        if (scrollContainerRef.current) scrollContainerRef.current.style.scrollSnapType = 'x mandatory';
+    }
+
     touchStartRef.current = e.touches[0].clientX;
   };
 
   const handleTouchEnd = (e: React.TouchEvent) => {
     const container = scrollContainerRef.current;
-    if (!container || isJumpingRef.current) return;
+    if (!container) return;
 
     const touchEnd = e.changedTouches[0].clientX;
     const diff = touchStartRef.current - touchEnd;
@@ -184,8 +185,14 @@ const About = () => {
   };
 
   const handleScroll = () => {
-    if (!scrollContainerRef.current || isJumpingRef.current) return;
+    if (!scrollContainerRef.current) return;
     
+    // 1. LIVE LOOP CHECK (Crucial for Infinite Scroll)
+    // We check this on every frame of scrolling.
+    if (!isAnimatingRef.current) {
+       checkInfiniteLoop(scrollContainerRef.current);
+    }
+
     const scrollLeft = scrollContainerRef.current.scrollLeft;
     const cardWidth = cardWidthRef.current;
     if (cardWidth === 0) return;
@@ -200,188 +207,71 @@ const About = () => {
     }
   };
 
-  const handleScrollEnd = useCallback(() => {
-    if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
-    
-    scrollTimeoutRef.current = setTimeout(() => {
-      const container = scrollContainerRef.current;
-      if (!container || isJumpingRef.current) return;
-
-      const cardWidth = cardWidthRef.current;
-      const scrollLeft = container.scrollLeft;
-      const rawIndex = Math.round(scrollLeft / cardWidth);
-
-      if (rawIndex >= scrollData.length - 1) {
-        isJumpingRef.current = true;
-        container.style.scrollSnapType = 'none';
-        container.scrollLeft = cardWidth * 1;
-        requestAnimationFrame(() => {
-            container.style.scrollSnapType = 'x mandatory';
-            isJumpingRef.current = false;
-        });
-      } else if (rawIndex <= 0) {
-        isJumpingRef.current = true;
-        container.style.scrollSnapType = 'none';
-        container.scrollLeft = cardWidth * values.length;
-        requestAnimationFrame(() => {
-            container.style.scrollSnapType = 'x mandatory';
-            isJumpingRef.current = false;
-        });
-      }
-    }, 50);
-  }, [values.length, scrollData.length, currentStep]);
-
   return (
     <Layout>
       {/* Hero */}
       <section className="bg-hero-gradient py-8 md:py-12 relative overflow-hidden min-h-[30vh] flex flex-col items-center justify-center">
         <div className="absolute top-10 right-[10%] w-32 h-32 bg-primary/10 blob animate-float" />
         <div className="absolute bottom-5 left-[5%] w-24 h-24 bg-warm/10 blob animate-wiggle" />
-
-        {/* Floating hearts */}
         {hearts.map((h, i) => (
-          <Heart
-            key={i}
-            className="absolute text-warm/30 animate-float"
-            fill="currentColor"
-            style={{
-              top: `${h.y}%`,
-              left: `${h.x}%`,
-              width: `${h.size}px`,
-              height: `${h.size}px`,
-              animationDelay: `${h.delay}ms`,
-            }}
-          />
+          <Heart key={i} className="absolute text-warm/30 animate-float" fill="currentColor" style={{ top: `${h.y}%`, left: `${h.x}%`, width: `${h.size}px`, height: `${h.size}px`, animationDelay: `${h.delay}ms` }} />
         ))}
-
         <div className="container relative z-10 text-center">
           <div className="max-w-3xl mx-auto">
-            <h1 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-4 animate-fade-up">
-              About Rackis for Barn
-            </h1>
-            <p className="text-lg text-muted-foreground animate-fade-up delay-100 leading-relaxed">
-              As new students in Uppsala, we struggled to find second-hand essentials,
-              while others moving out were throwing away perfectly good items.
-              We’ve been working ever since to tackle these problems.
-            </p>
+            <h1 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-4 animate-fade-up">About Rackis for Barn</h1>
+            <p className="text-lg text-muted-foreground animate-fade-up delay-100 leading-relaxed">As new students in Uppsala...</p>
           </div>
         </div>
       </section>
 
-      {/* What We Are */}
+      {/* Info Sections */}
       <section className="py-8 md:py-12">
         <div className="container-narrow">
           <div className="max-w-none">
-            <span className="inline-block text-sm font-bold text-primary uppercase tracking-wider mb-3">
-              Who we are
-            </span>
-            <h2 className="font-display text-xl md:text-3xl font-bold text-foreground mb-6">
-              More than just a second-hand store
-            </h2>
+            <span className="inline-block text-sm font-bold text-primary uppercase tracking-wider mb-3">Who we are</span>
+            <h2 className="font-display text-xl md:text-3xl font-bold text-foreground mb-6">More than just a second-hand store</h2>
             <div className="space-y-4 text-base text-muted-foreground leading-relaxed">
-              <p>
-                Rackis for Barn is a student-run non-profit organization designed
-                specifically for students in Uppsala to exchange second-hand items
-                during move-ins and move-outs. What makes us unique is that we collect
-                and sell second-hand items directly at student housing locations,
-                making settling into Uppsala more convenient and sustainable.
-              </p>
-              <p>
-                When students move out, instead of throwing away items 
-                they donate them to us. We collect many items like bedding,
-                curtains, bikes, kitchen equipment, lamps, small furniture, decoration,
-                and much more. Then, students moving into new places can 
-                find everything they need at fair prices.
-              </p>
-              <p className="text-foreground font-semibold">
-                All profits from sales go directly to Barncancerfonden and RBU,
-                supporting children and their families.
-              </p>
+              <p>Rackis for Barn is a student-run non-profit organization...</p>
+              <p>When students move out, instead of throwing away items...</p>
+              <p className="text-foreground font-semibold">All profits from sales go directly to Barncancerfonden...</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Name Meaning */}
       <section className="py-8 md:py-12 bg-section-alt">
         <div className="container-narrow text-center">
-          <span className="inline-block text-sm font-bold text-accent uppercase tracking-wider mb-2">
-            Our name
-          </span>
-          <h2 className="font-display text-xl md:text-3xl font-bold text-foreground mb-3">
-            What "Rackis for Barn" means
-          </h2>
-          <p className="text-base text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            "Rackis" is short for{" "}
-            <span className="font-semibold text-foreground">Rackarbergsgatan</span>,
-            the student housing area where our journey began.
-            "Barn" means{" "}
-            <span className="font-semibold text-foreground">children</span> in Swedish,
-            reflecting our mission to support children in need.
-          </p>
+          <span className="inline-block text-sm font-bold text-accent uppercase tracking-wider mb-2">Our name</span>
+          <h2 className="font-display text-xl md:text-3xl font-bold text-foreground mb-3">What "Rackis for Barn" means</h2>
+          <p className="text-base text-muted-foreground max-w-2xl mx-auto leading-relaxed">"Rackis" is short for <span className="font-semibold text-foreground">Rackarbergsgatan</span>...</p>
         </div>
       </section>
 
-      {/* Team */}
       <section className="py-8 md:py-12 bg-section-warm">
         <div className="container-narrow">
           <div className="text-center mb-8">
-            <span className="inline-block text-sm font-bold text-primary uppercase tracking-wider mb-3">
-              The people behind it
-            </span>
-            <h2 className="font-display text-xl md:text-3xl font-bold text-foreground mb-4">
-              Our Team
-            </h2>
-            <p className="text-base text-muted-foreground max-w-2xl mx-auto mb-6">
-              We are a group of dedicated students in Uppsala who believe in
-              sustainability, community, and making a difference.
-            </p>
+            <span className="inline-block text-sm font-bold text-primary uppercase tracking-wider mb-3">The people behind it</span>
+            <h2 className="font-display text-xl md:text-3xl font-bold text-foreground mb-4">Our Team</h2>
+            <p className="text-base text-muted-foreground max-w-2xl mx-auto mb-6">We are a group of dedicated students...</p>
           </div>
-
           <div className="grid sm:grid-cols-3 gap-4 mb-4">
             {boardMembers.map((member) => (
               <div key={member.name} className="card-warm text-center">
-                <img
-                  src={member.img}
-                  alt={member.name}
-                  className="mx-auto w-24 h-24 object-cover rounded-full mb-3"
-                />
+                <img src={member.img} alt={member.name} className="mx-auto w-24 h-24 object-cover rounded-full mb-3" />
                 <h3 className="text-base font-bold text-foreground">{member.name}</h3>
                 <p className="text-sm text-muted-foreground">{member.role}</p>
               </div>
             ))}
           </div>
-
           <div className="grid grid-cols-1 sm:grid-cols-2 justify-center gap-4 mb-4 max-w-xl mx-auto">
-            <div className="card-warm text-center">
-              <img
-                src={lenkaImg}
-                alt="Lenka Benková"
-                className="mx-auto w-24 h-24 object-cover rounded-full mb-3"
-              />
-              <h3 className="text-base font-bold text-foreground">Lenka Benková</h3>
-              <p className="text-sm text-muted-foreground">Founding Member</p>
-            </div>
-
-            <div className="card-warm text-center">
-              <img
-                src={lukasImg}
-                alt="Lukas Idman"
-                className="mx-auto w-24 h-24 object-cover rounded-full mb-3"
-              />
-              <h3 className="text-base font-bold text-foreground">Lukas Idman</h3>
-              <p className="text-sm text-muted-foreground">Founding Member</p>
-            </div>
+             <div className="card-warm text-center"><img src={lenkaImg} alt="Lenka" className="mx-auto w-24 h-24 object-cover rounded-full mb-3"/><h3 className="text-base font-bold text-foreground">Lenka Benková</h3><p className="text-sm text-muted-foreground">Founding Member</p></div>
+             <div className="card-warm text-center"><img src={lukasImg} alt="Lukas" className="mx-auto w-24 h-24 object-cover rounded-full mb-3"/><h3 className="text-base font-bold text-foreground">Lukas Idman</h3><p className="text-sm text-muted-foreground">Founding Member</p></div>
           </div>
-
-          <p className="text-center text-base text-muted-foreground max-w-2xl mx-auto">
-            In addition to our members, many amazing volunteers contribute their time
-            and effort to make Rackis for Barn possible.
-          </p>
+          <p className="text-center text-base text-muted-foreground max-w-2xl mx-auto">In addition to our members, many amazing volunteers...</p>
         </div>
       </section>
 
-      {/* Values (Enhanced with Scroll Logic) */}
+      {/* Values Section */}
       <section className="py-8 md:py-12 overflow-hidden">
         <div className="container">
           <div className="text-center mb-8">
@@ -393,8 +283,8 @@ const About = () => {
             </h2>
           </div>
 
-          {/* DESKTOP LAYOUT (Grid) */}
-          <div className="hidden lg:grid grid-cols-4 gap-4">
+          {/* DESKTOP (Grid) - md:grid */}
+          <div className="hidden md:grid grid-cols-2 lg:grid-cols-4 gap-4">
             {values.map((value, index) => (
               <div
                 key={value.title}
@@ -412,8 +302,8 @@ const About = () => {
             ))}
           </div>
 
-          {/* MOBILE LAYOUT (Swipeable) */}
-          <div className="lg:hidden relative">
+          {/* MOBILE (Swipeable) - md:hidden */}
+          <div className="md:hidden relative">
             <div
               ref={scrollContainerRef}
               onScroll={handleScroll}
@@ -424,6 +314,7 @@ const About = () => {
                 scrollbarWidth: "none",
                 msOverflowStyle: "none",
                 overscrollBehaviorX: "contain",
+                overflowX: "auto", // Explicitly enable scroll
               }}
             >
               {scrollData.map((value, i) => (

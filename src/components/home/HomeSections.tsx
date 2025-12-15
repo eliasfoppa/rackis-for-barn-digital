@@ -1,9 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Heart, Recycle, ShoppingBag, MapPin, Instagram, Bike, Home, Users, Gift } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useState, useEffect, useRef, useCallback} from "react";
-import Logo from "@/assets/logo.png"; // your teddy bear logo
+import { useState, useEffect, useRef, useCallback } from "react";
+import Logo from "@/assets/logo.png"; 
 
+// --- PHYSICS: Ease-Out-Quart (Stable, Smooth) ---
+const easeOutQuart = (t: number) => 1 - Math.pow(1 - t, 4);
 
 // Generate hearts on a jittered grid
 function generateJitteredHearts(
@@ -39,20 +41,16 @@ export function HeroSection() {
   useEffect(() => {
     const updateHearts = () => {
       if (window.innerWidth < 768) {
-        // Mobile: a few more hearts than before
-        setHearts(generateJitteredHearts(3, 5, 100, 100, [12, 20])); // 15 hearts
+        setHearts(generateJitteredHearts(3, 5, 100, 100, [12, 20])); 
       } else {
-        // Desktop: full hearts
-        setHearts(generateJitteredHearts(4, 7, 100, 100, [16, 30])); // 28 hearts
+        setHearts(generateJitteredHearts(4, 7, 100, 100, [16, 30])); 
       }
     };
 
     updateHearts();
     window.addEventListener("resize", updateHearts);
-
     return () => window.removeEventListener("resize", updateHearts);
   }, []);
-
 
   return (
     <section className="relative overflow-hidden bg-hero-gradient min-h-[85vh] flex items-center">
@@ -124,16 +122,14 @@ export function HeroSection() {
   );
 }
 
-// --- PHYSICS ENGINE: Ease-Out-Quartic ---
-// Starts fast, decelerates quickly but smoothly at the very end
-const easeOutQuart = (t: number) => 1 - Math.pow(1 - t, 4);
-
+// --- HOW IT WORKS SECTION (FIXED) ---
 export function HowItWorksSection() {
   const [currentStep, setCurrentStep] = useState(0);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const cardWidthRef = useRef(0);
-  const isJumpingRef = useRef(false);
-  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  
+  // State
+  const isAnimatingRef = useRef(false);
   const rafRef = useRef<number | null>(null);
   const touchStartRef = useRef(0);
 
@@ -161,7 +157,7 @@ export function HowItWorksSection() {
     },
   ];
 
-  // Clone Structure: [Clone 3] [1] [2] [3] [Clone 1]
+  // Standard Clone: [Last, ...Real, First]
   const scrollData = [...steps.slice(-1), ...steps, ...steps.slice(0, 1)];
 
   const scrollToSection = (id: string) => {
@@ -169,26 +165,17 @@ export function HowItWorksSection() {
     if (el) el.scrollIntoView({ behavior: "smooth" });
   };
 
-  /* ======================
-      DESKTOP GEOMETRY
-   ====================== */
+  /* ====================== DESKTOP GEOMETRY ====================== */
   const containerWidth = 1200;
   const containerHeight = 830;
   const boxWidth = 350;
-
   const box1Left = (containerWidth - boxWidth) / 2;
   const box1Top = 30;
   const box2Left = containerWidth - 80 - boxWidth;
   const box2Top = 430;
   const box3Left = 80;
   const box3Top = 430;
-
-  const boxes = [
-    { x: box1Left, y: box1Top },
-    { x: box2Left, y: box2Top },
-    { x: box3Left, y: box3Top },
-  ];
-
+  const boxes = [{ x: box1Left, y: box1Top }, { x: box2Left, y: box2Top }, { x: box3Left, y: box3Top }];
   const circleCX = 600;
   const circleCY = 471;
   const circleR = 347;
@@ -196,7 +183,6 @@ export function HowItWorksSection() {
   const getArrowOnCircle = (targetX: number, targetY: number, side: "left" | "top" | "right") => {
     let x = targetX;
     let y = targetY;
-
     if (side === "left") {
       const dx = targetX - circleCX;
       y = circleCY - Math.sqrt(Math.pow(circleR, 2) - Math.pow(dx, 2));
@@ -207,36 +193,47 @@ export function HowItWorksSection() {
       const dx = targetX - circleCX;
       y = circleCY + Math.sqrt(Math.pow(circleR, 2) - Math.pow(dx, 2));
     }
-
     const angleRad = Math.atan2(y - circleCY, x - circleCX);
     const rotation = (angleRad * 180) / Math.PI + 90;
-
     return { x, y, rotation };
   };
-
   const arrows = [
     getArrowOnCircle(box1Left, 0, "left"),
     getArrowOnCircle(0, box2Top, "top"),
     getArrowOnCircle(box3Left + boxWidth, 0, "right"),
   ];
 
-  // --- INIT SCROLL ---
+  // --- INIT ---
   useEffect(() => {
-    const container = scrollContainerRef.current;
-    if (container && container.firstElementChild) {
-      const firstCard = container.firstElementChild as HTMLElement;
-      const style = window.getComputedStyle(container);
-      const gap = parseFloat(style.gap) || 16;
-      cardWidthRef.current = firstCard.offsetWidth + gap;
-      container.scrollLeft = cardWidthRef.current; // Start at Real Index 1
-    }
-    return () => {
-      if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    };
+    requestAnimationFrame(() => {
+        const container = scrollContainerRef.current;
+        if (container && container.firstElementChild) {
+          const firstCard = container.firstElementChild as HTMLElement;
+          const style = window.getComputedStyle(container);
+          const gap = parseFloat(style.gap) || 16;
+          cardWidthRef.current = firstCard.offsetWidth + gap;
+          container.scrollLeft = cardWidthRef.current;
+        }
+    });
+    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
   }, []);
 
-  // --- GLIDE ENGINE ---
+  // --- INFINITE LOOP CHECK ---
+  const checkInfiniteLoop = (container: HTMLElement) => {
+    const cardWidth = cardWidthRef.current;
+    if (!cardWidth) return;
+
+    const scrollLeft = container.scrollLeft;
+    // Buffer of 10px to catch it early
+    if (scrollLeft <= 10) {
+      // Near Clone Last -> Jump to Real Last
+      container.scrollLeft = cardWidth * steps.length + scrollLeft;
+    } else if (scrollLeft >= (cardWidth * (scrollData.length - 1)) - 10) {
+      // Near Clone First -> Jump to Real First
+      container.scrollLeft = scrollLeft - (cardWidth * steps.length);
+    }
+  };
+
   const glideTo = (targetX: number) => {
     const container = scrollContainerRef.current;
     if (!container) return;
@@ -244,16 +241,16 @@ export function HowItWorksSection() {
 
     const startX = container.scrollLeft;
     const distance = targetX - startX;
-    const duration = 450; // Faster (450ms)
+    const duration = 400; 
     const startTime = performance.now();
 
-    container.style.scrollSnapType = 'none'; // Disable snap to allow glide
+    isAnimatingRef.current = true;
+    container.style.overflowX = 'hidden'; // Chrome Fix (Only during glide)
+    container.style.scrollSnapType = 'none';
 
     const animate = (currentTime: number) => {
       const elapsed = currentTime - startTime;
       const progress = Math.min(elapsed / duration, 1);
-      
-      // Quartic Ease: Fast start, smooth stop
       const ease = easeOutQuart(progress);
 
       container.scrollLeft = startX + (distance * ease);
@@ -261,36 +258,41 @@ export function HowItWorksSection() {
       if (progress < 1) {
         rafRef.current = requestAnimationFrame(animate);
       } else {
-        container.style.scrollSnapType = 'x mandatory'; // Re-enable snap
+        container.style.overflowX = 'auto';
+        container.style.scrollSnapType = 'x mandatory';
+        isAnimatingRef.current = false;
         rafRef.current = null;
-        // Trigger loop check immediately after glide ends
-        handleScrollEnd(); 
+        checkInfiniteLoop(container);
       }
     };
     rafRef.current = requestAnimationFrame(animate);
   };
 
   const handleTouchStart = (e: React.TouchEvent) => {
-    if (rafRef.current) {
-        cancelAnimationFrame(rafRef.current);
+    if (scrollContainerRef.current) scrollContainerRef.current.style.overflowX = 'auto';
+
+    // Stop animation & Unlock
+    if (rafRef.current || isAnimatingRef.current) {
+        if (rafRef.current) cancelAnimationFrame(rafRef.current);
         rafRef.current = null;
-        if (scrollContainerRef.current) {
-            scrollContainerRef.current.style.scrollSnapType = 'x mandatory';
-        }
+        isAnimatingRef.current = false;
+        if (scrollContainerRef.current) scrollContainerRef.current.style.scrollSnapType = 'x mandatory';
     }
-    if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
+
+    // TELEPORT INSTANTLY (Fix for "Wait to swipe")
+    if (scrollContainerRef.current) checkInfiniteLoop(scrollContainerRef.current);
+
     touchStartRef.current = e.touches[0].clientX;
   };
 
   const handleTouchEnd = (e: React.TouchEvent) => {
     const container = scrollContainerRef.current;
-    if (!container || isJumpingRef.current) return;
+    if (!container) return;
 
     const touchEnd = e.changedTouches[0].clientX;
     const diff = touchStartRef.current - touchEnd;
     const cardWidth = cardWidthRef.current;
 
-    // Thresholds
     const isFlick = Math.abs(diff) > 30;
     const isDrag = Math.abs(diff) > cardWidth / 3;
 
@@ -300,82 +302,38 @@ export function HowItWorksSection() {
       const baseIndex = Math.round(currentExactIndex);
 
       let targetIndex = baseIndex;
-      
-      if (diff > 0) { // Swipe Left (Next)
-         targetIndex = diff > 0 && currentExactIndex > baseIndex ? baseIndex + 1 : baseIndex + 1;
-      } else { // Swipe Right (Prev)
-         targetIndex = diff < 0 && currentExactIndex < baseIndex ? baseIndex - 1 : baseIndex - 1;
-      }
-      
-      // Flick Override
+      if (diff > 0) targetIndex = diff > 0 && currentExactIndex > baseIndex ? baseIndex + 1 : baseIndex + 1;
+      else targetIndex = diff < 0 && currentExactIndex < baseIndex ? baseIndex - 1 : baseIndex - 1;
+
       if (isFlick) {
-         if (diff > 0) targetIndex = Math.floor(currentExactIndex) + 1;
-         else targetIndex = Math.ceil(currentExactIndex) - 1;
+        if (diff > 0) targetIndex = Math.floor(currentExactIndex) + 1;
+        else targetIndex = Math.ceil(currentExactIndex) - 1;
       }
 
-      // Clamp target
       targetIndex = Math.max(0, Math.min(targetIndex, scrollData.length - 1));
-      
       glideTo(targetIndex * cardWidth);
     }
   };
 
   const handleScroll = () => {
-    if (!scrollContainerRef.current || isJumpingRef.current) return;
+    if (!scrollContainerRef.current) return;
     
+    // Live Loop Check
+    if (!isAnimatingRef.current) {
+        checkInfiniteLoop(scrollContainerRef.current);
+    }
+
     const scrollLeft = scrollContainerRef.current.scrollLeft;
     const cardWidth = cardWidthRef.current;
     if (cardWidth === 0) return;
 
     const rawIndex = Math.round(scrollLeft / cardWidth);
     let visualStep = rawIndex - 1;
+    if (rawIndex === 0) visualStep = steps.length - 1;
+    if (rawIndex >= scrollData.length - 1) visualStep = 0;
     
-    // Fix: Correct mapping for clones
-    if (rawIndex === 0) visualStep = steps.length - 1; // Clone Last -> Real Last
-    if (rawIndex >= scrollData.length - 1) visualStep = 0; // Clone First -> Real First
-    
-    if (visualStep !== currentStep) {
-         setCurrentStep(visualStep);
-    }
-    
-    // We do NOT call handleScrollEnd() here aggressively to avoid fighting the glide
+    if (visualStep !== currentStep) setCurrentStep(visualStep);
   };
-
-  const handleScrollEnd = useCallback(() => {
-    if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
-    
-    // Short debounce just to be safe
-    scrollTimeoutRef.current = setTimeout(() => {
-      const container = scrollContainerRef.current;
-      if (!container || isJumpingRef.current) return;
-
-      const cardWidth = cardWidthRef.current;
-      const scrollLeft = container.scrollLeft;
-      const rawIndex = Math.round(scrollLeft / cardWidth);
-
-      // --- INFINITE JUMP LOGIC ---
-      // Clone First (Index 4) -> Jump to Real First (Index 1)
-      if (rawIndex >= scrollData.length - 1) {
-        isJumpingRef.current = true;
-        container.style.scrollSnapType = 'none';
-        container.scrollLeft = cardWidth * 1;
-        requestAnimationFrame(() => {
-            container.style.scrollSnapType = 'x mandatory';
-            isJumpingRef.current = false;
-        });
-      } 
-      // Clone Last (Index 0) -> Jump to Real Last (Index 3)
-      else if (rawIndex <= 0) {
-        isJumpingRef.current = true;
-        container.style.scrollSnapType = 'none';
-        container.scrollLeft = cardWidth * steps.length;
-        requestAnimationFrame(() => {
-            container.style.scrollSnapType = 'x mandatory';
-            isJumpingRef.current = false;
-        });
-      }
-    }, 50); // Fast check after glide finishes
-  }, [steps.length, scrollData.length]);
 
   return (
     <section className="section-padding relative overflow-hidden">
@@ -387,8 +345,8 @@ export function HowItWorksSection() {
           </p>
         </div>
 
-        {/* DESKTOP LAYOUT */}
-        <div className="hidden lg:block relative mx-auto" style={{ width: containerWidth, height: containerHeight }}>
+        {/* DESKTOP (md:block) */}
+        <div className="hidden md:block relative mx-auto" style={{ width: containerWidth, height: containerHeight }}>
           <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 1 }}>
             <circle cx={circleCX} cy={circleCY} r={circleR} stroke="#0024a8" strokeWidth="4" fill="none" opacity="0.2" />
           </svg>
@@ -419,8 +377,8 @@ export function HowItWorksSection() {
           })}
         </div>
 
-        {/* MOBILE LAYOUT */}
-        <div className="lg:hidden relative">
+        {/* MOBILE (md:hidden) */}
+        <div className="md:hidden relative">
           <div
             ref={scrollContainerRef}
             onScroll={handleScroll}
@@ -431,6 +389,7 @@ export function HowItWorksSection() {
               scrollbarWidth: "none",
               msOverflowStyle: "none",
               overscrollBehaviorX: "contain",
+              overflowX: "auto",
             }}
           >
             {scrollData.map((step, i) => {
@@ -471,12 +430,12 @@ export function HowItWorksSection() {
   );
 }
 
+// --- WHY CHOOSE US SECTION (FIXED) ---
 export function WhyChooseUsSection() {
   const [currentStep, setCurrentStep] = useState(0);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const cardWidthRef = useRef(0);
-  const isJumpingRef = useRef(false);
-  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const isAnimatingRef = useRef(false);
   const rafRef = useRef<number | null>(null);
   const touchStartRef = useRef(0);
 
@@ -491,20 +450,33 @@ export function WhyChooseUsSection() {
 
   const scrollData = [...benefits.slice(-1), ...benefits, ...benefits.slice(0, 1)];
 
+  // --- INIT ---
   useEffect(() => {
-    const container = scrollContainerRef.current;
-    if (container && container.firstElementChild) {
-      const firstCard = container.firstElementChild as HTMLElement;
-      const style = window.getComputedStyle(container);
-      const gap = parseFloat(style.gap) || 16; 
-      cardWidthRef.current = firstCard.offsetWidth + gap;
-      container.scrollLeft = cardWidthRef.current;
-    }
-    return () => {
-      if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    };
+    requestAnimationFrame(() => {
+        const container = scrollContainerRef.current;
+        if (container && container.firstElementChild) {
+          const firstCard = container.firstElementChild as HTMLElement;
+          const style = window.getComputedStyle(container);
+          const gap = parseFloat(style.gap) || 16; 
+          cardWidthRef.current = firstCard.offsetWidth + gap;
+          container.scrollLeft = cardWidthRef.current;
+        }
+    });
+    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
   }, []);
+
+  // --- LOOP CHECK ---
+  const checkInfiniteLoop = (container: HTMLElement) => {
+    const cardWidth = cardWidthRef.current;
+    if (!cardWidth) return;
+
+    const scrollLeft = container.scrollLeft;
+    if (scrollLeft <= 10) {
+      container.scrollLeft = cardWidth * benefits.length + scrollLeft;
+    } else if (scrollLeft >= (cardWidth * (scrollData.length - 1)) - 10) {
+      container.scrollLeft = scrollLeft - (cardWidth * benefits.length);
+    }
+  };
 
   const glideTo = (targetX: number) => {
     const container = scrollContainerRef.current;
@@ -513,9 +485,11 @@ export function WhyChooseUsSection() {
 
     const startX = container.scrollLeft;
     const distance = targetX - startX;
-    const duration = 450;
+    const duration = 400;
     const startTime = performance.now();
 
+    isAnimatingRef.current = true;
+    container.style.overflowX = 'hidden'; 
     container.style.scrollSnapType = 'none';
 
     const animate = (currentTime: number) => {
@@ -528,30 +502,35 @@ export function WhyChooseUsSection() {
       if (progress < 1) {
         rafRef.current = requestAnimationFrame(animate);
       } else {
+        container.style.overflowX = 'auto';
         container.style.scrollSnapType = 'x mandatory';
+        isAnimatingRef.current = false;
         rafRef.current = null;
-        handleScrollEnd();
+        checkInfiniteLoop(container);
       }
     };
     rafRef.current = requestAnimationFrame(animate);
   };
 
   const handleTouchStart = (e: React.TouchEvent) => {
-    if (rafRef.current) {
-        cancelAnimationFrame(rafRef.current);
+    if (scrollContainerRef.current) scrollContainerRef.current.style.overflowX = 'auto';
+
+    if (rafRef.current || isAnimatingRef.current) {
+        if (rafRef.current) cancelAnimationFrame(rafRef.current);
         rafRef.current = null;
-        if (scrollContainerRef.current) {
-            scrollContainerRef.current.style.scrollSnapType = 'x mandatory';
-        }
+        isAnimatingRef.current = false;
+        if (scrollContainerRef.current) scrollContainerRef.current.style.scrollSnapType = 'x mandatory';
     }
-    if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
+    
+    // Teleport Instantly
+    if (scrollContainerRef.current) checkInfiniteLoop(scrollContainerRef.current);
+
     touchStartRef.current = e.touches[0].clientX;
   };
 
   const handleTouchEnd = (e: React.TouchEvent) => {
     const container = scrollContainerRef.current;
-    if (!container || isJumpingRef.current) return;
-
+    if (!container) return;
     const touchEnd = e.changedTouches[0].clientX;
     const diff = touchStartRef.current - touchEnd;
     const cardWidth = cardWidthRef.current;
@@ -563,8 +542,8 @@ export function WhyChooseUsSection() {
       const currentScroll = container.scrollLeft;
       const currentExactIndex = currentScroll / cardWidth;
       const baseIndex = Math.round(currentExactIndex);
-
       let targetIndex = baseIndex;
+      
       if (diff > 0) targetIndex = diff > 0 && currentExactIndex > baseIndex ? baseIndex + 1 : baseIndex + 1;
       else targetIndex = diff < 0 && currentExactIndex < baseIndex ? baseIndex - 1 : baseIndex - 1;
 
@@ -572,59 +551,30 @@ export function WhyChooseUsSection() {
         if (diff > 0) targetIndex = Math.floor(currentExactIndex) + 1;
         else targetIndex = Math.ceil(currentExactIndex) - 1;
       }
-
       targetIndex = Math.max(0, Math.min(targetIndex, scrollData.length - 1));
       glideTo(targetIndex * cardWidth);
+    } else {
+      container.style.scrollSnapType = 'x mandatory';
     }
   };
 
   const handleScroll = () => {
-    if (!scrollContainerRef.current || isJumpingRef.current) return;
+    if (!scrollContainerRef.current) return;
     
+    // Live check
+    if (!isAnimatingRef.current) {
+        checkInfiniteLoop(scrollContainerRef.current);
+    }
+
     const scrollLeft = scrollContainerRef.current.scrollLeft;
     const cardWidth = cardWidthRef.current;
     if (cardWidth === 0) return;
-
     const rawIndex = Math.round(scrollLeft / cardWidth);
     let visualStep = rawIndex - 1;
     if (rawIndex === 0) visualStep = benefits.length - 1;
     if (rawIndex >= scrollData.length - 1) visualStep = 0;
-    
-    if (visualStep !== currentStep) {
-        setCurrentStep(visualStep);
-    }
+    if (visualStep !== currentStep) setCurrentStep(visualStep);
   };
-
-  const handleScrollEnd = useCallback(() => {
-    if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
-    
-    scrollTimeoutRef.current = setTimeout(() => {
-      const container = scrollContainerRef.current;
-      if (!container || isJumpingRef.current) return;
-
-      const cardWidth = cardWidthRef.current;
-      const scrollLeft = container.scrollLeft;
-      const rawIndex = Math.round(scrollLeft / cardWidth);
-
-      if (rawIndex >= scrollData.length - 1) {
-        isJumpingRef.current = true;
-        container.style.scrollSnapType = 'none';
-        container.scrollLeft = cardWidth * 1;
-        requestAnimationFrame(() => {
-            container.style.scrollSnapType = 'x mandatory';
-            isJumpingRef.current = false;
-        });
-      } else if (rawIndex <= 0) {
-        isJumpingRef.current = true;
-        container.style.scrollSnapType = 'none';
-        container.scrollLeft = cardWidth * benefits.length;
-        requestAnimationFrame(() => {
-            container.style.scrollSnapType = 'x mandatory';
-            isJumpingRef.current = false;
-        });
-      }
-    }, 50);
-  }, [benefits.length, scrollData.length, currentStep]);
 
   return (
     <section className="section-padding bg-section-warm overflow-hidden">
@@ -638,8 +588,8 @@ export function WhyChooseUsSection() {
           </p>
         </div>
 
-        {/* MOBILE LAYOUT */}
-        <div className="lg:hidden relative">
+        {/* MOBILE (md:hidden) */}
+        <div className="md:hidden relative">
           <div
             ref={scrollContainerRef}
             onScroll={handleScroll}
@@ -650,6 +600,7 @@ export function WhyChooseUsSection() {
               scrollbarWidth: "none",
               msOverflowStyle: "none",
               overscrollBehaviorX: "contain",
+              overflowX: "auto",
             }}
           >
             {scrollData.map((benefit, i) => (
@@ -680,8 +631,8 @@ export function WhyChooseUsSection() {
           </div>
         </div>
 
-        {/* DESKTOP LAYOUT (Simple Grid) */}
-        <div className="hidden lg:grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* DESKTOP (md:grid) */}
+        <div className="hidden md:grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {benefits.map((benefit) => (
             <div key={benefit.title} className="group p-6 rounded-2xl bg-card/80 backdrop-blur border border-border hover:border-primary/30 transition-all duration-300">
               <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
@@ -713,7 +664,7 @@ export function PartnersSection() {
     },
   ];
 
-   return (
+  return (
     <section className="section-padding bg-section-light">
       <div className="container text-center">
         <span className="inline-block text-sm font-bold text-primary uppercase tracking-wider mb-3">
@@ -731,7 +682,6 @@ export function PartnersSection() {
               rel="noopener noreferrer"
               className="flex flex-col items-center max-w-xs hover:scale-105 transition-transform"
             >
-              {/* Bigger container for larger logos */}
               <div className="flex items-center justify-center w-64 h-32 mb-3">
                 <img
                   src={partner.logo}
@@ -747,7 +697,6 @@ export function PartnersSection() {
     </section>
   );
 }
-
 
 export function AboutCharitiesSection() {
   return (
