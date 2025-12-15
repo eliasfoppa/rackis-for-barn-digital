@@ -3,6 +3,8 @@ import { ArrowRight, Heart, Recycle, ShoppingBag, MapPin, Instagram, Bike, Home,
 import { Link } from "react-router-dom";
 import { useState, useEffect, useRef, useCallback } from "react";
 import Logo from "@/assets/logo.png"; 
+import uuInnovationLogo from "@/assets/uu-innovation.png";
+import uppsalahemLogo from "@/assets/uppsalahem.png"; 
 
 // --- PHYSICS: Ease-Out-Quart (Stable, Smooth) ---
 const easeOutQuart = (t: number) => 1 - Math.pow(1 - t, 4);
@@ -728,7 +730,7 @@ export function WhyChooseUsSection() {
 
 export function AboutCharitiesSection() {
   return (
-    <section id="charities" className="section-padding">
+    <section id="charities" className="pt-20 pb-0 md:pt-20 md:pb-4">
       <div className="container">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
@@ -785,13 +787,14 @@ export function PartnersSection() {
   const partners = [
     {
       name: "Uppsala University Innovation",
-      logo: "/src/assets/uu-innovation.png", 
+      // 2. USE THE IMPORTED VARIABLE (No quotes!)
+      logo: uuInnovationLogo, 
       description: "Uppsala University Innovation provides guidance and resources to help Rackis for Barn expand its reach and positive impact.",
       url: "https://www.uuinnovation.uu.se",
     },
     // {
     //   name: "Uppsalahem",
-    //   logo: "/src/assets/uppsalahem.png",
+    //   logo: uppsalahemLogo, // Ready for when you uncomment
     //   description: "Generously provides access to storage units, enabling us to collect and sell items directly at student housing locations.",
     //   url: "https://www.uppsalahem.se",
     // },

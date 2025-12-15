@@ -1,230 +1,295 @@
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
-import { Instagram, Heart, MapPin, MessageCircle, Clock } from "lucide-react";
+import { 
+  Instagram, 
+  Heart, 
+  MapPin, 
+  MessageCircle, 
+  Clock, 
+  BedDouble, 
+  ChefHat, 
+  Zap, 
+  PackageOpen
+} from "lucide-react";
 import { useState, useEffect } from "react";
 
 // Generate hearts on a jittered grid
 function generateJitteredHearts(
-  rows: number,
-  cols: number,
-  width = 100,
-  height = 100,
-  sizeRange: [number, number] = [16, 30]
+    rows: number,
+    cols: number,
+    width = 100,
+    height = 100,
+    sizeRange: [number, number] = [16, 30]
 ) {
-  const hearts: { x: number; y: number; size: number; delay: number }[] = [];
+    const hearts: { x: number; y: number; size: number; delay: number }[] = [];
 
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < cols; c++) {
-      const baseX = (c + 0.5) / cols * width;
-      const baseY = (r + 0.5) / rows * height;
-      const jitterX = (Math.random() - 0.5) * (width / cols);
-      const jitterY = (Math.random() - 0.5) * (height / rows);
-      const x = baseX + jitterX;
-      const y = baseY + jitterY;
-      const size = sizeRange[0] + Math.random() * (sizeRange[1] - sizeRange[0]);
-      const delay = Math.random() * 600;
-      hearts.push({ x, y, size, delay });
+    for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+            const baseX = (c + 0.5) / cols * width;
+            const baseY = (r + 0.5) / rows * height;
+            const jitterX = (Math.random() - 0.5) * (width / cols);
+            const jitterY = (Math.random() - 0.5) * (height / rows);
+            const x = baseX + jitterX;
+            const y = baseY + jitterY;
+            const size = sizeRange[0] + Math.random() * (sizeRange[1] - sizeRange[0]);
+            const delay = Math.random() * 600;
+            hearts.push({ x, y, size, delay });
+        }
     }
-  }
 
-  return hearts;
+    return hearts;
 }
 
 export function Buy() {
-  const [hearts, setHearts] = useState<{ x: number; y: number; size: number; delay: number }[]>([]);
+    const [hearts, setHearts] = useState<{ x: number; y: number; size: number; delay: number }[]>([]);
 
-  useEffect(() => {
-    const updateHearts = () => {
-      if (window.innerWidth < 768) {
-        setHearts(generateJitteredHearts(2, 4, 100, 100, [12, 20]));
-      } else {
-        setHearts(generateJitteredHearts(3, 5, 100, 100, [16, 30]));
-      }
-    };
-    updateHearts();
-    window.addEventListener("resize", updateHearts);
-    return () => window.removeEventListener("resize", updateHearts);
-  }, []);
+    useEffect(() => {
+        const updateHearts = () => {
+            if (window.innerWidth < 768) {
+                setHearts(generateJitteredHearts(2, 4, 100, 100, [12, 20]));
+            } else {
+                setHearts(generateJitteredHearts(3, 5, 100, 100, [16, 30]));
+            }
+        };
+        updateHearts();
+        window.addEventListener("resize", updateHearts);
+        return () => window.removeEventListener("resize", updateHearts);
+    }, []);
 
-  return (
-    <Layout>
-      {/* Hero Section */}
-      <section className="bg-hero-gradient py-8 md:pb-12 relative overflow-hidden min-h-[30vh] flex items-center">
-        {/* Background blobs */}
-        <div className="absolute top-10 right-[10%] w-32 h-32 bg-primary/10 blob animate-float" />
-        <div className="absolute bottom-5 left-[5%] w-24 h-24 bg-warm/10 blob animate-wiggle" />
+    return (
+        <Layout>
+            {/* --- HERO SECTION --- */}
+            <section className="bg-hero-gradient py-12 md:pb-16 relative overflow-hidden min-h-[35vh] flex items-center">
+                {/* Background blobs */}
+                <div className="absolute top-10 right-[10%] w-32 h-32 bg-primary/10 blob animate-float" />
+                <div className="absolute bottom-5 left-[5%] w-24 h-24 bg-warm/10 blob animate-wiggle" />
 
-        {/* Floating hearts */}
-        {hearts.map((h, i) => (
-          <Heart
-            key={i}
-            className="absolute text-warm/30 animate-float"
-            fill="currentColor"
-            style={{
-              top: `${h.y}%`,
-              left: `${h.x}%`,
-              width: `${h.size}px`,
-              height: `${h.size}px`,
-              animationDelay: `${h.delay}ms`,
-            }}
-          />
-        ))}
+                {/* Floating hearts */}
+                {hearts.map((h, i) => (
+                    <Heart
+                        key={i}
+                        className="absolute text-warm/30 animate-float"
+                        fill="currentColor"
+                        style={{
+                            top: `${h.y}%`,
+                            left: `${h.x}%`,
+                            width: `${h.size}px`,
+                            height: `${h.size}px`,
+                            animationDelay: `${h.delay}ms`,
+                        }}
+                    />
+                ))}
 
-        <div className="container relative z-10 text-center">
-          <div className="max-w-3xl mx-auto">
-            <h1 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-4 animate-fade-up">
-              Buy Items
-            </h1>
-            <p className="text-lg text-muted-foreground animate-fade-up delay-100 leading-relaxed">
-              At the beginning of each semester, we host a large sale for students moving in.
-              <br />
-              Be quick to find your treasure!
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Buy Info Section */}
-      <section className="py-8 md:pb-12 relative z-10">
-        <div className="container max-w-3xl mx-auto text-center space-y-4">
-          
-          <div className="bg-white/70 backdrop-blur-sm border rounded-2xl p-6 max-w-2xl mx-auto my-6 animate-fade-up delay-250 shadow-md">
-            <div className="space-y-4">
-
-              {/* Where */}
-              <div className="flex items-start gap-3">
-                <MapPin className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
-                <div className="text-left">
-                  <p className="font-semibold text-foreground text-base mb-1"> Where:</p>
-                  <p className="text-sm text-muted-foreground">
-                    <span className="font-bold text-foreground">Rackarbergsgatan 32 (Rackis)</span>
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    <span className="font-bold text-foreground">Flogsta</span> - only bedding during move-in days
-                  </p>
+                <div className="container relative z-10 text-center">
+                    <div className="max-w-3xl mx-auto">
+                        <span className="inline-block text-sm font-bold text-primary uppercase tracking-wider mb-3 animate-fade-up">
+                           Find Your Treasure
+                        </span>
+                        <h1 className="font-display text-3xl md:text-5xl font-bold text-foreground mb-6 animate-fade-up delay-100">
+                            Buy Items
+                        </h1>
+                        <p className="text-lg md:text-xl text-muted-foreground animate-fade-up delay-200 leading-relaxed">
+                            At the beginning of each semester, we host a large sale for students moving in. Be quick to find the best deals!
+                        </p>
+                    </div>
                 </div>
-              </div>
+            </section>
 
-              <div className="h-px bg-border"></div>
+            {/* --- LOGISTICS SECTION --- */}
+            <section className="py-12 relative z-10">
+                <div className="container max-w-4xl mx-auto text-center">
 
-              {/* When */}
-              <div className="flex items-start gap-3">
-                <Clock className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
-                <div className="text-left">
-                  <p className="font-semibold text-foreground text-base mb-1"> When:</p>
-                  <p className="text-sm text-muted-foreground">
-                    <span className="font-bold text-foreground">At the beginning of each semester</span>
-                  </p>
-                  <p className="text-xs text-muted-foreground italic">Check Instagram for exact dates and times</p>
+                    {/* The Info Card */}
+                    <div className="bg-white border rounded-3xl p-6 max-w-2xl mx-auto mb-12 animate-fade-up delay-300 shadow-xl shadow-slate-100">
+                        <div className="space-y-5">
+
+                            {/* Where */}
+                            <div className="flex gap-4 text-left">
+                                <div className="p-2.5 bg-primary/10 rounded-full shrink-0 h-fit">
+                                    <MapPin className="h-5 w-5 text-primary" />
+                                </div>
+                                <div>
+                                    <p className="font-bold text-foreground text-lg mb-1">Where to find us</p>
+                                    <div className="space-y-0.5">
+                                        <p className="text-muted-foreground text-base">
+                                            <span className="font-semibold text-slate-900">Rackarbergsgatan 32</span> (Rackis)
+                                        </p>
+                                        <p className="text-muted-foreground text-base">
+                                            <span className="font-semibold text-slate-900">Flogsta</span> (Bedding only during move-in)
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="h-px bg-slate-100 w-full"></div>
+
+                            {/* When */}
+                            <div className="flex gap-4 text-left">
+                                <div className="p-2.5 bg-orange-100 rounded-full shrink-0 h-fit">
+                                    <Clock className="h-5 w-5 text-orange-600" />
+                                </div>
+                                <div>
+                                    <p className="font-bold text-foreground text-lg mb-1">When we open</p>
+                                    <p className="text-muted-foreground text-base">
+                                        At the <span className="font-semibold text-slate-900">start of each semester</span>
+                                    </p>
+                                    <p className="text-xs text-muted-foreground mt-0.5 italic opacity-70">(Check Instagram for exact dates)</p>
+                                </div>
+                            </div>
+
+                            <div className="h-px bg-slate-100 w-full"></div>
+
+                            {/* How */}
+                            <div className="flex gap-4 text-left">
+                                <div className="p-2.5 bg-blue-100 rounded-full shrink-0 h-fit">
+                                    <MessageCircle className="h-5 w-5 text-blue-600" />
+                                </div>
+                                <div>
+                                    <p className="font-bold text-foreground text-lg mb-1">How to buy</p>
+                                    <p className="text-muted-foreground text-base">
+                                        <span className="font-semibold text-slate-900">First-come, first-served</span> basis. Come early!
+                                    </p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <Button size="lg" asChild className="bg-primary hover:bg-primary/90 text-white rounded-full px-8 h-12 shadow-lg hover:shadow-xl transition-all animate-fade-up delay-400">
+                        <a href="https://instagram.com/rackis_for_barn" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 font-semibold">
+                            <Instagram className="h-5 w-5" />
+                            Check Instagram for updates
+                        </a>
+                    </Button>
                 </div>
-              </div>
+            </section>
 
-              <div className="h-px bg-border"></div>
+            {/* --- LIST OF ITEMS SECTION --- */}
+            <section className="py-16 md:py-24 bg-slate-50/80 border-t border-slate-100">
+                <div className="container max-w-5xl mx-auto">
+                    <div className="text-center max-w-2xl mx-auto mb-16">
+                        <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-4">
+                            What You Can Buy
+                        </h2>
+                        <p className="text-lg text-muted-foreground leading-relaxed">
+                            We offer second-hand items perfect for your new room. Here is what you can typically find at our sales.
+                        </p>
+                    </div>
 
-              {/* How */}
-              <div className="flex items-start gap-3">
-                <MessageCircle className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
-                <div className="text-left">
-                  <p className="font-semibold text-foreground text-base mb-1"> How:</p>
-                  <p className="text-sm text-muted-foreground">
-                    <span className="font-bold text-foreground">First-come, first-served basis.</span> Arrive early for the best finds!
-                  </p>
+                    <div className="grid md:grid-cols-2 gap-6">
+
+                        {/* CATEGORY 1: Household & Bedding */}
+                        <div className="bg-white border border-slate-200/60 rounded-2xl p-8 hover:shadow-lg hover:border-blue-200 transition-all duration-300">
+                            <div className="flex items-center gap-4 mb-6">
+                                <div className="p-3.5 bg-blue-50 text-blue-600 rounded-xl">
+                                    <BedDouble className="h-7 w-7" />
+                                </div>
+                                <h3 className="text-xl font-bold text-slate-800">Household & Bedding</h3>
+                            </div>
+                            <ul className="space-y-3 pl-2">
+                                {[
+                                    "Duvets and pillows",
+                                    "Bed sheets and blankets",
+                                    "Curtains & Rugs",
+                                    "Small household textiles"
+                                ].map((item) => (
+                                    <li key={item} className="flex items-start gap-3 text-slate-600 text-base">
+                                        <span className="text-slate-300 mt-1.5 text-xs">●</span>
+                                        <span>{item}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+
+                        {/* CATEGORY 2: Kitchen */}
+                        <div className="bg-white border border-slate-200/60 rounded-2xl p-8 hover:shadow-lg hover:border-orange-200 transition-all duration-300">
+                            <div className="flex items-center gap-4 mb-6">
+                                <div className="p-3.5 bg-orange-50 text-orange-600 rounded-xl">
+                                    <ChefHat className="h-7 w-7" />
+                                </div>
+                                <h3 className="text-xl font-bold text-slate-800">Kitchen Equipment</h3>
+                            </div>
+                            <ul className="space-y-3 pl-2">
+                                {[
+                                    "Pots, pans & frying pans",
+                                    "Cutlery and cooking utensils",
+                                    "Plates, bowls, cups and glasses",
+                                    "Food storage containers"
+                                ].map((item) => (
+                                    <li key={item} className="flex items-start gap-3 text-slate-600 text-base">
+                                        <span className="text-slate-300 mt-1.5 text-xs">●</span>
+                                        <span>{item}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+
+                        {/* CATEGORY 3: Electronics */}
+                        <div className="bg-white border border-slate-200/60 rounded-2xl p-8 hover:shadow-lg hover:border-yellow-200 transition-all duration-300">
+                            <div className="flex items-center gap-4 mb-6">
+                                <div className="p-3.5 bg-yellow-50 text-yellow-600 rounded-xl">
+                                    <Zap className="h-7 w-7" />
+                                </div>
+                                <h3 className="text-xl font-bold text-slate-800">Electronics</h3>
+                            </div>
+                            <ul className="space-y-3 pl-2">
+                                {[
+                                    "Routers and Wi-Fi equipment",
+                                    "Extension cords & power strips",
+                                    "Desk lamps and floor lamps",
+                                    "Small appliances (kettles, toasters)"
+                                ].map((item) => (
+                                    <li key={item} className="flex items-start gap-3 text-slate-600 text-base">
+                                        <span className="text-slate-300 mt-1.5 text-xs">●</span>
+                                        <span>{item}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+
+                        {/* CATEGORY 4: Misc */}
+                        <div className="bg-white border border-slate-200/60 rounded-2xl p-8 hover:shadow-lg hover:border-purple-200 transition-all duration-300">
+                            <div className="flex items-center gap-4 mb-6">
+                                <div className="p-3.5 bg-purple-50 text-purple-600 rounded-xl">
+                                    <PackageOpen className="h-7 w-7" />
+                                </div>
+                                <h3 className="text-xl font-bold text-slate-800">And Much More...</h3>
+                            </div>
+                            <ul className="space-y-3 pl-2">
+                                {[
+                                    "Small shelves and storage boxes",
+                                    "Mirrors and decoration",
+                                    "Laundry racks and hangers",
+                                    "Bicycles in working condition"
+                                ].map((item) => (
+                                    <li key={item} className="flex items-start gap-3 text-slate-600 text-base">
+                                        <span className="text-slate-300 mt-1.5 text-xs">●</span>
+                                        <span>{item}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+
+                    </div>
+
+                    <div className="text-center mt-12">
+                        {/* CLICKABLE BOTTOM BANNER */}
+                        <a 
+                            href="https://instagram.com/rackis_for_barn" 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-2 px-6 py-3 bg-white rounded-full border border-slate-200 shadow-sm text-sm text-slate-600 hover:shadow-md hover:border-primary/50 transition-all group"
+                        >
+                            <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></div>
+                            <span className="group-hover:text-primary transition-colors">
+                                Follow us on Instagram for updates on sale dates and opening hours!
+                            </span>
+                        </a>
+                    </div>
                 </div>
-              </div>
-
-            </div>
-          </div>
-
-          <Button size="default" asChild className="bg-primary text-primary-foreground hover:bg-primary/90 px-6 animate-fade-up delay-400">
-            <a
-              href="https://instagram.com/rackis_for_barn"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2"
-            >
-              <Instagram className="h-4 w-4" />
-              Check Instagram for opening times
-            </a>
-          </Button>
-        </div>
-      </section>
-
-      {/* What You Can Buy */}
-      <section className="py-8 md:py-12 bg-section-alt">
-        <div className="container max-w-4xl mx-auto">
-          <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground text-center mb-4">
-            What You Can Buy
-          </h2>
-
-          <p className="text-base text-muted-foreground text-center max-w-2xl mx-auto mb-8 leading-relaxed">
-            We offer second hand items that help students settle into their new homes.
-            The categories below show examples of what is sold.
-          </p>
-
-          <div className="space-y-6">
-
-            {/* CATEGORY BLOCK */}
-            <div className="rounded-2xl bg-white/70 backdrop-blur-sm border shadow-sm p-6">
-              <h3 className="text-lg font-semibold text-foreground mb-3">
-                Household & Bedding
-              </h3>
-              <ul className="grid md:grid-cols-2 gap-y-2 gap-x-4 text-muted-foreground text-base leading-relaxed">
-                <li>Duvets and pillows</li>
-                <li>Bed sheets and blankets</li>
-                <li>Curtains</li>
-                <li>Small household textiles</li>
-              </ul>
-            </div>
-
-            {/* CATEGORY BLOCK */}
-            <div className="rounded-2xl bg-white/70 backdrop-blur-sm border shadow-sm p-6">
-              <h3 className="text-lg font-semibold text-foreground mb-3">
-                Kitchen Equipment
-              </h3>
-              <ul className="grid md:grid-cols-2 gap-y-2 gap-x-4 text-muted-foreground text-base leading-relaxed">
-                <li>Pots and pans</li>
-                <li>Cutlery and cooking utensils</li>
-                <li>Plates, bowls, cups and glasses</li>
-                <li>Food storage containers</li>
-              </ul>
-            </div>
-
-            {/* CATEGORY BLOCK */}
-            <div className="rounded-2xl bg-white/70 backdrop-blur-sm border shadow-sm p-6">
-              <h3 className="text-lg font-semibold text-foreground mb-3">
-                Electronics
-              </h3>
-              <ul className="grid md:grid-cols-2 gap-y-2 gap-x-4 text-muted-foreground text-base leading-relaxed">
-                <li>Routers and basic Wi-Fi equipment</li>
-                <li>Extension cords and power strips</li>
-                <li>Desk lamps and floor lamps</li>
-                <li>Small appliances: kettles, toasters, rice cookers</li>
-              </ul>
-            </div>
-
-            {/* CATEGORY BLOCK */}
-            <div className="rounded-2xl bg-white/70 backdrop-blur-sm border shadow-sm p-6">
-              <h3 className="text-lg font-semibold text-foreground mb-3">
-                And Many Other Items Such As...
-              </h3>
-              <ul className="grid md:grid-cols-2 gap-y-2 gap-x-4 text-muted-foreground text-base leading-relaxed">
-                <li>Small shelves and storage containers</li>
-                <li>Mirrors and decoration</li>
-                <li>Laundry racks and hangers</li>
-                <li>Bicycles in working condition</li>
-              </ul>
-            </div>
-
-          </div>
-
-          <p className="text-base text-muted-foreground text-center mt-8 leading-relaxed">
-            Stop by during our sale days to see the full range of items available for purchase!
-          </p>
-        </div>
-      </section>
-
-    </Layout>
-  );
+            </section>
+        </Layout>
+    );
 }
 
 export default Buy;
