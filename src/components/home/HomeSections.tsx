@@ -445,7 +445,7 @@ export function HowItWorksSection() {
                 <div 
                   key={`${step.title}-${i}`} 
                   // CHANGED: max-w-[350px] -> max-w-[300px]
-                  className="shrink-0 w-[85vw] max-w-[300px] transform-gpu"
+                  className="shrink-0 w-[75vw] max-w-[300px] transform-gpu"
                   style={{ WebkitTapHighlightColor: "transparent" }}
                 >
                   <div className="card-warm text-center flex flex-col h-full shadow-md border border-stone-100/50">
@@ -685,7 +685,7 @@ export function WhyChooseUsSection() {
               <div
                 key={`${benefit.title}-${i}`}
                 // CHANGED: max-w-[350px] -> max-w-[300px] to match About page style
-                className="shrink-0 w-[85vw] max-w-[300px] transform-gpu"
+                className="shrink-0 w-[75vw] max-w-[300px] transform-gpu"
                 style={{ WebkitTapHighlightColor: "transparent" }}
               >
                 <div className="h-full p-6 rounded-2xl bg-card/80 backdrop-blur border border-border flex flex-col items-center text-center shadow-sm">
@@ -1007,7 +1007,7 @@ export function PartnersSection() {
             {scrollData.map((partner, i) => (
               <div
                 key={`${partner.name}-${i}`}
-                className="shrink-0 w-[85vw] max-w-[300px] transform-gpu"
+                className="shrink-0 w-[75vw] max-w-[300px] transform-gpu"
                 style={{ WebkitTapHighlightColor: "transparent" }}
               >
                 <a

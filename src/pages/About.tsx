@@ -568,7 +568,7 @@ const About = () => {
               {valuesScrollData.map((value, i) => (
                 <div
                   key={`${value.title}-${i}`}
-                  className="shrink-0 w-[85vw] max-w-[300px] transform-gpu"
+                  className="shrink-0 w-[75vw] max-w-[300px] transform-gpu"
                   style={{
                     WebkitTapHighlightColor: "transparent", 
                   }}
@@ -632,7 +632,7 @@ const About = () => {
               {partnersScrollData.map((partner, i) => (
                 <div
                     key={`${partner.name}-${i}`}
-                    className="shrink-0 w-[85vw] max-w-[300px] transform-gpu"
+                    className="shrink-0 w-[75vw] max-w-[300px] transform-gpu"
                     style={{ WebkitTapHighlightColor: "transparent" }}
                 >
                     <a 
