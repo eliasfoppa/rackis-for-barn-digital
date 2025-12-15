@@ -518,8 +518,8 @@ const About = () => {
         </div>
       </section>
 
-      {/* Values Section */}
-      <section className="py-8 md:py-12 overflow-hidden bg-section-alt">
+      {/* Values Section - INCREASED VERTICAL PADDING */}
+      <section className="py-16 md:py-24 overflow-hidden bg-section-alt">
         <div className="container">
           <div className="text-center mb-8">
             <span className="inline-block text-sm font-bold text-accent uppercase tracking-wider mb-3">
@@ -602,8 +602,8 @@ const About = () => {
         </div>
       </section>
 
-      {/* --- PARTNERS SECTION --- */}
-      <section className="section-padding bg-section-light">
+      {/* --- PARTNERS SECTION - INCREASED MOBILE PADDING AGAIN --- */}
+      <section className="pt-24 pb-20 md:pt-32 md:pb-32 bg-section-light">
         <div className="container">
           <div className="text-center mb-8">
               <span className="inline-block text-sm font-bold text-primary uppercase tracking-wider mb-3">In collaboration with</span>
