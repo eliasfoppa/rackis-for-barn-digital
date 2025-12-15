@@ -978,7 +978,7 @@ export function PartnersSection() {
   };
 
   return (
-    <section className="pt-8 pb-20 md:pt-12 md:pb-32 bg-section-light">
+    <section className="pt-20 pb-20 md:pt-32 md:pb-32 bg-section-light">
       <div className="container">
         <div className="text-center mb-8">
           <span className="inline-block text-sm font-bold text-primary uppercase tracking-wider mb-3">In collaboration with</span>
