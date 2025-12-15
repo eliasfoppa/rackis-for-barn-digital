@@ -122,7 +122,6 @@ export function HeroSection() {
   );
 }
 
-// --- HOW IT WORKS SECTION (FIXED) ---
 export function HowItWorksSection() {
   const [currentStep, setCurrentStep] = useState(0);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -157,7 +156,7 @@ export function HowItWorksSection() {
     },
   ];
 
-  // Standard Clone: [Last, ...Real, First]
+  // Standard Clone for Mobile: [Last, ...Real, First]
   const scrollData = [...steps.slice(-1), ...steps, ...steps.slice(0, 1)];
 
   const scrollToSection = (id: string) => {
@@ -165,7 +164,7 @@ export function HowItWorksSection() {
     if (el) el.scrollIntoView({ behavior: "smooth" });
   };
 
-  /* ====================== DESKTOP GEOMETRY ====================== */
+  /* ====================== LARGE DESKTOP GEOMETRY ====================== */
   const containerWidth = 1200;
   const containerHeight = 830;
   const boxWidth = 350;
@@ -203,7 +202,7 @@ export function HowItWorksSection() {
     getArrowOnCircle(box3Left + boxWidth, 0, "right"),
   ];
 
-  // --- INIT ---
+  // --- INIT SCROLL ---
   useEffect(() => {
     requestAnimationFrame(() => {
         const container = scrollContainerRef.current;
@@ -245,7 +244,7 @@ export function HowItWorksSection() {
     const startTime = performance.now();
 
     isAnimatingRef.current = true;
-    container.style.overflowX = 'hidden'; // Chrome Fix (Only during glide)
+    container.style.overflowX = 'hidden'; 
     container.style.scrollSnapType = 'none';
 
     const animate = (currentTime: number) => {
@@ -271,7 +270,6 @@ export function HowItWorksSection() {
   const handleTouchStart = (e: React.TouchEvent) => {
     if (scrollContainerRef.current) scrollContainerRef.current.style.overflowX = 'auto';
 
-    // Stop animation & Unlock
     if (rafRef.current || isAnimatingRef.current) {
         if (rafRef.current) cancelAnimationFrame(rafRef.current);
         rafRef.current = null;
@@ -279,7 +277,6 @@ export function HowItWorksSection() {
         if (scrollContainerRef.current) scrollContainerRef.current.style.scrollSnapType = 'x mandatory';
     }
 
-    // TELEPORT INSTANTLY (Fix for "Wait to swipe")
     if (scrollContainerRef.current) checkInfiniteLoop(scrollContainerRef.current);
 
     touchStartRef.current = e.touches[0].clientX;
@@ -318,7 +315,6 @@ export function HowItWorksSection() {
   const handleScroll = () => {
     if (!scrollContainerRef.current) return;
     
-    // Live Loop Check
     if (!isAnimatingRef.current) {
         checkInfiniteLoop(scrollContainerRef.current);
     }
@@ -345,8 +341,11 @@ export function HowItWorksSection() {
           </p>
         </div>
 
-        {/* DESKTOP (md:block) */}
-        <div className="hidden md:block relative mx-auto" style={{ width: containerWidth, height: containerHeight }}>
+        {/* 
+            1. LARGE DESKTOP (XL - >1280px) 
+            Only shows on truly large screens.
+        */}
+        <div className="hidden xl:block relative mx-auto" style={{ width: containerWidth, height: containerHeight }}>
           <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 1 }}>
             <circle cx={circleCX} cy={circleCY} r={circleR} stroke="#0024a8" strokeWidth="4" fill="none" opacity="0.2" />
           </svg>
@@ -377,7 +376,38 @@ export function HowItWorksSection() {
           })}
         </div>
 
-        {/* MOBILE (md:hidden) */}
+        {/* 
+            2. STATIC GRID (Medium/Tablet/Desktop Mode - 768px to 1280px)
+            This replaces the scrollable area with a simple, static row of cards.
+            No scrolling means no bugs.
+        */}
+        <div className="hidden md:flex xl:hidden justify-center gap-6 px-4">
+          {steps.map((step, i) => {
+            const Icon = step.icon;
+            return (
+              <div key={i} className="flex-1 max-w-[350px]">
+                <div className="card-warm text-center flex flex-col h-full shadow-md border border-stone-100/50">
+                  <div className={`w-16 h-16 rounded-2xl ${step.color} mx-auto mb-6 flex items-center justify-center`}>
+                    <Icon className="h-8 w-8" />
+                  </div>
+                  <span className="text-sm font-bold text-muted-foreground/60 mb-2">Step {i + 1}</span>
+                  <h3 className="text-2xl font-bold mb-3">{step.title}</h3>
+                  <p className="text-muted-foreground mb-6">{step.description}</p>
+                  {step.action.type === "link" ? (
+                    <a href={step.action.to} className="mt-auto px-5 py-3 rounded-xl bg-primary/10 text-primary font-semibold hover:bg-primary/20 transition w-full block">Learn more →</a>
+                  ) : (
+                    <button onClick={() => scrollToSection(step.action.target)} className="mt-auto px-5 py-3 rounded-xl bg-primary/10 text-primary font-semibold hover:bg-primary/20 transition w-full block">Learn more →</button>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* 
+            3. MOBILE (Small - <768px)
+            Standard infinite scroll carousel.
+        */}
         <div className="md:hidden relative">
           <div
             ref={scrollContainerRef}
@@ -430,7 +460,7 @@ export function HowItWorksSection() {
   );
 }
 
-// --- WHY CHOOSE US SECTION (FIXED) ---
+// --- WHY CHOOSE US SECTION ---
 export function WhyChooseUsSection() {
   const [currentStep, setCurrentStep] = useState(0);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -553,8 +583,6 @@ export function WhyChooseUsSection() {
       }
       targetIndex = Math.max(0, Math.min(targetIndex, scrollData.length - 1));
       glideTo(targetIndex * cardWidth);
-    } else {
-      container.style.scrollSnapType = 'x mandatory';
     }
   };
 
@@ -631,7 +659,7 @@ export function WhyChooseUsSection() {
           </div>
         </div>
 
-        {/* DESKTOP (md:grid) */}
+        {/* DESKTOP (md:grid) - This section is responsive and fine */}
         <div className="hidden md:grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {benefits.map((benefit) => (
             <div key={benefit.title} className="group p-6 rounded-2xl bg-card/80 backdrop-blur border border-border hover:border-primary/30 transition-all duration-300">
