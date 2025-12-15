@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Heart, Recycle, ShoppingBag, MapPin, Instagram, Bike, Home, Users, Gift } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback} from "react";
 import Logo from "@/assets/logo.png"; // your teddy bear logo
 
 
@@ -124,33 +124,45 @@ export function HeroSection() {
   );
 }
 
+// --- PHYSICS ENGINE: Ease-Out-Quartic ---
+// Starts fast, decelerates quickly but smoothly at the very end
+const easeOutQuart = (t: number) => 1 - Math.pow(1 - t, 4);
+
 export function HowItWorksSection() {
+  const [currentStep, setCurrentStep] = useState(0);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const cardWidthRef = useRef(0);
+  const isJumpingRef = useRef(false);
+  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const rafRef = useRef<number | null>(null);
+  const touchStartRef = useRef(0);
+
   const steps = [
     {
       icon: ShoppingBag,
       title: "Shop",
-      description:
-        "Moving in? We've got you covered for your first days in Uppsala (and beyond).",
+      description: "Moving in? We've got you covered for your first days in Uppsala (and beyond).",
       color: "bg-green-100",
       action: { type: "link", to: "/buy" },
     },
     {
       icon: Heart,
       title: "Support",
-      description:
-        "All profits from your purchase go directly to Barncancerfonden and RBU, supporting children in need.",
+      description: "All profits from your purchase go directly to Barncancerfonden and RBU, supporting children in need.",
       color: "bg-warm/10 text-warm",
       action: { type: "scroll", target: "charities" },
     },
     {
       icon: Gift,
       title: "Donate",
-      description:
-        "Moving out? Give items a second life. We accept everything from bedding to bikes and more.",
+      description: "Moving out? Give items a second life. We accept everything from bedding to bikes and more.",
       color: "bg-primary/10 text-primary",
       action: { type: "link", to: "/donate" },
     },
   ];
+
+  // Clone Structure: [Clone 3] [1] [2] [3] [Clone 1]
+  const scrollData = [...steps.slice(-1), ...steps, ...steps.slice(0, 1)];
 
   const scrollToSection = (id: string) => {
     const el = document.getElementById(id);
@@ -158,22 +170,17 @@ export function HowItWorksSection() {
   };
 
   /* ======================
-      GEOMETRY CONSTANTS
+      DESKTOP GEOMETRY
    ====================== */
-
   const containerWidth = 1200;
   const containerHeight = 830;
   const boxWidth = 350;
-  const boxHeight = 350;
 
-  // Box positions
-  const box1Left = (containerWidth - boxWidth) / 2; // ~425
+  const box1Left = (containerWidth - boxWidth) / 2;
   const box1Top = 30;
-
-  const box2Left = containerWidth - 80 - boxWidth; // ~770
+  const box2Left = containerWidth - 80 - boxWidth;
   const box2Top = 430;
-
-  const box3Left = 80; // ~80
+  const box3Left = 80;
   const box3Top = 430;
 
   const boxes = [
@@ -182,198 +189,282 @@ export function HowItWorksSection() {
     { x: box3Left, y: box3Top },
   ];
 
-  // Circle Geometry (Kept from the previous fix for perfect arrow placement)
   const circleCX = 600;
   const circleCY = 471;
   const circleR = 347;
 
-  /* ======================
-      ARROW PLACEMENT
-   ====================== */
-
-  // Helper to get point on circle and tangent rotation
-  const getArrowOnCircle = (
-    targetX: number,
-    targetY: number,
-    side: "left" | "top" | "right"
-  ) => {
+  const getArrowOnCircle = (targetX: number, targetY: number, side: "left" | "top" | "right") => {
     let x = targetX;
     let y = targetY;
 
-    // 1. Calculate intersection point on the circle edge closest to the box
     if (side === "left") {
-      // Find Y given X (left edge of box)
       const dx = targetX - circleCX;
-      // Top half of circle for Shop box
       y = circleCY - Math.sqrt(Math.pow(circleR, 2) - Math.pow(dx, 2));
     } else if (side === "top") {
-      // Find X given Y (top edge of box)
       const dy = targetY - circleCY;
-      // Right half of circle for Support box
       x = circleCX + Math.sqrt(Math.pow(circleR, 2) - Math.pow(dy, 2));
     } else if (side === "right") {
-      // Find Y given X (right edge of box)
       const dx = targetX - circleCX;
-      // Bottom half of circle for Donate box
       y = circleCY + Math.sqrt(Math.pow(circleR, 2) - Math.pow(dx, 2));
     }
 
-    // 2. Calculate Angle from center
     const angleRad = Math.atan2(y - circleCY, x - circleCX);
-
-    // 3. Tangent Angle (Clockwise flow = angle + 90deg)
     const rotation = (angleRad * 180) / Math.PI + 90;
 
     return { x, y, rotation };
   };
 
-  // Define where arrows should hit the boxes
   const arrows = [
-    // Arrow 1: Hits Box 1 (Shop) on its Left edge
     getArrowOnCircle(box1Left, 0, "left"),
-
-    // Arrow 2: Hits Box 2 (Support) on its Top edge
     getArrowOnCircle(0, box2Top, "top"),
-
-    // Arrow 3: Hits Box 3 (Donate) on its Right edge
     getArrowOnCircle(box3Left + boxWidth, 0, "right"),
   ];
+
+  // --- INIT SCROLL ---
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (container && container.firstElementChild) {
+      const firstCard = container.firstElementChild as HTMLElement;
+      const style = window.getComputedStyle(container);
+      const gap = parseFloat(style.gap) || 16;
+      cardWidthRef.current = firstCard.offsetWidth + gap;
+      container.scrollLeft = cardWidthRef.current; // Start at Real Index 1
+    }
+    return () => {
+      if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, []);
+
+  // --- GLIDE ENGINE ---
+  const glideTo = (targetX: number) => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+
+    const startX = container.scrollLeft;
+    const distance = targetX - startX;
+    const duration = 450; // Faster (450ms)
+    const startTime = performance.now();
+
+    container.style.scrollSnapType = 'none'; // Disable snap to allow glide
+
+    const animate = (currentTime: number) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      
+      // Quartic Ease: Fast start, smooth stop
+      const ease = easeOutQuart(progress);
+
+      container.scrollLeft = startX + (distance * ease);
+
+      if (progress < 1) {
+        rafRef.current = requestAnimationFrame(animate);
+      } else {
+        container.style.scrollSnapType = 'x mandatory'; // Re-enable snap
+        rafRef.current = null;
+        // Trigger loop check immediately after glide ends
+        handleScrollEnd(); 
+      }
+    };
+    rafRef.current = requestAnimationFrame(animate);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+        rafRef.current = null;
+        if (scrollContainerRef.current) {
+            scrollContainerRef.current.style.scrollSnapType = 'x mandatory';
+        }
+    }
+    if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
+    touchStartRef.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    const container = scrollContainerRef.current;
+    if (!container || isJumpingRef.current) return;
+
+    const touchEnd = e.changedTouches[0].clientX;
+    const diff = touchStartRef.current - touchEnd;
+    const cardWidth = cardWidthRef.current;
+
+    // Thresholds
+    const isFlick = Math.abs(diff) > 30;
+    const isDrag = Math.abs(diff) > cardWidth / 3;
+
+    if (isFlick || isDrag) {
+      const currentScroll = container.scrollLeft;
+      const currentExactIndex = currentScroll / cardWidth;
+      const baseIndex = Math.round(currentExactIndex);
+
+      let targetIndex = baseIndex;
+      
+      if (diff > 0) { // Swipe Left (Next)
+         targetIndex = diff > 0 && currentExactIndex > baseIndex ? baseIndex + 1 : baseIndex + 1;
+      } else { // Swipe Right (Prev)
+         targetIndex = diff < 0 && currentExactIndex < baseIndex ? baseIndex - 1 : baseIndex - 1;
+      }
+      
+      // Flick Override
+      if (isFlick) {
+         if (diff > 0) targetIndex = Math.floor(currentExactIndex) + 1;
+         else targetIndex = Math.ceil(currentExactIndex) - 1;
+      }
+
+      // Clamp target
+      targetIndex = Math.max(0, Math.min(targetIndex, scrollData.length - 1));
+      
+      glideTo(targetIndex * cardWidth);
+    }
+  };
+
+  const handleScroll = () => {
+    if (!scrollContainerRef.current || isJumpingRef.current) return;
+    
+    const scrollLeft = scrollContainerRef.current.scrollLeft;
+    const cardWidth = cardWidthRef.current;
+    if (cardWidth === 0) return;
+
+    const rawIndex = Math.round(scrollLeft / cardWidth);
+    let visualStep = rawIndex - 1;
+    
+    // Fix: Correct mapping for clones
+    if (rawIndex === 0) visualStep = steps.length - 1; // Clone Last -> Real Last
+    if (rawIndex >= scrollData.length - 1) visualStep = 0; // Clone First -> Real First
+    
+    if (visualStep !== currentStep) {
+         setCurrentStep(visualStep);
+    }
+    
+    // We do NOT call handleScrollEnd() here aggressively to avoid fighting the glide
+  };
+
+  const handleScrollEnd = useCallback(() => {
+    if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
+    
+    // Short debounce just to be safe
+    scrollTimeoutRef.current = setTimeout(() => {
+      const container = scrollContainerRef.current;
+      if (!container || isJumpingRef.current) return;
+
+      const cardWidth = cardWidthRef.current;
+      const scrollLeft = container.scrollLeft;
+      const rawIndex = Math.round(scrollLeft / cardWidth);
+
+      // --- INFINITE JUMP LOGIC ---
+      // Clone First (Index 4) -> Jump to Real First (Index 1)
+      if (rawIndex >= scrollData.length - 1) {
+        isJumpingRef.current = true;
+        container.style.scrollSnapType = 'none';
+        container.scrollLeft = cardWidth * 1;
+        requestAnimationFrame(() => {
+            container.style.scrollSnapType = 'x mandatory';
+            isJumpingRef.current = false;
+        });
+      } 
+      // Clone Last (Index 0) -> Jump to Real Last (Index 3)
+      else if (rawIndex <= 0) {
+        isJumpingRef.current = true;
+        container.style.scrollSnapType = 'none';
+        container.scrollLeft = cardWidth * steps.length;
+        requestAnimationFrame(() => {
+            container.style.scrollSnapType = 'x mandatory';
+            isJumpingRef.current = false;
+        });
+      }
+    }, 50); // Fast check after glide finishes
+  }, [steps.length, scrollData.length]);
 
   return (
     <section className="section-padding relative overflow-hidden">
       <div className="container relative z-10">
-        <div className="text-center max-w-2xl mx-auto mb-12">
-          <h2 className="font-display text-3xl md:text-5xl font-bold mb-6">
-            How it works
-          </h2>
+        <div className="text-center max-w-2xl mx-auto mb-8 lg:mb-12">
+          <h2 className="font-display text-3xl md:text-5xl font-bold mb-6">How it works</h2>
           <p className="text-lg text-muted-foreground">
-            A simple cycle that helps students, reduces waste, and supports a
-            great cause.
+            A simple cycle that helps students, reduces waste, and supports a great cause.
           </p>
         </div>
 
-        {/* DESKTOP LAYOUT (Visible lg+) */}
-        <div
-          className="hidden lg:block relative mx-auto"
-          style={{ width: containerWidth, height: containerHeight }}
-        >
-          {/* Circle Path */}
-          <svg
-            className="absolute inset-0 w-full h-full pointer-events-none"
-            style={{ zIndex: 1 }}
-          >
-            <circle
-              cx={circleCX}
-              cy={circleCY}
-              r={circleR}
-              stroke="#0024a8"
-              strokeWidth="4"
-              fill="none"
-              opacity="0.2"
-            />
+        {/* DESKTOP LAYOUT */}
+        <div className="hidden lg:block relative mx-auto" style={{ width: containerWidth, height: containerHeight }}>
+          <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 1 }}>
+            <circle cx={circleCX} cy={circleCY} r={circleR} stroke="#0024a8" strokeWidth="4" fill="none" opacity="0.2" />
           </svg>
-
-          {/* Independent Arrowheads (Bigger size retained from previous request) */}
-          <svg
-            className="absolute inset-0 w-full h-full pointer-events-none"
-            style={{ zIndex: 4 }}
-          >
+          <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 4 }}>
             {arrows.map((arrow, i) => (
-              <g
-                key={i}
-                transform={`translate(${arrow.x}, ${arrow.y}) rotate(${arrow.rotation})`}
-              >
-                {/* Arrowhead shape */}
-                <path
-                  d="M-8,-11 L14,0 L-8,11 L-8,-11 Z"
-                  fill="#0024a8"
-                />
+              <g key={i} transform={`translate(${arrow.x}, ${arrow.y}) rotate(${arrow.rotation})`}>
+                <path d="M-8,-11 L14,0 L-8,11 L-8,-11 Z" fill="#0024a8" />
               </g>
             ))}
           </svg>
-
-          {/* Boxes (Restored original text styles) */}
           {boxes.map((b, i) => {
             const Icon = steps[i].icon;
             return (
-              <div
-                key={i}
-                // Restored original card classes
-                className="absolute card-warm text-center flex flex-col"
-                style={{
-                  left: b.x,
-                  top: b.y,
-                  width: boxWidth,
-                  zIndex: 2,
-                }}
-              >
-                <div
-                  className={`w-16 h-16 rounded-2xl ${steps[i].color} mx-auto mb-6 flex items-center justify-center`}
-                >
+              <div key={i} className="absolute card-warm text-center flex flex-col" style={{ left: b.x, top: b.y, width: boxWidth, zIndex: 2 }}>
+                <div className={`w-16 h-16 rounded-2xl ${steps[i].color} mx-auto mb-6 flex items-center justify-center`}>
                   <Icon className="h-8 w-8" />
                 </div>
-                {/* Restored original Step text style */}
-                <span className="text-sm font-bold text-muted-foreground/60 mb-2">
-                  Step {i + 1}
-                </span>
+                <span className="text-sm font-bold text-muted-foreground/60 mb-2">Step {i + 1}</span>
                 <h3 className="text-2xl font-bold mb-3">{steps[i].title}</h3>
-                {/* Restored original Description text style */}
-                <p className="text-muted-foreground mb-6">
-                  {steps[i].description}
-                </p>
+                <p className="text-muted-foreground mb-6">{steps[i].description}</p>
                 {steps[i].action.type === "link" ? (
-                  <a
-                    href={steps[i].action.to}
-                    // Restored original button/link style
-                    className="mt-auto px-5 py-2 rounded-xl bg-primary/10 text-primary font-semibold hover:bg-primary/20 transition"
-                  >
-                    Learn more →
-                  </a>
+                  <a href={steps[i].action.to} className="mt-auto px-5 py-2 rounded-xl bg-primary/10 text-primary font-semibold hover:bg-primary/20 transition">Learn more →</a>
                 ) : (
-                  <button
-                    onClick={() => scrollToSection(steps[i].action.target)}
-                    // Restored original button/link style
-                    className="mt-auto px-5 py-2 rounded-xl bg-primary/10 text-primary font-semibold hover:bg-primary/20 transition"
-                  >
-                    Learn more →
-                  </button>
+                  <button onClick={() => scrollToSection(steps[i].action.target)} className="mt-auto px-5 py-2 rounded-xl bg-primary/10 text-primary font-semibold hover:bg-primary/20 transition">Learn more →</button>
                 )}
               </div>
             );
           })}
         </div>
 
-        {/* MOBILE / TABLET LAYOUT (< lg) - Keeping mobile part original */}
-        <div className="grid md:grid-cols-3 gap-8 lg:hidden z-20 relative">
-          {steps.map((step, i) => (
-            <div key={step.title} className="card-warm text-center flex flex-col">
+        {/* MOBILE LAYOUT */}
+        <div className="lg:hidden relative">
+          <div
+            ref={scrollContainerRef}
+            onScroll={handleScroll}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+            className="flex overflow-x-auto snap-x snap-mandatory pb-8 gap-4 px-4 scrollbar-hide"
+            style={{
+              scrollbarWidth: "none",
+              msOverflowStyle: "none",
+              overscrollBehaviorX: "contain",
+            }}
+          >
+            {scrollData.map((step, i) => {
+              const displayIndex = i === 0 ? steps.length : i === scrollData.length - 1 ? 1 : i;
+              return (
+                <div key={`${step.title}-${i}`} className="snap-center snap-always shrink-0 w-[85vw] max-w-[350px]">
+                  <div className="card-warm text-center flex flex-col h-full shadow-md border border-stone-100/50">
+                    <div className={`w-16 h-16 rounded-2xl ${step.color} mx-auto mb-6 flex items-center justify-center`}>
+                      <step.icon className="h-8 w-8" />
+                    </div>
+                    <span className="text-sm font-bold text-muted-foreground/60 mb-2">Step {displayIndex}</span>
+                    <h3 className="text-2xl font-bold mb-3">{step.title}</h3>
+                    <p className="text-muted-foreground mb-6">{step.description}</p>
+                    {step.action.type === "link" ? (
+                      <a href={step.action.to} className="mt-auto px-5 py-3 rounded-xl bg-primary/10 text-primary font-semibold hover:bg-primary/20 transition w-full block">Learn more →</a>
+                    ) : (
+                      <button onClick={() => scrollToSection(step.action.target)} className="mt-auto px-5 py-3 rounded-xl bg-primary/10 text-primary font-semibold hover:bg-primary/20 transition w-full block">Learn more →</button>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+            <div className="w-4 shrink-0" />
+          </div>
+          <div className="flex justify-center gap-2 mt-2">
+            {steps.map((_, i) => (
               <div
-                className={`w-16 h-16 rounded-2xl ${step.color} mx-auto mb-6 flex items-center justify-center`}
-              >
-                <step.icon className="h-8 w-8" />
-              </div>
-              <span className="text-sm font-bold text-muted-foreground/60 mb-2">
-                Step {i + 1}
-              </span>
-              <h3 className="text-2xl font-bold mb-3">{step.title}</h3>
-              <p className="text-muted-foreground mb-6">{step.description}</p>
-              {step.action.type === "link" ? (
-                <a
-                  href={step.action.to}
-                  className="mt-auto px-5 py-2 rounded-xl bg-primary/10 text-primary font-semibold hover:bg-primary/20 transition"
-                >
-                  Learn more →
-                </a>
-              ) : (
-                <button
-                  onClick={() => scrollToSection(step.action.target)}
-                  className="mt-auto px-5 py-2 rounded-xl bg-primary/10 text-primary font-semibold hover:bg-primary/20 transition"
-                >
-                  Learn more →
-                </button>
-              )}
-            </div>
-          ))}
+                key={i}
+                className={`h-2 rounded-full transition-all duration-300 ${
+                  currentStep === i ? "w-8 bg-primary" : "w-2 bg-primary/20"
+                }`}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </section>
@@ -381,6 +472,14 @@ export function HowItWorksSection() {
 }
 
 export function WhyChooseUsSection() {
+  const [currentStep, setCurrentStep] = useState(0);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const cardWidthRef = useRef(0);
+  const isJumpingRef = useRef(false);
+  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const rafRef = useRef<number | null>(null);
+  const touchStartRef = useRef(0);
+
   const benefits = [
     { icon: Recycle, title: "Sustainable", description: "Reduce waste by giving items a second life." },
     { icon: Heart, title: "Charitable", description: "Every purchase supports children in need." },
@@ -390,14 +489,199 @@ export function WhyChooseUsSection() {
     { icon: Bike, title: "Variety", description: "From bedsheets to bikes, we have it all." },
   ];
 
+  const scrollData = [...benefits.slice(-1), ...benefits, ...benefits.slice(0, 1)];
+
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (container && container.firstElementChild) {
+      const firstCard = container.firstElementChild as HTMLElement;
+      const style = window.getComputedStyle(container);
+      const gap = parseFloat(style.gap) || 16; 
+      cardWidthRef.current = firstCard.offsetWidth + gap;
+      container.scrollLeft = cardWidthRef.current;
+    }
+    return () => {
+      if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, []);
+
+  const glideTo = (targetX: number) => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+
+    const startX = container.scrollLeft;
+    const distance = targetX - startX;
+    const duration = 450;
+    const startTime = performance.now();
+
+    container.style.scrollSnapType = 'none';
+
+    const animate = (currentTime: number) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const ease = easeOutQuart(progress);
+
+      container.scrollLeft = startX + (distance * ease);
+
+      if (progress < 1) {
+        rafRef.current = requestAnimationFrame(animate);
+      } else {
+        container.style.scrollSnapType = 'x mandatory';
+        rafRef.current = null;
+        handleScrollEnd();
+      }
+    };
+    rafRef.current = requestAnimationFrame(animate);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+        rafRef.current = null;
+        if (scrollContainerRef.current) {
+            scrollContainerRef.current.style.scrollSnapType = 'x mandatory';
+        }
+    }
+    if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
+    touchStartRef.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    const container = scrollContainerRef.current;
+    if (!container || isJumpingRef.current) return;
+
+    const touchEnd = e.changedTouches[0].clientX;
+    const diff = touchStartRef.current - touchEnd;
+    const cardWidth = cardWidthRef.current;
+
+    const isFlick = Math.abs(diff) > 30;
+    const isDrag = Math.abs(diff) > cardWidth / 3;
+
+    if (isFlick || isDrag) {
+      const currentScroll = container.scrollLeft;
+      const currentExactIndex = currentScroll / cardWidth;
+      const baseIndex = Math.round(currentExactIndex);
+
+      let targetIndex = baseIndex;
+      if (diff > 0) targetIndex = diff > 0 && currentExactIndex > baseIndex ? baseIndex + 1 : baseIndex + 1;
+      else targetIndex = diff < 0 && currentExactIndex < baseIndex ? baseIndex - 1 : baseIndex - 1;
+
+      if (isFlick) {
+        if (diff > 0) targetIndex = Math.floor(currentExactIndex) + 1;
+        else targetIndex = Math.ceil(currentExactIndex) - 1;
+      }
+
+      targetIndex = Math.max(0, Math.min(targetIndex, scrollData.length - 1));
+      glideTo(targetIndex * cardWidth);
+    }
+  };
+
+  const handleScroll = () => {
+    if (!scrollContainerRef.current || isJumpingRef.current) return;
+    
+    const scrollLeft = scrollContainerRef.current.scrollLeft;
+    const cardWidth = cardWidthRef.current;
+    if (cardWidth === 0) return;
+
+    const rawIndex = Math.round(scrollLeft / cardWidth);
+    let visualStep = rawIndex - 1;
+    if (rawIndex === 0) visualStep = benefits.length - 1;
+    if (rawIndex >= scrollData.length - 1) visualStep = 0;
+    
+    if (visualStep !== currentStep) {
+        setCurrentStep(visualStep);
+    }
+  };
+
+  const handleScrollEnd = useCallback(() => {
+    if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
+    
+    scrollTimeoutRef.current = setTimeout(() => {
+      const container = scrollContainerRef.current;
+      if (!container || isJumpingRef.current) return;
+
+      const cardWidth = cardWidthRef.current;
+      const scrollLeft = container.scrollLeft;
+      const rawIndex = Math.round(scrollLeft / cardWidth);
+
+      if (rawIndex >= scrollData.length - 1) {
+        isJumpingRef.current = true;
+        container.style.scrollSnapType = 'none';
+        container.scrollLeft = cardWidth * 1;
+        requestAnimationFrame(() => {
+            container.style.scrollSnapType = 'x mandatory';
+            isJumpingRef.current = false;
+        });
+      } else if (rawIndex <= 0) {
+        isJumpingRef.current = true;
+        container.style.scrollSnapType = 'none';
+        container.scrollLeft = cardWidth * benefits.length;
+        requestAnimationFrame(() => {
+            container.style.scrollSnapType = 'x mandatory';
+            isJumpingRef.current = false;
+        });
+      }
+    }, 50);
+  }, [benefits.length, scrollData.length, currentStep]);
+
   return (
-    <section className="section-padding bg-section-warm">
+    <section className="section-padding bg-section-warm overflow-hidden">
       <div className="container">
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground mb-6">What makes Rackis for Barn unique?</h2>
-          <p className="text-lg text-muted-foreground">More than just a second-hand store.</p>
+        <div className="text-center max-w-2xl mx-auto mb-10 lg:mb-16">
+          <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground mb-6">
+            What makes Rackis for Barn unique?
+          </h2>
+          <p className="text-lg text-muted-foreground">
+            More than just a second-hand store.
+          </p>
         </div>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        {/* MOBILE LAYOUT */}
+        <div className="lg:hidden relative">
+          <div
+            ref={scrollContainerRef}
+            onScroll={handleScroll}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+            className="flex overflow-x-auto snap-x snap-mandatory pb-8 gap-4 px-4 scrollbar-hide"
+            style={{
+              scrollbarWidth: "none",
+              msOverflowStyle: "none",
+              overscrollBehaviorX: "contain",
+            }}
+          >
+            {scrollData.map((benefit, i) => (
+              <div
+                key={`${benefit.title}-${i}`}
+                className="snap-center snap-always shrink-0 w-[85vw] max-w-[350px]"
+              >
+                <div className="h-full p-6 rounded-2xl bg-card/80 backdrop-blur border border-border flex flex-col items-center text-center shadow-sm">
+                  <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
+                    <benefit.icon className="h-7 w-7 text-primary" />
+                  </div>
+                  <h3 className="text-xl font-bold text-foreground mb-2">{benefit.title}</h3>
+                  <p className="text-muted-foreground">{benefit.description}</p>
+                </div>
+              </div>
+            ))}
+            <div className="w-4 shrink-0" />
+          </div>
+          <div className="flex justify-center gap-2 mt-2">
+            {benefits.map((_, i) => (
+              <div
+                key={i}
+                className={`h-2 rounded-full transition-all duration-300 ${
+                  currentStep === i ? "w-8 bg-primary" : "w-2 bg-primary/20"
+                }`}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* DESKTOP LAYOUT (Simple Grid) */}
+        <div className="hidden lg:grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {benefits.map((benefit) => (
             <div key={benefit.title} className="group p-6 rounded-2xl bg-card/80 backdrop-blur border border-border hover:border-primary/30 transition-all duration-300">
               <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
