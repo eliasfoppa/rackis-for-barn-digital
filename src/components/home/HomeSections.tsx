@@ -917,12 +917,16 @@ export function PartnersSection() {
     {
       name: "Uppsala University Innovation",
       logo: uuInnovationLogo,
+      // Added a custom scale for the square logo
+      customClass: "h-32 md:h-36 scale-125", 
       description: "Uppsala University Innovation provides guidance and resources to help Rackis for Barn expand its reach and positive impact.",
       url: "https://www.uuinnovation.uu.se",
     },
     // {
     //   name: "Uppsalahem",
     //   logo: uppsalahemLogo, 
+    //   // Wide logos need less height to feel balanced
+    //   customClass: "h-20 md:h-24",
     //   description: "Generously provides access to storage units, enabling us to collect and sell items directly at student housing locations.",
     //   url: "https://www.uppsalahem.se",
     // },
@@ -976,15 +980,12 @@ export function PartnersSection() {
   // --- INFINITE LOOP LOGIC ---
   const checkInfiniteLoop = (container: HTMLElement) => {
     if (isSingle) return;
-
     const totalWidth = cardWidthRef.current;
     const visualWidth = visualCardWidthRef.current;
     const paddingLeft = paddingLeftRef.current;
     if (!totalWidth) return;
-
     const offset = getCenterOffset(container, visualWidth);
     const rawIndex = Math.round((container.scrollLeft + offset - paddingLeft) / totalWidth);
-
     if (rawIndex >= scrollData.length - 2) {
       container.scrollLeft = (paddingLeft + (totalWidth * (rawIndex - partners.length))) - offset;
     } else if (rawIndex <= 1) {
@@ -997,23 +998,18 @@ export function PartnersSection() {
     const container = scrollContainerRef.current;
     if (!container) return;
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
-
     const startX = container.scrollLeft;
     const distance = targetX - startX;
     const duration = 300;
     const startTime = performance.now();
-
     isAnimatingRef.current = true;
     container.style.scrollSnapType = 'none';
     container.style.overflowX = 'hidden';
-
     const animate = (currentTime: number) => {
       const elapsed = currentTime - startTime;
       const progress = Math.min(elapsed / duration, 1);
       const ease = easeOutQuart(progress);
-
       container.scrollLeft = startX + (distance * ease);
-
       if (progress < 1) {
         rafRef.current = requestAnimationFrame(animate);
       } else {
@@ -1029,33 +1025,23 @@ export function PartnersSection() {
   // --- TOUCH HANDLERS ---
   const handleTouchStart = (e: React.TouchEvent) => {
     if (isSingle) return;
-
-    if (rafRef.current) {
-      cancelAnimationFrame(rafRef.current);
-      rafRef.current = null;
-      isAnimatingRef.current = false;
-    }
-
+    if (rafRef.current) { cancelAnimationFrame(rafRef.current); rafRef.current = null; isAnimatingRef.current = false; }
     if (scrollContainerRef.current) {
       scrollContainerRef.current.style.overflowX = 'auto';
       scrollContainerRef.current.style.scrollSnapType = 'none';
       checkInfiniteLoop(scrollContainerRef.current);
     }
-
     touchStartRef.current = e.touches[0].clientX;
     touchStartTimeRef.current = performance.now();
   };
 
   const handleTouchEnd = (e: React.TouchEvent) => {
     if (isSingle) return;
-
     const container = scrollContainerRef.current;
     if (!container) return;
-
     const touchEnd = e.changedTouches[0].clientX;
     const touchTime = performance.now() - touchStartTimeRef.current;
     const diff = touchStartRef.current - touchEnd;
-
     if (container.firstElementChild) {
       const firstCard = container.firstElementChild as HTMLElement;
       const style = window.getComputedStyle(container);
@@ -1064,18 +1050,14 @@ export function PartnersSection() {
       cardWidthRef.current = firstCard.offsetWidth + gap;
       paddingLeftRef.current = parseFloat(style.paddingLeft) || 0;
     }
-
     const totalWidth = cardWidthRef.current;
     const visualWidth = visualCardWidthRef.current;
     const paddingLeft = paddingLeftRef.current;
-
     const offset = getCenterOffset(container, visualWidth);
     const exactIndex = (container.scrollLeft + offset - paddingLeft) / totalWidth;
     const rawIndex = Math.round(exactIndex);
-
     const isFlick = touchTime < 250 && Math.abs(diff) > 20;
     let targetIndex = rawIndex;
-
     if (isFlick) {
       if (diff > 0) targetIndex = Math.floor(exactIndex) + 1;
       else targetIndex = Math.ceil(exactIndex) - 1;
@@ -1083,72 +1065,46 @@ export function PartnersSection() {
       if (diff > 0 && exactIndex > rawIndex) targetIndex = rawIndex + 1;
       else if (diff < 0 && exactIndex < rawIndex) targetIndex = rawIndex - 1;
     }
-
     targetIndex = Math.max(0, Math.min(targetIndex, scrollData.length - 1));
     glideTo((paddingLeft + (targetIndex * totalWidth)) - offset);
   };
 
   const handleScroll = () => {
     if (!scrollContainerRef.current || isSingle) return;
-
-    if (!isAnimatingRef.current) {
-      checkInfiniteLoop(scrollContainerRef.current);
-    }
-
+    if (!isAnimatingRef.current) checkInfiniteLoop(scrollContainerRef.current);
     const totalWidth = cardWidthRef.current || 1;
     const visualWidth = visualCardWidthRef.current || totalWidth;
     const paddingLeft = paddingLeftRef.current;
-
     const offset = getCenterOffset(scrollContainerRef.current, visualWidth);
     const rawIndex = Math.round((scrollContainerRef.current.scrollLeft + offset - paddingLeft) / totalWidth);
-
     let visualStep = (rawIndex - START_INDEX);
     visualStep = ((visualStep % partners.length) + partners.length) % partners.length;
-
     if (visualStep !== currentStep) setCurrentStep(visualStep);
   };
 
   return (
     <section className="pt-20 pb-20 md:pt-32 md:pb-32 bg-section-light">
       <div className="container">
-        <div className="text-center mb-8">
+        <div className="text-center mb-12">
           <span className="inline-block text-sm font-bold text-primary uppercase tracking-wider mb-3">In collaboration with</span>
           <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground">Our Supportive Partners</h2>
         </div>
 
         {/* --- MOBILE (SCROLLING) --- */}
-        <div className="md:hidden relative w-full flex flex-col items-center"> {/* FIXED PARENT */}
+        <div className="md:hidden relative w-full flex flex-col items-center">
           <div
             ref={scrollContainerRef}
             onScroll={handleScroll}
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
-            className={`
-              flex pb-8 gap-4 px-4 scrollbar-hide select-none w-full
-              ${isSingle ? 'justify-center overflow-hidden' : 'overflow-x-auto justify-start'} 
-            `}
-            style={{
-              scrollSnapType: 'none',
-              scrollbarWidth: "none",
-              msOverflowStyle: "none",
-              overscrollBehaviorX: "contain",
-              WebkitTapHighlightColor: "transparent",
-            }}
+            className={`flex pb-8 gap-4 px-4 scrollbar-hide select-none w-full ${isSingle ? 'justify-center overflow-hidden' : 'overflow-x-auto justify-start'}`}
+            style={{ scrollSnapType: 'none', scrollbarWidth: "none", msOverflowStyle: "none", overscrollBehaviorX: "contain", WebkitTapHighlightColor: "transparent" }}
           >
             {scrollData.map((partner, i) => (
-              <div
-                key={`${partner.name}-${i}`}
-                className="shrink-0 w-[75vw] max-w-[300px] transform-gpu"
-                style={{ WebkitTapHighlightColor: "transparent" }}
-              >
-                <a
-                  href={partner.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex flex-col items-center justify-center h-full p-6 rounded-2xl bg-white/50 backdrop-blur border border-transparent active:scale-95 transition-transform"
-                >
-                  <div className="flex items-center justify-center w-full h-32 mb-3">
-                    <img src={partner.logo} alt={`${partner.name} Logo`} className="max-h-full max-w-full object-contain" />
+              <div key={`${partner.name}-${i}`} className="shrink-0 w-[75vw] max-w-[300px] transform-gpu" style={{ WebkitTapHighlightColor: "transparent" }}>
+                <a href={partner.url} target="_blank" rel="noopener noreferrer" className="flex flex-col items-center justify-center h-full p-6 rounded-2xl bg-white/50 backdrop-blur border border-transparent active:scale-95 transition-transform">
+                  <div className="flex items-center justify-center w-full h-40 mb-4">
+                    <img src={partner.logo} alt={`${partner.name} Logo`} className={`w-auto max-w-full object-contain ${partner.customClass}`} />
                   </div>
                   <p className="text-muted-foreground text-center text-sm">{partner.description}</p>
                 </a>
@@ -1157,15 +1113,10 @@ export function PartnersSection() {
             {!isSingle && <div className="w-4 shrink-0" />}
           </div>
 
-          {/* Dots Indicator */}
           {!isSingle && (
             <div className="flex justify-center gap-2 mt-2">
               {partners.map((_, i) => (
-                <div
-                  key={i}
-                  className={`h-2 rounded-full transition-all duration-300 ${currentStep === i ? "w-8 bg-primary" : "w-2 bg-primary/20"
-                    }`}
-                />
+                <div key={i} className={`h-2 rounded-full transition-all duration-300 ${currentStep === i ? "w-8 bg-primary" : "w-2 bg-primary/20"}`} />
               ))}
             </div>
           )}
@@ -1175,8 +1126,8 @@ export function PartnersSection() {
         <div className="hidden md:flex flex-wrap justify-center gap-16 items-center">
           {partners.map((partner) => (
             <a key={partner.name} href={partner.url} target="_blank" rel="noopener noreferrer" className="flex flex-col items-center max-w-xs hover:scale-105 transition-transform">
-              <div className="flex items-center justify-center w-64 h-32 mb-3">
-                <img src={partner.logo} alt={`${partner.name} Logo`} className="max-h-full max-w-full object-contain" />
+              <div className="flex items-center justify-center w-64 h-40 mb-4">
+                <img src={partner.logo} alt={`${partner.name} Logo`} className={`w-auto max-w-full object-contain ${partner.customClass}`} />
               </div>
               <p className="text-muted-foreground text-center">{partner.description}</p>
             </a>
