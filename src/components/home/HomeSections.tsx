@@ -5,6 +5,11 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import Logo from "@/assets/logo.png";
 import uuInnovationLogo from "@/assets/uu-innovation.png";
 import uppsalahemLogo from "@/assets/uppsalahem.png";
+import pic1 from '@/assets/pic1.jpg';
+import pic2 from '@/assets/pic2.jpg';
+import pic3 from '@/assets/pic3.jpg';
+import pic4 from '@/assets/pic4.jpg';
+import pic5 from '@/assets/pic5.jpg';
 
 // --- PHYSICS: Ease-Out-Quart (Stable, Smooth) ---
 const easeOutQuart = (t: number) => 1 - Math.pow(1 - t, 4);
@@ -138,22 +143,22 @@ export function HowItWorksSection() {
   const steps = [
     {
       icon: ShoppingBag,
-      title: "Shop",
-      description: "Moving in? We've got you covered for your first days in Uppsala (and beyond).",
+      title: "Moving In?",
+      description: "We've got you covered with affordable essentials for your first days in Uppsala (and beyond).",
       color: "bg-green-100",
       action: { type: "link", to: "/buy" },
     },
     {
       icon: Heart,
-      title: "Support",
-      description: "All profits from your purchase go directly to Barncancerfonden and RBU.",
+      title: "Give Back",
+      description: "Feel good knowing 100% of our profits go directly to the Barncancerfonden and RBU charities.",
       color: "bg-warm/10 text-warm",
       action: { type: "scroll", target: "charities" },
     },
     {
       icon: Gift,
-      title: "Donate",
-      description: "Moving out? Give items a second life. We accept everything from bedding to bikes.",
+      title: "Moving Out?",
+      description: "Give items a second life instead of throwing them away. We accept bedding to bikes.",
       color: "bg-primary/10 text-primary",
       action: { type: "link", to: "/donate" },
     },
@@ -476,6 +481,132 @@ export function HowItWorksSection() {
               />
             ))}
           </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+const posts = [
+  {
+    id: 1,
+    url: "https://www.instagram.com/p/DMXGvK8Kyv2/?img_index=6",
+    img: pic1, 
+    caption: "", 
+  },
+  {
+    id: 2,
+    url: "https://www.instagram.com/p/DMXGvK8Kyv2/?img_index=5",
+    img: pic2, 
+    caption: "",
+  },
+  {
+    id: 3,
+    url: "https://www.instagram.com/p/DE48QCAKuNz/",
+    img: pic3, 
+    caption: "",
+  },
+  {
+    id: 4,
+    url: "https://www.instagram.com/p/DNnDrJQq6bp/?img_index=1",
+    img: pic4, 
+    caption: "",
+  },
+  {
+    id: 5,
+    url: "https://www.instagram.com/p/DNnDrJQq6bp/?img_index=5",
+    img: pic5, 
+    caption: "",
+  },
+];
+
+export function CommunitySection() {
+  return (
+    <section className="py-16 md:py-24 bg-white overflow-hidden">
+      <div className="container px-4 md:px-6">
+        {/* Header */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 md:mb-12 gap-6">
+          <div className="max-w-2xl">
+            <span className="inline-block text-sm font-bold text-primary uppercase tracking-wider mb-3">
+              Community
+            </span>
+            <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground mb-4">
+              Rackis in Action
+            </h2>
+            <p className="text-lg text-muted-foreground">
+              See what we're up to behind the scenes from our busy sales to collecting donations.
+            </p>
+          </div>
+          
+          <a 
+            href="https://www.instagram.com/rackisforbarn" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="hidden md:inline-flex items-center gap-2 px-6 py-3 rounded-full bg-stone-100 text-foreground font-semibold hover:bg-stone-200 transition-colors group"
+          >
+            <Instagram className="w-5 h-5" />
+            <span>@rackisforbarn</span>
+            <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+          </a>
+        </div>
+
+        {/* FEED */}
+        {/* CHANGED: Switched from `max-md` to `lg` breakpoint logic. 
+            Default is flex (scroll), only switches to grid on large screens (lg). */}
+        <div className="
+          flex gap-4 overflow-x-auto pb-8 -mx-4 px-4 snap-x scrollbar-hide
+          lg:grid lg:grid-cols-5 lg:gap-6 lg:overflow-visible lg:pb-0 lg:mx-0 lg:px-0
+        ">
+          {posts.map((post) => (
+            <a 
+              key={post.id}
+              href={post.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="relative group block aspect-square rounded-3xl overflow-hidden bg-stone-100 
+                         shrink-0 w-[280px] snap-start lg:w-auto"
+            >
+              <img 
+                src={post.img} 
+                alt="Instagram post" 
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+              
+              {/* NEW: Subtle Mobile Indicator (Hidden on Desktop) */}
+              <div className="absolute top-3 right-3 lg:hidden">
+                <div className="bg-black/20 backdrop-blur-md p-2 rounded-full">
+                  <Instagram className="w-4 h-4 text-white drop-shadow-sm" />
+                </div>
+              </div>
+
+              {/* Desktop Overlay on Hover (Hidden on Mobile) */}
+              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 hidden lg:flex items-center justify-center">
+                <Instagram className="w-8 h-8 text-white drop-shadow-md" />
+              </div>
+
+              {/* Caption Tag */}
+              {post.caption && (
+                <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+                  <div className="bg-white/95 backdrop-blur-sm p-3 rounded-xl text-sm font-medium text-foreground shadow-lg">
+                    <p className="line-clamp-2">{post.caption}</p>
+                  </div>
+                </div>
+              )}
+            </a>
+          ))}
+        </div>
+
+        {/* Mobile Button */}
+        <div className="mt-4 md:hidden">
+          <a 
+            href="https://www.instagram.com/rackisforbarn" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="flex items-center justify-center gap-2 w-full px-6 py-3 rounded-xl bg-stone-100 text-foreground font-semibold hover:bg-stone-200 transition-colors"
+          >
+            <Instagram className="w-5 h-5" />
+            <span>Follow @rackisforbarn</span>
+          </a>
         </div>
       </div>
     </section>

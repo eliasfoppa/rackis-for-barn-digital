@@ -1,7 +1,8 @@
 import { Layout } from "@/components/layout/Layout";
 import { 
   HeroSection, 
-  HowItWorksSection, // Must be imported for the fix to run
+  HowItWorksSection,
+  CommunitySection,
   WhyChooseUsSection, 
   AboutCharitiesSection,
   PartnersSection,
@@ -13,6 +14,7 @@ const Index = () => {
     <Layout>
       <HeroSection />
       <HowItWorksSection />
+      <CommunitySection />
       <WhyChooseUsSection />
       <AboutCharitiesSection />
       <PartnersSection />
