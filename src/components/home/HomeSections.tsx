@@ -158,7 +158,7 @@ export function HowItWorksSection() {
     {
       icon: Gift,
       title: "Moving Out?",
-      description: "Give items a second life instead of throwing them away. We accept bedding to bikes.",
+      description: "Give items a second life instead of throwing them away. We accept everything from bedding to bikes.",
       color: "bg-primary/10 text-primary",
       action: { type: "link", to: "/donate" },
     },
@@ -922,14 +922,14 @@ export function PartnersSection() {
       description: "Uppsala University Innovation provides guidance and resources to help Rackis for Barn expand its reach and positive impact.",
       url: "https://www.uuinnovation.uu.se",
     },
-    // {
-    //   name: "Uppsalahem",
-    //   logo: uppsalahemLogo, 
-    //   // Wide logos need less height to feel balanced
-    //   customClass: "h-20 md:h-24",
-    //   description: "Generously provides access to storage units, enabling us to collect and sell items directly at student housing locations.",
-    //   url: "https://www.uppsalahem.se",
-    // },
+    {
+      name: "Uppsalahem",
+      logo: uppsalahemLogo, 
+      // Wide logos need less height to feel balanced
+      customClass: "h-20 md:h-24",
+      description: "Generously provides access to storage units, enabling us to collect and sell items directly at student housing locations.",
+      url: "https://www.uppsalahem.se",
+    },
   ];
 
   // --- LOGIC SWITCH ---

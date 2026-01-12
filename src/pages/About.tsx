@@ -8,7 +8,7 @@ import lenkaImg from "@/assets/lenka.png";
 import lukasImg from "@/assets/lukas.png";
 // --- PARTNER LOGO IMPORTS ---
 import uuInnovationLogo from "@/assets/uu-innovation.png";
-// import uppsalahemLogo from "@/assets/uppsalahem.png";
+import uppsalahemLogo from "@/assets/uppsalahem.png"; // Make sure this is imported
 
 // --- PHYSICS: Ease-Out-Quart (Smooth Glide) ---
 const easeOutQuart = (t: number) => 1 - Math.pow(1 - t, 4);
@@ -61,7 +61,6 @@ const About = () => {
   const partnerRafRef = useRef<number | null>(null);
   const partnerTouchStartRef = useRef(0);
   const partnerTouchTimeRef = useRef(0);
-
 
   useEffect(() => {
     const handleResize = () => {
@@ -121,12 +120,23 @@ const About = () => {
     },
   ];
 
+  // --- PARTNERS DATA (MATCHING HOME PAGE) ---
   const partners = [
     {
       name: "Uppsala University Innovation",
       logo: uuInnovationLogo,
+      // Added a custom scale for the square logo
+      customClass: "h-32 md:h-36 scale-125", 
       description: "Uppsala University Innovation provides guidance and resources to help Rackis for Barn expand its reach and positive impact.",
       url: "https://www.uuinnovation.uu.se",
+    },
+    {
+      name: "Uppsalahem",
+      logo: uppsalahemLogo, 
+      // Wide logos need less height to feel balanced
+      customClass: "h-20 md:h-24",
+      description: "Generously provides access to storage units, enabling us to collect and sell items directly at student housing locations.",
+      url: "https://www.uppsalahem.se",
     },
   ];
 
@@ -189,7 +199,6 @@ const About = () => {
     }, 50);
     return () => clearTimeout(timer);
   }, [partners.length, isPartnerSingle]);
-
 
   // --- GENERIC ANIMATION HELPERS ---
   const checkLoop = (
@@ -332,7 +341,6 @@ const About = () => {
     if (isPartnerSingle) return;
     handleTouchEndGeneric(e, partnerScrollRef.current!, partnerTouchStartRef.current, partnerTouchTimeRef.current, partnerCardWidthRef.current, partnerVisualWidthRef.current, partnerPaddingRef.current, partnersScrollData.length, isPartnerSingle, partnerAnimatingRef, partnerRafRef);
   };
-
 
   return (
     <Layout>
@@ -602,66 +610,42 @@ const About = () => {
         </div>
       </section>
 
-      {/* --- PARTNERS SECTION - INCREASED MOBILE PADDING AGAIN --- */}
-      <section className="pt-24 pb-20 md:pt-32 md:pb-32 bg-section-light">
+      {/* --- PARTNERS SECTION --- */}
+      <section className="pt-20 pb-20 md:pt-32 md:pb-32 bg-section-light">
         <div className="container">
-          <div className="text-center mb-8">
-              <span className="inline-block text-sm font-bold text-primary uppercase tracking-wider mb-3">In collaboration with</span>
-              <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground">Our Supportive Partners</h2>
+          <div className="text-center mb-12">
+            <span className="inline-block text-sm font-bold text-primary uppercase tracking-wider mb-3">In collaboration with</span>
+            <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground">Our Supportive Partners</h2>
           </div>
 
           {/* --- MOBILE (SCROLLING) --- */}
-          <div className="md:hidden relative w-full flex flex-col items-center"> {/* FIXED PARENT */}
+          <div className="md:hidden relative w-full flex flex-col items-center">
             <div
               ref={partnerScrollRef}
               onScroll={handlePartnersScroll}
               onTouchStart={handlePartnersTouchStart}
               onTouchEnd={handlePartnersTouchEnd}
-              className={`
-                flex pb-8 gap-4 px-4 scrollbar-hide select-none w-full
-                ${isPartnerSingle ? 'justify-center overflow-hidden' : 'overflow-x-auto justify-start'} 
-              `}
-              style={{
-                scrollSnapType: 'none',
-                scrollbarWidth: "none",
-                msOverflowStyle: "none",
-                overscrollBehaviorX: "contain",
-                WebkitTapHighlightColor: "transparent",
-              }}
+              className={`flex pb-8 gap-4 px-4 scrollbar-hide select-none w-full ${isPartnerSingle ? 'justify-center overflow-hidden' : 'overflow-x-auto justify-start'}`}
+              style={{ scrollSnapType: 'none', scrollbarWidth: "none", msOverflowStyle: "none", overscrollBehaviorX: "contain", WebkitTapHighlightColor: "transparent" }}
             >
               {partnersScrollData.map((partner, i) => (
-                <div
-                    key={`${partner.name}-${i}`}
-                    className="shrink-0 w-[75vw] max-w-[300px] transform-gpu"
-                    style={{ WebkitTapHighlightColor: "transparent" }}
-                >
-                    <a 
-                      href={partner.url} 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
-                      className="flex flex-col items-center justify-center h-full p-6 rounded-2xl bg-white/50 backdrop-blur border border-transparent active:scale-95 transition-transform"
-                    >
-                      <div className="flex items-center justify-center w-full h-32 mb-3">
-                        <img src={partner.logo} alt={`${partner.name} Logo`} className="max-h-full max-w-full object-contain" />
-                      </div>
-                      <p className="text-muted-foreground text-center text-sm">{partner.description}</p>
-                    </a>
+                <div key={`${partner.name}-${i}`} className="shrink-0 w-[75vw] max-w-[300px] transform-gpu" style={{ WebkitTapHighlightColor: "transparent" }}>
+                  <a href={partner.url} target="_blank" rel="noopener noreferrer" className="flex flex-col items-center justify-center h-full p-6 rounded-2xl bg-white/50 backdrop-blur border border-transparent active:scale-95 transition-transform">
+                    <div className="flex items-center justify-center w-full h-40 mb-4">
+                      <img src={partner.logo} alt={`${partner.name} Logo`} className={`w-auto max-w-full object-contain ${partner.customClass}`} />
+                    </div>
+                    <p className="text-muted-foreground text-center text-sm">{partner.description}</p>
+                  </a>
                 </div>
               ))}
               {!isPartnerSingle && <div className="w-4 shrink-0" />}
             </div>
 
-            {/* Dots Indicator */}
             {!isPartnerSingle && (
               <div className="flex justify-center gap-2 mt-2">
-                  {partners.map((_, i) => (
-                  <div
-                      key={i}
-                      className={`h-2 rounded-full transition-all duration-300 ${
-                      partnerStep === i ? "w-8 bg-primary" : "w-2 bg-primary/20"
-                      }`}
-                  />
-                  ))}
+                {partners.map((_, i) => (
+                  <div key={i} className={`h-2 rounded-full transition-all duration-300 ${partnerStep === i ? "w-8 bg-primary" : "w-2 bg-primary/20"}`} />
+                ))}
               </div>
             )}
           </div>
@@ -670,8 +654,8 @@ const About = () => {
           <div className="hidden md:flex flex-wrap justify-center gap-16 items-center">
             {partners.map((partner) => (
               <a key={partner.name} href={partner.url} target="_blank" rel="noopener noreferrer" className="flex flex-col items-center max-w-xs hover:scale-105 transition-transform">
-                <div className="flex items-center justify-center w-64 h-32 mb-3">
-                  <img src={partner.logo} alt={`${partner.name} Logo`} className="max-h-full max-w-full object-contain" />
+                <div className="flex items-center justify-center w-64 h-40 mb-4">
+                  <img src={partner.logo} alt={`${partner.name} Logo`} className={`w-auto max-w-full object-contain ${partner.customClass}`} />
                 </div>
                 <p className="text-muted-foreground text-center">{partner.description}</p>
               </a>
