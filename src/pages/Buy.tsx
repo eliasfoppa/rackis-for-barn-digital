@@ -137,7 +137,7 @@ export function Buy() {
                   </p>
                   <p className="text-muted-foreground text-base">
                     <span className="font-semibold text-slate-900">
-                      01.15–01.17
+                      01.15 – 01.17
                     </span>
                     :{" "}
                     <span className="font-semibold text-slate-900">
@@ -195,8 +195,7 @@ export function Buy() {
               What You Can Buy
             </h2>
             <p className="text-lg text-muted-foreground leading-relaxed">
-              We offer second-hand items perfect for your new room. Here is what
-              you can typically find at our sales.
+              We offer second-hand items perfect for your new room. Here is what you can typically find at our sales.
             </p>
           </div>
 
