@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Redirecting...</title>
+    <script>
+      (function() {
+        // Save the requested path (e.g., /about)
+        sessionStorage.setItem('gh-pages-path', location.pathname);
+
+        // Redirect to the root of the custom domain (https://www.rackisforbarn.com/)
+        // The router will then use the path saved in sessionStorage.
+        window.location.replace(
+          location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') + '/'
+        );
+      })();
+    </script>
+</head>
+<body>
+    If you are not redirected automatically, please wait, or click this 
+    <a href='/'>link to the homepage</a>.
+</body>
+</html>
