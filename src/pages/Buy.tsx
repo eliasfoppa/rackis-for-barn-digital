@@ -137,7 +137,7 @@ export function Buy() {
                   </p>
                   <p className="text-muted-foreground text-base">
                     <span className="font-semibold text-slate-900">
-                      01.15 – 01.17
+                      01.15–01.17
                     </span>
                     :{" "}
                     <span className="font-semibold text-slate-900">
@@ -321,8 +321,7 @@ export function Buy() {
             >
               <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></div>
               <span className="group-hover:text-primary transition-colors">
-                Follow us on Instagram for updates on sale dates and opening
-                hours!
+                Follow us on Instagram for updates!
               </span>
             </a>
           </div>
