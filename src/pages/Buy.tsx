@@ -135,15 +135,26 @@ export function Buy() {
                   <p className="font-bold text-foreground text-lg mb-1">
                     When we open
                   </p>
-                  <p className="text-muted-foreground text-base">
-                    <span className="font-semibold text-slate-900">
-                      01.15–01.17
-                    </span>
-                    :{" "}
-                    <span className="font-semibold text-slate-900">
-                      10:00 - 22:00
-                    </span>
-                  </p>
+                  <div className="space-y-1">
+                    <p className="text-muted-foreground text-base">
+                      <span className="font-semibold text-slate-900">
+                        15.01
+                      </span>
+                      :{" "}
+                      <span className="font-semibold text-slate-900">
+                        14:00 - 22:00
+                      </span>
+                    </p>
+                    <p className="text-muted-foreground text-base">
+                      <span className="font-semibold text-slate-900">
+                        16.01 - 17.01
+                      </span>
+                      :{" "}
+                      <span className="font-semibold text-slate-900">
+                        10:00 - 22:00
+                      </span>
+                    </p>
+                  </div>
                 </div>
               </div>
 
