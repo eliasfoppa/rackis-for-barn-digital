@@ -132,31 +132,22 @@ export function Buy() {
                   <Clock className="h-5 w-5 text-orange-600" />
                 </div>
                 <div>
-                  <p className="font-bold text-foreground text-lg mb-1">
-                    When we open
+                  <p className="font-bold text-foreground text-lg mb-1">When we open</p>
+                  <p className="text-muted-foreground text-base">
+                    Opening times vary. Please check our{" "}
+                    <a
+                      href="https://instagram.com/rackis_for_barn"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-semibold text-slate-900 underline underline-offset-4 hover:text-primary transition-colors"
+                    >
+                      Instagram
+                    </a>{" "}
+                    for the latest schedule.
                   </p>
-                  <div className="space-y-1">
-                    <p className="text-muted-foreground text-base">
-                      <span className="font-semibold text-slate-900">
-                        15.01
-                      </span>
-                      :{" "}
-                      <span className="font-semibold text-slate-900">
-                        14:00 - 22:00
-                      </span>
-                    </p>
-                    <p className="text-muted-foreground text-base">
-                      <span className="font-semibold text-slate-900">
-                        16.01 - 17.01
-                      </span>
-                      :{" "}
-                      <span className="font-semibold text-slate-900">
-                        10:00 - 22:00
-                      </span>
-                    </p>
-                  </div>
                 </div>
               </div>
+
 
               <div className="h-px bg-slate-100 w-full"></div>
 
