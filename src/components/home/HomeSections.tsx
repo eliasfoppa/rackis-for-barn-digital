@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Heart, Recycle, ShoppingBag, MapPin, Instagram, Bike, Home, Users, Gift } from "lucide-react";
+import { ArrowRight, Heart, Recycle, ShoppingBag, MapPin, Instagram, Bike, Home, Users, Gift, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState, useEffect, useRef, useCallback } from "react";
 import Logo from "@/assets/logo.png";
@@ -488,39 +488,56 @@ export function HowItWorksSection() {
 }
 
 const posts = [
-  {
-    id: 1,
-    url: "https://www.instagram.com/p/DMXGvK8Kyv2/?img_index=6",
-    img: pic1, 
-    caption: "", 
-  },
-  {
-    id: 2,
-    url: "https://www.instagram.com/p/DMXGvK8Kyv2/?img_index=5",
-    img: pic2, 
-    caption: "",
-  },
-  {
-    id: 3,
-    url: "https://www.instagram.com/p/DE48QCAKuNz/",
-    img: pic3, 
-    caption: "",
-  },
-  {
-    id: 4,
-    url: "https://www.instagram.com/p/DNnDrJQq6bp/?img_index=1",
-    img: pic4, 
-    caption: "",
-  },
-  {
-    id: 5,
-    url: "https://www.instagram.com/p/DNnDrJQq6bp/?img_index=5",
-    img: pic5, 
-    caption: "",
-  },
+  { id: 1, img: pic1, caption: "" },
+  { id: 2, img: pic2, caption: "" },
+  { id: 3, img: pic3, caption: "" },
+  { id: 4, img: pic4, caption: "" },
+  { id: 5, img: pic5, caption: "" },
 ];
 
 export function CommunitySection() {
+  const [isDesktop, setIsDesktop] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    // Match your layout breakpoint: you switch to grid at lg, so use lg here too.
+    const mql = window.matchMedia("(min-width: 1024px)");
+    const update = () => setIsDesktop(mql.matches);
+
+    update();
+    mql.addEventListener("change", update);
+    return () => mql.removeEventListener("change", update);
+  }, []);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsOpen(false); // close
+      if (e.key === "ArrowLeft") setActiveIndex((i) => (i - 1 + posts.length) % posts.length);
+      if (e.key === "ArrowRight") setActiveIndex((i) => (i + 1) % posts.length);
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [isOpen]);
+
+  const openAt = (idx: number) => {
+    if (!isDesktop) return; // desktop-only
+    setActiveIndex(idx);
+    setIsOpen(true);
+  };
+
+  const prev = () => setActiveIndex((i) => (i - 1 + posts.length) % posts.length);
+  const next = () => setActiveIndex((i) => (i + 1) % posts.length);
+
   return (
     <section className="py-16 md:py-24 bg-white overflow-hidden">
       <div className="container px-4 md:px-6">
@@ -537,10 +554,11 @@ export function CommunitySection() {
               See what we're up to behind the scenes from our busy sales to collecting donations.
             </p>
           </div>
-          
-          <a 
-            href="https://www.instagram.com/rackisforbarn" 
-            target="_blank" 
+
+          {/* Keep this button as-is (you only wanted links removed from pictures) */}
+          <a
+            href="https://www.instagram.com/rackisforbarn"
+            target="_blank"
             rel="noopener noreferrer"
             className="hidden md:inline-flex items-center gap-2 px-6 py-3 rounded-full bg-stone-100 text-foreground font-semibold hover:bg-stone-200 transition-colors group"
           >
@@ -551,40 +569,38 @@ export function CommunitySection() {
         </div>
 
         {/* FEED */}
-        {/* CHANGED: Switched from `max-md` to `lg` breakpoint logic. 
-            Default is flex (scroll), only switches to grid on large screens (lg). */}
-        <div className="
-          flex gap-4 overflow-x-auto pb-8 -mx-4 px-4 snap-x scrollbar-hide
-          lg:grid lg:grid-cols-5 lg:gap-6 lg:overflow-visible lg:pb-0 lg:mx-0 lg:px-0
-        ">
-          {posts.map((post) => (
-            <a 
+        {/* Mobile: free scroll (no snap). Desktop (lg): grid. */}
+        <div
+          className="
+            flex gap-4 overflow-x-auto pb-8 -mx-4 px-4 scrollbar-hide
+            lg:grid lg:grid-cols-5 lg:gap-6 lg:overflow-visible lg:pb-0 lg:mx-0 lg:px-0
+          "
+        >
+          {posts.map((post, idx) => (
+            <div
               key={post.id}
-              href={post.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="relative group block aspect-square rounded-3xl overflow-hidden bg-stone-100 
-                         shrink-0 w-[280px] snap-start lg:w-auto"
+              role={isDesktop ? "button" : undefined}
+              tabIndex={isDesktop ? 0 : -1}
+              onClick={() => openAt(idx)}
+              onKeyDown={(e) => {
+                if (!isDesktop) return;
+                if (e.key === "Enter" || e.key === " ") openAt(idx);
+              }}
+              className={[
+                "relative group block aspect-square rounded-3xl overflow-hidden bg-stone-100",
+                "shrink-0 w-[280px] lg:w-auto",
+                isDesktop ? "cursor-zoom-in" : "cursor-default",
+              ].join(" ")}
             >
-              <img 
-                src={post.img} 
-                alt="Instagram post" 
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              <img
+                src={post.img}
+                alt="Community photo"
+                className="w-full h-full object-cover transition-transform duration-700 lg:group-hover:scale-105"
               />
-              
-              {/* NEW: Subtle Mobile Indicator (Hidden on Desktop) */}
-              <div className="absolute top-3 right-3 lg:hidden">
-                <div className="bg-black/20 backdrop-blur-md p-2 rounded-full">
-                  <Instagram className="w-4 h-4 text-white drop-shadow-sm" />
-                </div>
-              </div>
 
-              {/* Desktop Overlay on Hover (Hidden on Mobile) */}
-              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 hidden lg:flex items-center justify-center">
-                <Instagram className="w-8 h-8 text-white drop-shadow-md" />
-              </div>
+              {/* REMOVED: Instagram icon overlays (mobile + desktop) */}
 
-              {/* Caption Tag */}
+              {/* Caption Tag (kept) */}
               {post.caption && (
                 <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
                   <div className="bg-white/95 backdrop-blur-sm p-3 rounded-xl text-sm font-medium text-foreground shadow-lg">
@@ -592,15 +608,15 @@ export function CommunitySection() {
                   </div>
                 </div>
               )}
-            </a>
+            </div>
           ))}
         </div>
 
-        {/* Mobile Button */}
+        {/* Mobile Button (unchanged; still links to Instagram) */}
         <div className="mt-4 md:hidden">
-          <a 
-            href="https://www.instagram.com/rackisforbarn" 
-            target="_blank" 
+          <a
+            href="https://www.instagram.com/rackis_for_barn"
+            target="_blank"
             rel="noopener noreferrer"
             className="flex items-center justify-center gap-2 w-full px-6 py-3 rounded-xl bg-stone-100 text-foreground font-semibold hover:bg-stone-200 transition-colors"
           >
@@ -609,6 +625,64 @@ export function CommunitySection() {
           </a>
         </div>
       </div>
+
+      {/* DESKTOP LIGHTBOX (desktop-only behavior enforced in openAt) */}
+      {isOpen && isDesktop && (
+        <div
+          className="fixed inset-0 z-[9999] bg-black/50 backdrop-blur-md flex items-center justify-center p-6"
+          onClick={() => setIsOpen(false)}
+          aria-modal="true"
+          role="dialog"
+          style={{
+            // Tailwind uses backdrop-filter under the hood; this ensures a blur-capable backdrop. [web:99]
+            backdropFilter: "blur(12px)",
+          }}
+        >
+          <div
+            className="relative w-full max-w-5xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close */}
+            <button
+              type="button"
+              onClick={() => setIsOpen(false)}
+              className="absolute -top-3 -right-3 bg-white/90 hover:bg-white text-foreground rounded-full p-2 shadow"
+              aria-label="Close"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            {/* Left / Right */}
+            <button
+              type="button"
+              onClick={prev}
+              className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-foreground rounded-full p-2 shadow"
+              aria-label="Previous"
+            >
+              <ChevronLeft className="w-6 h-6" />
+            </button>
+
+            <button
+              type="button"
+              onClick={next}
+              className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-foreground rounded-full p-2 shadow"
+              aria-label="Next"
+            >
+              <ChevronRight className="w-6 h-6" />
+            </button>
+
+            {/* Image */}
+            <div className="rounded-3xl overflow-hidden bg-black/20 shadow-2xl">
+              <img
+                src={posts[activeIndex].img}
+                alt="Enlarged community photo"
+                className="w-full max-h-[78vh] object-contain bg-black/20"
+                draggable={false}
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

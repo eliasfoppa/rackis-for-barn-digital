@@ -1,14 +1,30 @@
 import { Layout } from "@/components/layout/Layout";
-import { Heart, Target, Users, Award, Recycle, MapPin } from "lucide-react";
+import {
+  Heart,
+  Target,
+  Users,
+  Award,
+  Recycle,
+  MapPin,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import { useState, useEffect, useRef } from "react";
+
 import eliasImg from "@/assets/elias.png";
 import jacobImg from "@/assets/jacob.png";
 import leaImg from "@/assets/lea.png";
 import lenkaImg from "@/assets/lenka.png";
 import lukasImg from "@/assets/lukas.png";
+
+// --- TEAM PHOTOS IMPORTS ---
+import team1Img from "@/assets/team1.jpg";
+import team2Img from "@/assets/team2.jpg";
+import team3Img from "@/assets/team3.jpg";
+
 // --- PARTNER LOGO IMPORTS ---
 import uuInnovationLogo from "@/assets/uu-innovation.png";
-import uppsalahemLogo from "@/assets/uppsalahem.png"; // Make sure this is imported
+import uppsalahemLogo from "@/assets/uppsalahem.png";
 
 // --- PHYSICS: Ease-Out-Quart (Smooth Glide) ---
 const easeOutQuart = (t: number) => 1 - Math.pow(1 - t, 4);
@@ -38,8 +54,10 @@ function generateJitteredHearts(
 }
 
 const About = () => {
-  const [hearts, setHearts] = useState<{ x: number; y: number; size: number; delay: number }[]>([]);
-  
+  const [hearts, setHearts] = useState<
+    { x: number; y: number; size: number; delay: number }[]
+  >([]);
+
   // --- VALUES CAROUSEL STATE ---
   const [currentStep, setCurrentStep] = useState(0);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -61,6 +79,17 @@ const About = () => {
   const partnerRafRef = useRef<number | null>(null);
   const partnerTouchStartRef = useRef(0);
   const partnerTouchTimeRef = useRef(0);
+
+  // --- TEAM PHOTOS CAROUSEL STATE (Values-like: buffer + checkLoop + glide snap) ---
+  const [teamStep, setTeamStep] = useState(0);
+  const teamScrollRef = useRef<HTMLDivElement>(null);
+  const teamCardWidthRef = useRef(0);
+  const teamVisualWidthRef = useRef(0);
+  const teamPaddingRef = useRef(0);
+  const teamAnimatingRef = useRef(false);
+  const teamRafRef = useRef<number | null>(null);
+  const teamTouchStartRef = useRef(0);
+  const teamTouchStartTimeRef = useRef(0);
 
   useEffect(() => {
     const handleResize = () => {
@@ -89,6 +118,17 @@ const About = () => {
         partnerVisualWidthRef.current = firstP.offsetWidth;
         partnerCardWidthRef.current = firstP.offsetWidth + gapP;
         partnerPaddingRef.current = parseFloat(styleP.paddingLeft) || 0;
+      }
+
+      // 4. Update Dimensions (TEAM PHOTOS) - one slide per view
+      if (teamScrollRef.current) {
+        const c = teamScrollRef.current;
+        const styleT = window.getComputedStyle(c);
+        teamPaddingRef.current = parseFloat(styleT.paddingLeft) || 0;
+
+        // Each slide is exactly the viewport width of the scroller
+        teamVisualWidthRef.current = c.clientWidth;
+        teamCardWidthRef.current = c.clientWidth;
       }
     };
 
@@ -125,19 +165,32 @@ const About = () => {
     {
       name: "Uppsala University Innovation",
       logo: uuInnovationLogo,
-      // Added a custom scale for the square logo
-      customClass: "h-32 md:h-36 scale-125", 
-      description: "Uppsala University Innovation provides guidance and resources to help Rackis for Barn expand its reach and positive impact.",
+      customClass: "h-32 md:h-36 scale-125",
+      description:
+        "Uppsala University Innovation provides guidance and resources to help Rackis for Barn expand its reach and positive impact.",
       url: "https://www.uuinnovation.uu.se",
     },
     {
       name: "Uppsalahem",
-      logo: uppsalahemLogo, 
-      // Wide logos need less height to feel balanced
+      logo: uppsalahemLogo,
       customClass: "h-20 md:h-24",
-      description: "Generously provides access to storage units, enabling us to collect and sell items directly at student housing locations.",
+      description:
+        "Generously provides access to storage units, enabling us to collect and sell items directly at student housing locations.",
       url: "https://www.uppsalahem.se",
     },
+  ];
+
+  const boardMembers = [
+    { name: "Jacob Lehmann", role: "President & Founder", img: jacobImg },
+    { name: "Elias Foppa", role: "Vice President & Treasurer", img: eliasImg },
+    { name: "Lea Poewe", role: "Secretary & Head of Marketing", img: leaImg },
+  ];
+
+  // --- TEAM PHOTOS DATA ---
+  const teamPhotos = [
+    { src: team1Img, alt: "Rackis for Barn volunteers (1)" },
+    { src: team2Img, alt: "Rackis for Barn volunteers (2)" },
+    { src: team3Img, alt: "Rackis for Barn volunteers (3)" },
   ];
 
   const isPartnerSingle = partners.length === 1;
@@ -146,22 +199,29 @@ const About = () => {
   const valuesScrollData = [values[2], values[3], ...values, values[0], values[1]];
   const VALUES_START = 2;
 
-  const partnersScrollData = isPartnerSingle 
-    ? partners 
+  const partnersScrollData = isPartnerSingle
+    ? partners
     : [
         partners[(partners.length - 2 + partners.length) % partners.length],
         partners[(partners.length - 1 + partners.length) % partners.length],
         ...partners,
         partners[0],
-        partners[1 % partners.length]
+        partners[1 % partners.length],
       ];
   const PARTNER_START = isPartnerSingle ? 0 : 2;
 
-  const boardMembers = [
-    { name: "Jacob Lehmann", role: "President & Founder", img: jacobImg },
-    { name: "Elias Foppa", role: "Vice President & Treasurer", img: eliasImg },
-    { name: "Lea Poewe", role: "Secretary & Head of Marketing", img: leaImg },
-  ];
+  // --- TEAM BUFFER (for infinite loop like Values/Partners) ---
+  const isTeamSingle = teamPhotos.length === 1;
+  const teamScrollData = isTeamSingle
+    ? teamPhotos
+    : [
+        teamPhotos[(teamPhotos.length - 2 + teamPhotos.length) % teamPhotos.length],
+        teamPhotos[(teamPhotos.length - 1 + teamPhotos.length) % teamPhotos.length],
+        ...teamPhotos,
+        teamPhotos[0],
+        teamPhotos[1 % teamPhotos.length],
+      ];
+  const TEAM_START = isTeamSingle ? 0 : 2;
 
   // --- CENTER OFFSET HELPER ---
   const getCenterOffset = (container: HTMLElement, visualWidth: number) => {
@@ -174,37 +234,46 @@ const About = () => {
     const timer = setTimeout(() => {
       // Init Values
       if (scrollContainerRef.current && scrollContainerRef.current.firstElementChild) {
-          const c = scrollContainerRef.current;
-          const fc = c.firstElementChild as HTMLElement;
-          const s = window.getComputedStyle(c);
-          visualCardWidthRef.current = fc.offsetWidth;
-          cardWidthRef.current = fc.offsetWidth + (parseFloat(s.gap) || 16);
-          paddingLeftRef.current = parseFloat(s.paddingLeft) || 0;
-          const off = getCenterOffset(c, visualCardWidthRef.current);
-          c.scrollLeft = (paddingLeftRef.current + (cardWidthRef.current * VALUES_START)) - off;
+        const c = scrollContainerRef.current;
+        const fc = c.firstElementChild as HTMLElement;
+        const s = window.getComputedStyle(c);
+        visualCardWidthRef.current = fc.offsetWidth;
+        cardWidthRef.current = fc.offsetWidth + (parseFloat(s.gap) || 16);
+        paddingLeftRef.current = parseFloat(s.paddingLeft) || 0;
+        const off = getCenterOffset(c, visualCardWidthRef.current);
+        c.scrollLeft = paddingLeftRef.current + cardWidthRef.current * VALUES_START - off;
       }
-      
+
       // Init Partners
       if (partnerScrollRef.current && partnerScrollRef.current.firstElementChild) {
-          const c = partnerScrollRef.current;
-          const fc = c.firstElementChild as HTMLElement;
-          const s = window.getComputedStyle(c);
-          partnerVisualWidthRef.current = fc.offsetWidth;
-          partnerCardWidthRef.current = fc.offsetWidth + (parseFloat(s.gap) || 16);
-          partnerPaddingRef.current = parseFloat(s.paddingLeft) || 0;
-          const off = getCenterOffset(c, partnerVisualWidthRef.current);
-          const idx = isPartnerSingle ? 0 : PARTNER_START;
-          c.scrollLeft = (partnerPaddingRef.current + (partnerCardWidthRef.current * idx)) - off;
+        const c = partnerScrollRef.current;
+        const fc = c.firstElementChild as HTMLElement;
+        const s = window.getComputedStyle(c);
+        partnerVisualWidthRef.current = fc.offsetWidth;
+        partnerCardWidthRef.current = fc.offsetWidth + (parseFloat(s.gap) || 16);
+        partnerPaddingRef.current = parseFloat(s.paddingLeft) || 0;
+        const off = getCenterOffset(c, partnerVisualWidthRef.current);
+        const idx = isPartnerSingle ? 0 : PARTNER_START;
+        c.scrollLeft = partnerPaddingRef.current + partnerCardWidthRef.current * idx - off;
+      }
+
+      // Init Team Photos (start on first real item, not the buffer)
+      if (teamScrollRef.current) {
+        const c = teamScrollRef.current;
+        const off = getCenterOffset(c, teamVisualWidthRef.current);
+        c.scrollLeft = teamPaddingRef.current + teamCardWidthRef.current * TEAM_START - off;
+        setTeamStep(0);
       }
     }, 50);
+
     return () => clearTimeout(timer);
-  }, [partners.length, isPartnerSingle]);
+  }, [partners.length, isPartnerSingle, isTeamSingle]);
 
   // --- GENERIC ANIMATION HELPERS ---
   const checkLoop = (
-    container: HTMLElement, 
-    totalWidth: number, 
-    visualWidth: number, 
+    container: HTMLElement,
+    totalWidth: number,
+    visualWidth: number,
     paddingLeft: number,
     dataLen: number,
     realLen: number,
@@ -217,45 +286,46 @@ const About = () => {
     const rawIndex = Math.round((container.scrollLeft + offset - paddingLeft) / totalWidth);
 
     if (rawIndex >= dataLen - 2) {
-      container.scrollLeft = (paddingLeft + (totalWidth * (rawIndex - realLen))) - offset;
+      container.scrollLeft = paddingLeft + totalWidth * (rawIndex - realLen) - offset;
     } else if (rawIndex <= 1) {
-      container.scrollLeft = (paddingLeft + (totalWidth * (rawIndex + realLen))) - offset;
+      container.scrollLeft = paddingLeft + totalWidth * (rawIndex + realLen) - offset;
     }
   };
 
   const glide = (
-    container: HTMLElement, 
-    targetX: number, 
+    container: HTMLElement,
+    targetX: number,
     animRef: React.MutableRefObject<boolean>,
-    rafRef: React.MutableRefObject<number | null>,
+    localRafRef: React.MutableRefObject<number | null>,
     onComplete: () => void
   ) => {
-    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    if (localRafRef.current) cancelAnimationFrame(localRafRef.current);
     const startX = container.scrollLeft;
     const distance = targetX - startX;
     const duration = 300;
     const startTime = performance.now();
 
     animRef.current = true;
-    container.style.scrollSnapType = 'none';
-    container.style.overflowX = 'hidden';
+    container.style.scrollSnapType = "none";
+    container.style.overflowX = "hidden";
 
     const animate = (currentTime: number) => {
       const elapsed = currentTime - startTime;
       const progress = Math.min(elapsed / duration, 1);
       const ease = easeOutQuart(progress);
-      container.scrollLeft = startX + (distance * ease);
+      container.scrollLeft = startX + distance * ease;
 
       if (progress < 1) {
-        rafRef.current = requestAnimationFrame(animate);
+        localRafRef.current = requestAnimationFrame(animate);
       } else {
-        container.style.overflowX = 'auto';
+        container.style.overflowX = "auto";
         animRef.current = false;
-        rafRef.current = null;
+        localRafRef.current = null;
         onComplete();
       }
     };
-    rafRef.current = requestAnimationFrame(animate);
+
+    localRafRef.current = requestAnimationFrame(animate);
   };
 
   const handleTouchEndGeneric = (
@@ -269,77 +339,248 @@ const About = () => {
     dataLen: number,
     isSingle: boolean,
     animRef: React.MutableRefObject<boolean>,
-    rafRef: React.MutableRefObject<number | null>
+    localRafRef: React.MutableRefObject<number | null>
   ) => {
     if (isSingle || !container) return;
 
     const touchEnd = e.changedTouches[0].clientX;
     const touchTime = performance.now() - touchTimeStart;
     const diff = touchStart - touchEnd;
+
     const offset = getCenterOffset(container, visualWidth);
     const exactIndex = (container.scrollLeft + offset - paddingLeft) / totalWidth;
     const rawIndex = Math.round(exactIndex);
     const isFlick = touchTime < 250 && Math.abs(diff) > 20;
-    
+
     let targetIndex = rawIndex;
     if (isFlick) {
-        if (diff > 0) targetIndex = Math.floor(exactIndex) + 1;
-        else targetIndex = Math.ceil(exactIndex) - 1;
+      if (diff > 0) targetIndex = Math.floor(exactIndex) + 1;
+      else targetIndex = Math.ceil(exactIndex) - 1;
     } else {
-        if (diff > 0 && exactIndex > rawIndex) targetIndex = rawIndex + 1;
-        else if (diff < 0 && exactIndex < rawIndex) targetIndex = rawIndex - 1;
+      if (diff > 0 && exactIndex > rawIndex) targetIndex = rawIndex + 1;
+      else if (diff < 0 && exactIndex < rawIndex) targetIndex = rawIndex - 1;
     }
 
     targetIndex = Math.max(0, Math.min(targetIndex, dataLen - 1));
-    glide(container, (paddingLeft + (targetIndex * totalWidth)) - offset, animRef, rafRef, () => {});
+    glide(container, paddingLeft + targetIndex * totalWidth - offset, animRef, localRafRef, () => {});
   };
 
   // --- VALUES CAROUSEL HANDLERS ---
   const handleValuesScroll = () => {
     if (!scrollContainerRef.current) return;
+
     if (!isAnimatingRef.current) {
-        checkLoop(scrollContainerRef.current, cardWidthRef.current, visualCardWidthRef.current, paddingLeftRef.current, valuesScrollData.length, values.length, false);
+      checkLoop(
+        scrollContainerRef.current,
+        cardWidthRef.current,
+        visualCardWidthRef.current,
+        paddingLeftRef.current,
+        valuesScrollData.length,
+        values.length,
+        false
+      );
     }
+
     const offset = getCenterOffset(scrollContainerRef.current, visualCardWidthRef.current);
-    const rawIndex = Math.round((scrollContainerRef.current.scrollLeft + offset - paddingLeftRef.current) / cardWidthRef.current);
-    let visualStep = (rawIndex - VALUES_START);
+    const rawIndex = Math.round(
+      (scrollContainerRef.current.scrollLeft + offset - paddingLeftRef.current) / cardWidthRef.current
+    );
+
+    let visualStep = rawIndex - VALUES_START;
     visualStep = ((visualStep % values.length) + values.length) % values.length;
     if (visualStep !== currentStep) setCurrentStep(visualStep);
   };
 
   const handleValuesTouchStart = (e: React.TouchEvent) => {
-    if (rafRef.current) { cancelAnimationFrame(rafRef.current); rafRef.current = null; isAnimatingRef.current = false; }
+    if (rafRef.current) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+      isAnimatingRef.current = false;
+    }
     touchStartRef.current = e.touches[0].clientX;
     touchStartTimeRef.current = performance.now();
   };
 
   const handleValuesTouchEnd = (e: React.TouchEvent) => {
-    handleTouchEndGeneric(e, scrollContainerRef.current!, touchStartRef.current, touchStartTimeRef.current, cardWidthRef.current, visualCardWidthRef.current, paddingLeftRef.current, valuesScrollData.length, false, isAnimatingRef, rafRef);
+    handleTouchEndGeneric(
+      e,
+      scrollContainerRef.current!,
+      touchStartRef.current,
+      touchStartTimeRef.current,
+      cardWidthRef.current,
+      visualCardWidthRef.current,
+      paddingLeftRef.current,
+      valuesScrollData.length,
+      false,
+      isAnimatingRef,
+      rafRef
+    );
   };
 
   // --- PARTNERS CAROUSEL HANDLERS ---
   const handlePartnersScroll = () => {
     if (!partnerScrollRef.current || isPartnerSingle) return;
+
     if (!partnerAnimatingRef.current) {
-        checkLoop(partnerScrollRef.current, partnerCardWidthRef.current, partnerVisualWidthRef.current, partnerPaddingRef.current, partnersScrollData.length, partners.length, isPartnerSingle);
+      checkLoop(
+        partnerScrollRef.current,
+        partnerCardWidthRef.current,
+        partnerVisualWidthRef.current,
+        partnerPaddingRef.current,
+        partnersScrollData.length,
+        partners.length,
+        isPartnerSingle
+      );
     }
+
     const offset = getCenterOffset(partnerScrollRef.current, partnerVisualWidthRef.current);
-    const rawIndex = Math.round((partnerScrollRef.current.scrollLeft + offset - partnerPaddingRef.current) / partnerCardWidthRef.current);
-    let visualStep = (rawIndex - PARTNER_START);
+    const rawIndex = Math.round(
+      (partnerScrollRef.current.scrollLeft + offset - partnerPaddingRef.current) /
+        partnerCardWidthRef.current
+    );
+
+    let visualStep = rawIndex - PARTNER_START;
     visualStep = ((visualStep % partners.length) + partners.length) % partners.length;
     if (visualStep !== partnerStep) setPartnerStep(visualStep);
   };
 
   const handlePartnersTouchStart = (e: React.TouchEvent) => {
     if (isPartnerSingle) return;
-    if (partnerRafRef.current) { cancelAnimationFrame(partnerRafRef.current); partnerRafRef.current = null; partnerAnimatingRef.current = false; }
+    if (partnerRafRef.current) {
+      cancelAnimationFrame(partnerRafRef.current);
+      partnerRafRef.current = null;
+      partnerAnimatingRef.current = false;
+    }
     partnerTouchStartRef.current = e.touches[0].clientX;
     partnerTouchTimeRef.current = performance.now();
   };
 
   const handlePartnersTouchEnd = (e: React.TouchEvent) => {
     if (isPartnerSingle) return;
-    handleTouchEndGeneric(e, partnerScrollRef.current!, partnerTouchStartRef.current, partnerTouchTimeRef.current, partnerCardWidthRef.current, partnerVisualWidthRef.current, partnerPaddingRef.current, partnersScrollData.length, isPartnerSingle, partnerAnimatingRef, partnerRafRef);
+    handleTouchEndGeneric(
+      e,
+      partnerScrollRef.current!,
+      partnerTouchStartRef.current,
+      partnerTouchTimeRef.current,
+      partnerCardWidthRef.current,
+      partnerVisualWidthRef.current,
+      partnerPaddingRef.current,
+      partnersScrollData.length,
+      isPartnerSingle,
+      partnerAnimatingRef,
+      partnerRafRef
+    );
+  };
+
+  // --- TEAM PHOTOS HANDLERS (infinite + dots like Values) ---
+  const handleTeamScroll = () => {
+    if (!teamScrollRef.current) return;
+
+    const c = teamScrollRef.current;
+
+    if (!teamAnimatingRef.current) {
+      checkLoop(
+        c,
+        teamCardWidthRef.current,
+        teamVisualWidthRef.current,
+        teamPaddingRef.current,
+        teamScrollData.length,
+        teamPhotos.length,
+        isTeamSingle
+      );
+    }
+
+    const offset = getCenterOffset(c, teamVisualWidthRef.current);
+    const rawIndex = Math.round(
+      (c.scrollLeft + offset - teamPaddingRef.current) / teamCardWidthRef.current
+    );
+
+    let visualStep = rawIndex - TEAM_START;
+    visualStep = ((visualStep % teamPhotos.length) + teamPhotos.length) % teamPhotos.length;
+
+    if (visualStep !== teamStep) setTeamStep(visualStep);
+  };
+
+  const handleTeamTouchStart = (e: React.TouchEvent) => {
+    if (isTeamSingle) return;
+    if (teamRafRef.current) {
+      cancelAnimationFrame(teamRafRef.current);
+      teamRafRef.current = null;
+      teamAnimatingRef.current = false;
+    }
+    teamTouchStartRef.current = e.touches[0].clientX;
+    teamTouchStartTimeRef.current = performance.now();
+  };
+
+  const handleTeamTouchEnd = (e: React.TouchEvent) => {
+    if (isTeamSingle) return;
+    handleTouchEndGeneric(
+      e,
+      teamScrollRef.current!,
+      teamTouchStartRef.current,
+      teamTouchStartTimeRef.current,
+      teamCardWidthRef.current,
+      teamVisualWidthRef.current,
+      teamPaddingRef.current,
+      teamScrollData.length,
+      isTeamSingle,
+      teamAnimatingRef,
+      teamRafRef
+    );
+  };
+
+  const getTeamRawIndex = () => {
+    const c = teamScrollRef.current;
+    if (!c) return TEAM_START;
+
+    const offset = getCenterOffset(c, teamVisualWidthRef.current);
+    return Math.round((c.scrollLeft + offset - teamPaddingRef.current) / teamCardWidthRef.current);
+  };
+
+  const scrollTeamToRaw = (rawIdx: number) => {
+    const c = teamScrollRef.current;
+    if (!c) return;
+
+    const offset = getCenterOffset(c, teamVisualWidthRef.current);
+    glide(
+      c,
+      teamPaddingRef.current + rawIdx * teamCardWidthRef.current - offset,
+      teamAnimatingRef,
+      teamRafRef,
+      () => {
+        checkLoop(
+          c,
+          teamCardWidthRef.current,
+          teamVisualWidthRef.current,
+          teamPaddingRef.current,
+          teamScrollData.length,
+          teamPhotos.length,
+          isTeamSingle
+        );
+      }
+    );
+  };
+
+  const goTeamPrev = () => {
+    if (isTeamSingle) return;
+    scrollTeamToRaw(getTeamRawIndex() - 1);
+  };
+
+  const goTeamNext = () => {
+    if (isTeamSingle) return;
+    scrollTeamToRaw(getTeamRawIndex() + 1);
+  };
+
+  // Dot click: move to the closest instance of that slide (no jumpiness).
+  const scrollTeamTo = (visualIdx: number) => {
+    if (isTeamSingle) return;
+
+    const raw = getTeamRawIndex();
+    const currentVisual =
+      ((raw - TEAM_START) % teamPhotos.length + teamPhotos.length) % teamPhotos.length;
+    const delta = visualIdx - currentVisual;
+
+    scrollTeamToRaw(raw + delta);
   };
 
   return (
@@ -395,11 +636,11 @@ const About = () => {
                 making settling into Uppsala more convenient and sustainable.
               </p>
               <p>
-                When students move out, instead of throwing away items 
-                they donate them to us. We collect many items like bedding,
-                curtains, bikes, kitchen equipment, lamps, small furniture, decoration,
-                and much more. Then, students moving into new places can 
-                find everything they need at fair prices.
+                When students move out, instead of throwing away items they donate them
+                to us. We collect many items like bedding, curtains, bikes, kitchen
+                equipment, lamps, small furniture, decoration, and much more. Then,
+                students moving into new places can find everything they need at fair
+                prices.
               </p>
               <p className="text-foreground font-semibold">
                 All profits from sales go directly to Barncancerfonden and RBU,
@@ -421,8 +662,7 @@ const About = () => {
           <p className="text-base text-muted-foreground max-w-2xl mx-auto leading-relaxed">
             "Rackis" is short for{" "}
             <span className="font-semibold text-foreground">Rackarbergsgatan</span>,
-            the student housing area where our journey began.
-            "Barn" means{" "}
+            the student housing area where our journey began. "Barn" means{" "}
             <span className="font-semibold text-foreground">children</span> in Swedish,
             reflecting our mission to support children in need.
           </p>
@@ -485,6 +725,71 @@ const About = () => {
             In addition to our members, many amazing volunteers contribute their time
             and effort to make Rackis for Barn possible.
           </p>
+
+          {/* --- TEAM PHOTOS CAROUSEL (infinite, one visible at a time, Values-like snap) --- */}
+          <div className="mt-10">
+            <div className="relative max-w-5xl mx-auto">
+              <button
+                type="button"
+                onClick={goTeamPrev}
+                className="hidden md:flex items-center justify-center absolute left-0 top-1/2 -translate-y-1/2 -translate-x-14 w-11 h-11 rounded-full bg-white shadow hover:shadow-md transition z-10"
+                aria-label="Previous photo"
+              >
+                <ChevronLeft className="h-6 w-6 text-foreground" />
+              </button>
+
+              <div className="overflow-hidden rounded-2xl">
+                <div
+                  ref={teamScrollRef}
+                  onScroll={handleTeamScroll}
+                  onTouchStart={handleTeamTouchStart}
+                  onTouchEnd={handleTeamTouchEnd}
+                  className="flex gap-0 px-0 overflow-x-auto md:overflow-x-hidden scrollbar-hide select-none"
+                  style={{
+                    scrollSnapType: "none",
+                    scrollbarWidth: "none",
+                    msOverflowStyle: "none",
+                    overscrollBehaviorX: "contain",
+                    WebkitTapHighlightColor: "transparent",
+                  }}
+                >
+                  {teamScrollData.map((p, i) => (
+                    <div key={`${p.alt}-${i}`} className="shrink-0 w-full">
+                      <img
+                        src={p.src}
+                        alt={p.alt}
+                        className="w-full h-auto block"
+                        draggable={false}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={goTeamNext}
+                className="hidden md:flex items-center justify-center absolute right-0 top-1/2 -translate-y-1/2 translate-x-14 w-11 h-11 rounded-full bg-white shadow hover:shadow-md transition z-10"
+                aria-label="Next photo"
+              >
+                <ChevronRight className="h-6 w-6 text-foreground" />
+              </button>
+
+              <div className="flex justify-center gap-2 mt-4">
+                {teamPhotos.map((_, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => scrollTeamTo(i)}
+                    className={`h-2 rounded-full transition-all duration-300 ${
+                      teamStep === i ? "w-8 bg-primary" : "w-2 bg-primary/20"
+                    }`}
+                    aria-label={`Go to photo ${i + 1}`}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -493,25 +798,44 @@ const About = () => {
         <div className="container">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-10">
-              <span className="inline-block text-sm font-bold text-accent uppercase tracking-wider mb-3">Our cause</span>
-              <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-4">Supporting children in need</h2>
+              <span className="inline-block text-sm font-bold text-accent uppercase tracking-wider mb-3">
+                Our cause
+              </span>
+              <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-4">
+                Supporting children in need
+              </h2>
             </div>
             <div className="grid md:grid-cols-2 gap-6">
               <div className="card-warm hover:shadow-lg transition-shadow">
                 <h3 className="text-xl font-bold text-foreground mb-3">Barncancerfonden</h3>
                 <p className="text-muted-foreground text-sm leading-relaxed mb-4">
-                  Sweden's leading organization dedicated to supporting children with cancer and their families. Through research funding and family support programs, they work to improve outcomes for young cancer patients.
+                  Sweden&apos;s leading organization dedicated to supporting children
+                  with cancer and their families. Through research funding and family
+                  support programs, they work to improve outcomes for young cancer
+                  patients.
                 </p>
-                <a href="https://www.barncancerfonden.se" target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-primary text-sm font-semibold hover:underline">
+                <a
+                  href="https://www.barncancerfonden.se"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center text-primary text-sm font-semibold hover:underline"
+                >
                   Learn more at barncancerfonden.se
                 </a>
               </div>
               <div className="card-warm hover:shadow-lg transition-shadow">
                 <h3 className="text-xl font-bold text-foreground mb-3">RBU</h3>
                 <p className="text-muted-foreground text-sm leading-relaxed mb-4">
-                  Riksförbundet för Rörelsehindrade Barn och Ungdomar works to improve the lives of children and young people with mobility impairments in Sweden through advocacy and support programs.
+                  Riksförbundet för Rörelsehindrade Barn och Ungdomar works to improve
+                  the lives of children and young people with mobility impairments in
+                  Sweden through advocacy and support programs.
                 </p>
-                <a href="https://www.rbu.se" target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-primary text-sm font-semibold hover:underline">
+                <a
+                  href="https://www.rbu.se"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center text-primary text-sm font-semibold hover:underline"
+                >
                   Learn more at rbu.se
                 </a>
               </div>
@@ -519,14 +843,16 @@ const About = () => {
             <div className="mt-8 text-center">
               <div className="inline-flex items-center gap-3 px-6 py-3 rounded-2xl bg-primary/10">
                 <Heart className="h-6 w-6 text-warm" fill="currentColor" />
-                <p className="font-display text-lg font-bold text-foreground">100% of profits go to these charities</p>
+                <p className="font-display text-lg font-bold text-foreground">
+                  100% of profits go to these charities
+                </p>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Values Section - INCREASED VERTICAL PADDING */}
+      {/* Values Section */}
       <section className="py-16 md:py-24 overflow-hidden bg-section-alt">
         <div className="container">
           <div className="text-center mb-8">
@@ -549,9 +875,7 @@ const About = () => {
                 <div className="w-12 h-12 mx-auto rounded-xl bg-primary/10 flex items-center justify-center mb-3">
                   <value.icon className="h-6 w-6 text-primary" />
                 </div>
-                <h3 className="text-base font-bold text-foreground mb-2">
-                  {value.title}
-                </h3>
+                <h3 className="text-base font-bold text-foreground mb-2">{value.title}</h3>
                 <p className="text-sm text-muted-foreground">{value.description}</p>
               </div>
             ))}
@@ -566,7 +890,7 @@ const About = () => {
               onTouchEnd={handleValuesTouchEnd}
               className="flex overflow-x-auto pb-8 gap-4 px-4 scrollbar-hide select-none"
               style={{
-                scrollSnapType: 'none',
+                scrollSnapType: "none",
                 scrollbarWidth: "none",
                 msOverflowStyle: "none",
                 overscrollBehaviorX: "contain",
@@ -577,9 +901,7 @@ const About = () => {
                 <div
                   key={`${value.title}-${i}`}
                   className="shrink-0 w-[75vw] max-w-[300px] transform-gpu"
-                  style={{
-                    WebkitTapHighlightColor: "transparent", 
-                  }}
+                  style={{ WebkitTapHighlightColor: "transparent" }}
                 >
                   <div className="card-warm text-center h-full flex flex-col items-center justify-center bg-white">
                     <div className="w-12 h-12 mx-auto rounded-xl bg-primary/10 flex items-center justify-center mb-3">
@@ -614,8 +936,12 @@ const About = () => {
       <section className="pt-20 pb-20 md:pt-32 md:pb-32 bg-section-light">
         <div className="container">
           <div className="text-center mb-12">
-            <span className="inline-block text-sm font-bold text-primary uppercase tracking-wider mb-3">In collaboration with</span>
-            <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground">Our Supportive Partners</h2>
+            <span className="inline-block text-sm font-bold text-primary uppercase tracking-wider mb-3">
+              In collaboration with
+            </span>
+            <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground">
+              Our Supportive Partners
+            </h2>
           </div>
 
           {/* --- MOBILE (SCROLLING) --- */}
@@ -625,16 +951,39 @@ const About = () => {
               onScroll={handlePartnersScroll}
               onTouchStart={handlePartnersTouchStart}
               onTouchEnd={handlePartnersTouchEnd}
-              className={`flex pb-8 gap-4 px-4 scrollbar-hide select-none w-full ${isPartnerSingle ? 'justify-center overflow-hidden' : 'overflow-x-auto justify-start'}`}
-              style={{ scrollSnapType: 'none', scrollbarWidth: "none", msOverflowStyle: "none", overscrollBehaviorX: "contain", WebkitTapHighlightColor: "transparent" }}
+              className={`flex pb-8 gap-4 px-4 scrollbar-hide select-none w-full ${
+                isPartnerSingle ? "justify-center overflow-hidden" : "overflow-x-auto justify-start"
+              }`}
+              style={{
+                scrollSnapType: "none",
+                scrollbarWidth: "none",
+                msOverflowStyle: "none",
+                overscrollBehaviorX: "contain",
+                WebkitTapHighlightColor: "transparent",
+              }}
             >
               {partnersScrollData.map((partner, i) => (
-                <div key={`${partner.name}-${i}`} className="shrink-0 w-[75vw] max-w-[300px] transform-gpu" style={{ WebkitTapHighlightColor: "transparent" }}>
-                  <a href={partner.url} target="_blank" rel="noopener noreferrer" className="flex flex-col items-center justify-center h-full p-6 rounded-2xl bg-white/50 backdrop-blur border border-transparent active:scale-95 transition-transform">
+                <div
+                  key={`${partner.name}-${i}`}
+                  className="shrink-0 w-[75vw] max-w-[300px] transform-gpu"
+                  style={{ WebkitTapHighlightColor: "transparent" }}
+                >
+                  <a
+                    href={partner.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex flex-col items-center justify-center h-full p-6 rounded-2xl bg-white/50 backdrop-blur border border-transparent active:scale-95 transition-transform"
+                  >
                     <div className="flex items-center justify-center w-full h-40 mb-4">
-                      <img src={partner.logo} alt={`${partner.name} Logo`} className={`w-auto max-w-full object-contain ${partner.customClass}`} />
+                      <img
+                        src={partner.logo}
+                        alt={`${partner.name} Logo`}
+                        className={`w-auto max-w-full object-contain ${partner.customClass}`}
+                      />
                     </div>
-                    <p className="text-muted-foreground text-center text-sm">{partner.description}</p>
+                    <p className="text-muted-foreground text-center text-sm">
+                      {partner.description}
+                    </p>
                   </a>
                 </div>
               ))}
@@ -644,7 +993,12 @@ const About = () => {
             {!isPartnerSingle && (
               <div className="flex justify-center gap-2 mt-2">
                 {partners.map((_, i) => (
-                  <div key={i} className={`h-2 rounded-full transition-all duration-300 ${partnerStep === i ? "w-8 bg-primary" : "w-2 bg-primary/20"}`} />
+                  <div
+                    key={i}
+                    className={`h-2 rounded-full transition-all duration-300 ${
+                      partnerStep === i ? "w-8 bg-primary" : "w-2 bg-primary/20"
+                    }`}
+                  />
                 ))}
               </div>
             )}
@@ -653,9 +1007,19 @@ const About = () => {
           {/* --- DESKTOP (GRID) --- */}
           <div className="hidden md:flex flex-wrap justify-center gap-16 items-center">
             {partners.map((partner) => (
-              <a key={partner.name} href={partner.url} target="_blank" rel="noopener noreferrer" className="flex flex-col items-center max-w-xs hover:scale-105 transition-transform">
+              <a
+                key={partner.name}
+                href={partner.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex flex-col items-center max-w-xs hover:scale-105 transition-transform"
+              >
                 <div className="flex items-center justify-center w-64 h-40 mb-4">
-                  <img src={partner.logo} alt={`${partner.name} Logo`} className={`w-auto max-w-full object-contain ${partner.customClass}`} />
+                  <img
+                    src={partner.logo}
+                    alt={`${partner.name} Logo`}
+                    className={`w-auto max-w-full object-contain ${partner.customClass}`}
+                  />
                 </div>
                 <p className="text-muted-foreground text-center">{partner.description}</p>
               </a>
@@ -663,7 +1027,6 @@ const About = () => {
           </div>
         </div>
       </section>
-      
     </Layout>
   );
 };
