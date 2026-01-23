@@ -558,7 +558,7 @@ export function CommunitySection() {
 
           {/* Keep your Insta button (you only wanted picture links removed) */}
           <a
-            href="https://www.instagram.com/rackisforbarn"
+            href="https://www.instagram.com/rackis_for_barn"
             target="_blank"
             rel="noopener noreferrer"
             className="hidden md:inline-flex items-center gap-2 px-6 py-3 rounded-full bg-stone-100 text-foreground font-semibold hover:bg-stone-200 transition-colors group"
