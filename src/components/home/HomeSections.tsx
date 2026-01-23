@@ -495,13 +495,14 @@ const posts = [
   { id: 5, img: pic5, caption: "" },
 ];
 
+
 export function CommunitySection() {
   const [isDesktop, setIsDesktop] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
-    // Match your layout breakpoint: you switch to grid at lg, so use lg here too.
+    // Match your breakpoint: you switch to grid at lg.
     const mql = window.matchMedia("(min-width: 1024px)");
     const update = () => setIsDesktop(mql.matches);
 
@@ -517,7 +518,7 @@ export function CommunitySection() {
     document.body.style.overflow = "hidden";
 
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setIsOpen(false); // close
+      if (e.key === "Escape") setIsOpen(false);
       if (e.key === "ArrowLeft") setActiveIndex((i) => (i - 1 + posts.length) % posts.length);
       if (e.key === "ArrowRight") setActiveIndex((i) => (i + 1) % posts.length);
     };
@@ -555,7 +556,7 @@ export function CommunitySection() {
             </p>
           </div>
 
-          {/* Keep this button as-is (you only wanted links removed from pictures) */}
+          {/* Keep your Insta button (you only wanted picture links removed) */}
           <a
             href="https://www.instagram.com/rackisforbarn"
             target="_blank"
@@ -568,8 +569,7 @@ export function CommunitySection() {
           </a>
         </div>
 
-        {/* FEED */}
-        {/* Mobile: free scroll (no snap). Desktop (lg): grid. */}
+        {/* FEED: mobile scroll, desktop grid */}
         <div
           className="
             flex gap-4 overflow-x-auto pb-8 -mx-4 px-4 scrollbar-hide
@@ -598,7 +598,8 @@ export function CommunitySection() {
                 className="w-full h-full object-cover transition-transform duration-700 lg:group-hover:scale-105"
               />
 
-              {/* REMOVED: Instagram icon overlays (mobile + desktop) */}
+              {/* Desktop-only gray hover wash */}
+              <div className="absolute inset-0 bg-black/0 transition-colors duration-300 lg:group-hover:bg-black/10" />
 
               {/* Caption Tag (kept) */}
               {post.caption && (
@@ -612,10 +613,10 @@ export function CommunitySection() {
           ))}
         </div>
 
-        {/* Mobile Button (unchanged; still links to Instagram) */}
+        {/* Mobile Button (unchanged) */}
         <div className="mt-4 md:hidden">
           <a
-            href="https://www.instagram.com/rackis_for_barn"
+            href="https://www.instagram.com/rackisforbarn"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center justify-center gap-2 w-full px-6 py-3 rounded-xl bg-stone-100 text-foreground font-semibold hover:bg-stone-200 transition-colors"
@@ -626,23 +627,16 @@ export function CommunitySection() {
         </div>
       </div>
 
-      {/* DESKTOP LIGHTBOX (desktop-only behavior enforced in openAt) */}
+      {/* Desktop Lightbox */}
       {isOpen && isDesktop && (
         <div
           className="fixed inset-0 z-[9999] bg-black/50 backdrop-blur-md flex items-center justify-center p-6"
           onClick={() => setIsOpen(false)}
           aria-modal="true"
           role="dialog"
-          style={{
-            // Tailwind uses backdrop-filter under the hood; this ensures a blur-capable backdrop. [web:99]
-            backdropFilter: "blur(12px)",
-          }}
+          style={{ backdropFilter: "blur(12px)" }}
         >
-          <div
-            className="relative w-full max-w-5xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Close */}
+          <div className="relative w-full max-w-5xl" onClick={(e) => e.stopPropagation()}>
             <button
               type="button"
               onClick={() => setIsOpen(false)}
@@ -652,7 +646,6 @@ export function CommunitySection() {
               <X className="w-5 h-5" />
             </button>
 
-            {/* Left / Right */}
             <button
               type="button"
               onClick={prev}
@@ -671,7 +664,6 @@ export function CommunitySection() {
               <ChevronRight className="w-6 h-6" />
             </button>
 
-            {/* Image */}
             <div className="rounded-3xl overflow-hidden bg-black/20 shadow-2xl">
               <img
                 src={posts[activeIndex].img}
