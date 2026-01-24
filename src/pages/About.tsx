@@ -722,7 +722,7 @@ const About = () => {
           </div>
 
           <p className="text-center text-base text-muted-foreground max-w-2xl mx-auto">
-            In addition to our members, many amazing volunteers contribute their time
+            We have many amazing volunteers who contribute their time
             and effort to make Rackis for Barn possible.
           </p>
 

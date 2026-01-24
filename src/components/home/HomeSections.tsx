@@ -133,7 +133,7 @@ export function HowItWorksSection() {
   const [currentStep, setCurrentStep] = useState(0);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const cardWidthRef = useRef(0);
-  const visualCardWidthRef = useRef(0); 
+  const visualCardWidthRef = useRef(0);
   const paddingLeftRef = useRef(0); // Stores container padding
   const isAnimatingRef = useRef(false);
   const rafRef = useRef<number | null>(null);
@@ -218,21 +218,21 @@ export function HowItWorksSection() {
   // --- INIT SCROLL ---
   useEffect(() => {
     const timer = setTimeout(() => {
-        const container = scrollContainerRef.current;
-        if (container && container.firstElementChild) {
-          const firstCard = container.firstElementChild as HTMLElement;
-          const style = window.getComputedStyle(container);
-          const gap = parseFloat(style.gap) || 16;
-          
-          visualCardWidthRef.current = firstCard.offsetWidth;
-          cardWidthRef.current = firstCard.offsetWidth + gap; 
-          paddingLeftRef.current = parseFloat(style.paddingLeft) || 0;
-          
-          const offset = getCenterOffset(container, visualCardWidthRef.current);
-          
-          // Formula: (Padding + Index*Stride) - CenterOffset
-          container.scrollLeft = (paddingLeftRef.current + (cardWidthRef.current * START_INDEX)) - offset;
-        }
+      const container = scrollContainerRef.current;
+      if (container && container.firstElementChild) {
+        const firstCard = container.firstElementChild as HTMLElement;
+        const style = window.getComputedStyle(container);
+        const gap = parseFloat(style.gap) || 16;
+
+        visualCardWidthRef.current = firstCard.offsetWidth;
+        cardWidthRef.current = firstCard.offsetWidth + gap;
+        paddingLeftRef.current = parseFloat(style.paddingLeft) || 0;
+
+        const offset = getCenterOffset(container, visualCardWidthRef.current);
+
+        // Formula: (Padding + Index*Stride) - CenterOffset
+        container.scrollLeft = (paddingLeftRef.current + (cardWidthRef.current * START_INDEX)) - offset;
+      }
     }, 50);
     return () => clearTimeout(timer);
   }, []);
@@ -261,11 +261,11 @@ export function HowItWorksSection() {
 
     const startX = container.scrollLeft;
     const distance = targetX - startX;
-    const duration = 300; 
+    const duration = 300;
     const startTime = performance.now();
 
     isAnimatingRef.current = true;
-    container.style.overflowX = 'hidden'; 
+    container.style.overflowX = 'hidden';
     container.style.scrollSnapType = 'none';
 
     const animate = (currentTime: number) => {
@@ -289,14 +289,14 @@ export function HowItWorksSection() {
 
   const handleTouchStart = (e: React.TouchEvent) => {
     if (rafRef.current) {
-        cancelAnimationFrame(rafRef.current);
-        rafRef.current = null;
-        isAnimatingRef.current = false;
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+      isAnimatingRef.current = false;
     }
     if (scrollContainerRef.current) {
-        scrollContainerRef.current.style.overflowX = 'auto';
-        scrollContainerRef.current.style.scrollSnapType = 'none';
-        checkInfiniteLoop(scrollContainerRef.current);
+      scrollContainerRef.current.style.overflowX = 'auto';
+      scrollContainerRef.current.style.scrollSnapType = 'none';
+      checkInfiniteLoop(scrollContainerRef.current);
     }
     touchStartRef.current = e.touches[0].clientX;
     touchStartTimeRef.current = performance.now();
@@ -309,17 +309,17 @@ export function HowItWorksSection() {
     const touchEnd = e.changedTouches[0].clientX;
     const touchTime = performance.now() - touchStartTimeRef.current;
     const diff = touchStartRef.current - touchEnd;
-    
+
     // Refresh measurements
     if (container.firstElementChild) {
-        const firstCard = container.firstElementChild as HTMLElement;
-        const style = window.getComputedStyle(container);
-        const gap = parseFloat(style.gap) || 16;
-        visualCardWidthRef.current = firstCard.offsetWidth;
-        cardWidthRef.current = firstCard.offsetWidth + gap;
-        paddingLeftRef.current = parseFloat(style.paddingLeft) || 0;
+      const firstCard = container.firstElementChild as HTMLElement;
+      const style = window.getComputedStyle(container);
+      const gap = parseFloat(style.gap) || 16;
+      visualCardWidthRef.current = firstCard.offsetWidth;
+      cardWidthRef.current = firstCard.offsetWidth + gap;
+      paddingLeftRef.current = parseFloat(style.paddingLeft) || 0;
     }
-    
+
     const totalWidth = cardWidthRef.current;
     const visualWidth = visualCardWidthRef.current;
     const paddingLeft = paddingLeftRef.current;
@@ -329,15 +329,15 @@ export function HowItWorksSection() {
 
     const isFlick = touchTime < 250 && Math.abs(diff) > 20;
     let targetIndex = rawIndex;
-    
+
     const exactIndex = (container.scrollLeft + offset - paddingLeft) / totalWidth;
 
     if (isFlick) {
       if (diff > 0) targetIndex = Math.floor(exactIndex) + 1;
       else targetIndex = Math.ceil(exactIndex) - 1;
     } else {
-       if (diff > 0 && exactIndex > rawIndex) targetIndex = rawIndex + 1;
-       else if (diff < 0 && exactIndex < rawIndex) targetIndex = rawIndex - 1;
+      if (diff > 0 && exactIndex > rawIndex) targetIndex = rawIndex + 1;
+      else if (diff < 0 && exactIndex < rawIndex) targetIndex = rawIndex - 1;
     }
 
     targetIndex = Math.max(0, Math.min(targetIndex, scrollData.length - 1));
@@ -351,14 +351,14 @@ export function HowItWorksSection() {
     const totalWidth = cardWidthRef.current || 1;
     const visualWidth = visualCardWidthRef.current || totalWidth;
     const paddingLeft = paddingLeftRef.current;
-    
+
     const offset = getCenterOffset(scrollContainerRef.current, visualWidth);
-    
+
     const rawIndex = Math.round((scrollContainerRef.current.scrollLeft + offset - paddingLeft) / totalWidth);
 
     let visualStep = (rawIndex - START_INDEX);
     visualStep = ((visualStep % steps.length) + steps.length) % steps.length;
-    
+
     if (visualStep !== currentStep) setCurrentStep(visualStep);
   };
 
@@ -374,7 +374,7 @@ export function HowItWorksSection() {
 
         {/* Desktop XL ... (unchanged) */}
         <div className="hidden xl:block relative mx-auto" style={{ width: containerWidth, height: containerHeight }}>
-             <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 1 }}>
+          <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 1 }}>
             <circle cx={circleCX} cy={circleCY} r={circleR} stroke="#0024a8" strokeWidth="4" fill="none" opacity="0.2" />
           </svg>
           <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 4 }}>
@@ -403,7 +403,7 @@ export function HowItWorksSection() {
             );
           })}
         </div>
-        
+
         {/* MD/LG Layout (unchanged) */}
         <div className="hidden md:flex xl:hidden justify-center gap-6 px-4">
           {steps.map((step, i) => {
@@ -447,8 +447,8 @@ export function HowItWorksSection() {
             {scrollData.map((step, i) => {
               const realStepNumber = steps.indexOf(step) + 1;
               return (
-                <div 
-                  key={`${step.title}-${i}`} 
+                <div
+                  key={`${step.title}-${i}`}
                   // CHANGED: max-w-[350px] -> max-w-[300px]
                   className="shrink-0 w-[75vw] max-w-[300px] transform-gpu"
                   style={{ WebkitTapHighlightColor: "transparent" }}
@@ -475,9 +475,8 @@ export function HowItWorksSection() {
             {steps.map((_, i) => (
               <div
                 key={i}
-                className={`h-2 rounded-full transition-all duration-300 ${
-                  currentStep === i ? "w-8 bg-primary" : "w-2 bg-primary/20"
-                }`}
+                className={`h-2 rounded-full transition-all duration-300 ${currentStep === i ? "w-8 bg-primary" : "w-2 bg-primary/20"
+                  }`}
               />
             ))}
           </div>
@@ -691,12 +690,42 @@ export function WhyChooseUsSection() {
   const touchStartTimeRef = useRef(0);
 
   const benefits = [
-    { icon: Recycle, title: "Sustainable", description: "Reduce waste by giving items a second life." },
-    { icon: Heart, title: "Charitable", description: "Every purchase supports children in need." },
-    { icon: Home, title: "Convenient", description: "Directly buy from student housing locations." },
-    { icon: ShoppingBag, title: "Affordable", description: "Quality items at student-friendly prices." },
-    { icon: Users, title: "Community", description: "Run by students, for students." },
-    { icon: Bike, title: "Variety", description: "From bedsheets to bikes, we have it all." },
+    {
+      icon: Home,
+      title: "Easy move-in",
+      description:
+        "Shop directly at student housing so you can get what you need without extra trips around town."
+    },
+    {
+      icon: Recycle,
+      title: "Better for the planet",
+      description:
+        "Donated items get used again instead of being thrown away, which means less waste and more value for everyone."
+    },
+    {
+      icon: Heart,
+      title: "Supports a good cause",
+      description:
+        "All profits go to Barncancerfonden and RBU, so your essentials support children and families in need."
+    },
+    {
+      icon: ShoppingBag,
+      title: "Affordable for students",
+      description:
+        "Affordable basics and quality finds, so you can set up your room without spending a fortune."
+    },
+    {
+      icon: Users,
+      title: "Student-run",
+      description:
+        "We know the move-in stress and the move-out chaos, so we focus on what actually helps."
+    },
+    {
+      icon: Bike,
+      title: "A bit of everything",
+      description:
+        "From bedsheets to bikes, you can find practical essentials and a few great surprises too."
+    }
   ];
 
   const scrollData = [benefits[benefits.length - 2], benefits[benefits.length - 1], ...benefits, benefits[0], benefits[1]];
@@ -984,13 +1013,13 @@ export function PartnersSection() {
       name: "Uppsala University Innovation",
       logo: uuInnovationLogo,
       // Added a custom scale for the square logo
-      customClass: "h-32 md:h-36 scale-125", 
+      customClass: "h-32 md:h-36 scale-125",
       description: "Uppsala University Innovation provides guidance and resources to help Rackis for Barn expand its reach and positive impact.",
       url: "https://www.uuinnovation.uu.se",
     },
     {
       name: "Uppsalahem",
-      logo: uppsalahemLogo, 
+      logo: uppsalahemLogo,
       // Wide logos need less height to feel balanced
       customClass: "h-20 md:h-24",
       description: "Generously provides access to storage units, enabling us to collect and sell items directly at student housing locations.",
