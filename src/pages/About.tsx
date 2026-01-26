@@ -8,8 +8,11 @@ import {
   MapPin,
   ChevronLeft,
   ChevronRight,
+  Newspaper,
+  Radio,
 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
+import { ArrowRight } from "lucide-react";
 
 import eliasImg from "@/assets/elias.png";
 import jacobImg from "@/assets/jacob.png";
@@ -611,7 +614,7 @@ const About = () => {
             <p className="text-lg text-muted-foreground animate-fade-up delay-100 leading-relaxed">
               As new students in Uppsala, we struggled to find second-hand essentials,
               while others moving out were throwing away perfectly good items.
-              We’ve been working ever since to tackle these problems.
+              We've been working ever since to tackle these problems.
             </p>
           </div>
         </div>
@@ -647,6 +650,78 @@ const About = () => {
                 supporting children and their families.
               </p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Press Mention - Integrated into About */}
+      <section className="py-8 md:py-12 bg-gradient-to-b from-stone-50 to-white relative overflow-hidden">
+        <div className="absolute top-0 right-[10%] w-32 h-32 bg-primary/5 blob" />
+        
+        <div className="container-narrow relative z-10">
+          <div className="text-center mb-6">
+            <span className="inline-block text-sm font-bold text-primary uppercase tracking-wider mb-2">
+              In the news
+            </span>
+            <h2 className="text-xl md:text-2xl font-bold text-foreground">
+              Recent media coverage
+            </h2>
+          </div>
+          
+          <div className="grid md:grid-cols-2 gap-4 max-w-3xl mx-auto">
+            {/* UNT Card */}
+            <a 
+              href="https://www.unt.se/nyheter/uppsala/artikel/rackis-for-barn-oppnar-second-hand-butik-i-uppsala/jn11gonl" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="group card-warm flex items-start gap-4 hover:shadow-lg hover:border-primary/20 transition-all duration-300"
+            >
+              <div className="shrink-0 w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                <Newspaper className="h-6 w-6 text-primary" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-semibold text-muted-foreground mb-1">
+                  January 2026
+                </p>
+                <h3 className="font-bold text-foreground mb-1 group-hover:text-primary transition-colors">
+                  Uppsala Nya Tidning
+                </h3>
+                <p className="text-sm text-muted-foreground line-clamp-2">
+                  Räckis för barn öppnar second hand-butik i Uppsala
+                </p>
+                <span className="inline-flex items-center text-sm font-semibold text-primary mt-2 group-hover:gap-2 transition-all">
+                  Read article 
+                  <ArrowRight className="ml-1 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                </span>
+              </div>
+            </a>
+
+            {/* Sveriges Radio Card */}
+            <a 
+              href="https://www.sverigesradio.se/artikel/utbytesstudenter-skanker-pengar-till-barncancerfonden"
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="group card-warm flex items-start gap-4 hover:shadow-lg hover:border-primary/20 transition-all duration-300"
+            >
+              <div className="shrink-0 w-12 h-12 rounded-xl bg-warm/10 flex items-center justify-center group-hover:bg-warm/20 transition-colors">
+                <Radio className="h-6 w-6 text-warm" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-semibold text-muted-foreground mb-1">
+                  January 2026
+                </p>
+                <h3 className="font-bold text-foreground mb-1 group-hover:text-warm transition-colors">
+                  Sveriges Radio P4 Uppland
+                </h3>
+                <p className="text-sm text-muted-foreground line-clamp-2">
+                  Utbytesstudenter säljer prylar – och skänker pengarna till barn
+                </p>
+                <span className="inline-flex items-center text-sm font-semibold text-warm mt-2 group-hover:gap-2 transition-all">
+                  Listen now 
+                  <ArrowRight className="ml-1 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                </span>
+              </div>
+            </a>
           </div>
         </div>
       </section>

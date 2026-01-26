@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Heart, Recycle, ShoppingBag, MapPin, Instagram, Bike, Home, Users, Gift, X, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowRight, Heart, Recycle, ShoppingBag, MapPin, Instagram, Bike, Home, Users, Gift, X, ChevronLeft, ChevronRight, Newspaper, Radio } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState, useEffect, useRef, useCallback } from "react";
 import Logo from "@/assets/logo.png";
@@ -60,72 +60,147 @@ export function HeroSection() {
   }, []);
 
   return (
-    <section className="relative overflow-hidden bg-hero-gradient min-h-[85vh] flex items-center">
-      {/* BLOBS */}
-      <div className="absolute top-20 left-[10%] w-64 h-64 bg-primary/10 blob animate-float" />
-      <div className="absolute bottom-32 right-[5%] w-48 h-48 bg-warm/10 blob animate-float delay-200" />
+    <>
+      <section className="relative overflow-hidden bg-hero-gradient min-h-[85vh] flex items-center">
+        {/* BLOBS */}
+        <div className="absolute top-20 left-[10%] w-64 h-64 bg-primary/10 blob animate-float" />
+        <div className="absolute bottom-32 right-[5%] w-48 h-48 bg-warm/10 blob animate-float delay-200" />
 
-      {/* HEARTS */}
-      {hearts.map((h, i) => (
-        <Heart
-          key={i}
-          className="absolute text-warm/30 animate-float"
-          style={{
-            left: `${h.x}%`,
-            top: `${h.y}%`,
-            width: `${h.size}px`,
-            height: `${h.size}px`,
-            animationDelay: `${h.delay}ms`,
-          }}
-          fill="currentColor"
-        />
-      ))}
+        {/* HEARTS */}
+        {hearts.map((h, i) => (
+          <Heart
+            key={i}
+            className="absolute text-warm/30 animate-float"
+            style={{
+              left: `${h.x}%`,
+              top: `${h.y}%`,
+              width: `${h.size}px`,
+              height: `${h.size}px`,
+              animationDelay: `${h.delay}ms`,
+            }}
+            fill="currentColor"
+          />
+        ))}
 
-      {/* MAIN CONTENT */}
-      <div className="container section-padding relative z-10">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-secondary text-secondary-foreground text-sm font-semibold mb-8 animate-fade-up">
-            <Heart className="h-4 w-4 text-accent" fill="currentColor" />
-            <span>By students, for students in Uppsala</span>
+        {/* MAIN CONTENT */}
+        <div className="container section-padding relative z-10">
+          <div className="max-w-4xl mx-auto text-center">
+            <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-secondary text-secondary-foreground text-sm font-semibold mb-8 animate-fade-up">
+              <Heart className="h-4 w-4 text-accent" fill="currentColor" />
+              <span>By students, for students in Uppsala</span>
+            </div>
+
+            <h1 className="font-display text-5xl sm:text-6xl md:text-7xl font-bold text-foreground leading-[1.1] mb-8 animate-fade-up delay-100">
+              Give items a{" "}
+              <span className="hand-drawn-underline text-primary">second life</span>
+              {" "}and help children in need
+            </h1>
+
+            <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto mb-10 animate-fade-up delay-200 leading-relaxed">
+              Donated items become affordable finds for fellow students
+              <br />
+              all profit goes directly to{" "}
+              <span className="font-semibold text-foreground">Barncancerfonden</span> and{" "}
+              <span className="font-semibold text-foreground">RBU</span>
+            </p>
+
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-up delay-300">
+              <Button variant="hero" size="lg" asChild className="text-lg px-8">
+                <a href="https://instagram.com/rackis_for_barn" target="_blank" rel="noopener noreferrer">
+                  <Instagram className="mr-2 h-5 w-5" />
+                  Follow us
+                </a>
+              </Button>
+
+              <Button variant="hero-outline" size="lg" asChild className="text-lg px-8">
+                <Link to="/about">
+                  Learn more
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Link>
+              </Button>
+            </div>
+
+            <div className="mt-12 flex items-center justify-center gap-2 text-muted-foreground animate-fade-up delay-400">
+              <MapPin className="h-5 w-5 text-primary" />
+              <span className="font-medium">Find us at Rackarbergsgatan 32, Uppsala</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FEATURED IN SECTION */}
+      <div className="py-12 md:py-16 bg-gradient-to-b from-stone-50 to-white relative overflow-hidden">
+        {/* Decorative blob */}
+        <div className="absolute top-0 right-[10%] w-32 h-32 bg-primary/5 blob" />
+
+        <div className="container px-4 relative z-10">
+          <div className="text-center mb-8">
+            <span className="inline-block text-sm font-bold text-primary uppercase tracking-wider mb-2">
+              In the news
+            </span>
+            <h2 className="text-2xl md:text-3xl font-bold text-foreground">
+              Recent media coverage
+            </h2>
           </div>
 
-          <h1 className="font-display text-5xl sm:text-6xl md:text-7xl font-bold text-foreground leading-[1.1] mb-8 animate-fade-up delay-100">
-            Give items a{" "}
-            <span className="hand-drawn-underline text-primary">second life</span>
-            {" "}and help children in need
-          </h1>
+          <div className="grid md:grid-cols-2 gap-4 md:gap-6 max-w-4xl mx-auto">
+            {/* UNT Card */}
+            <a
+              href="https://www.unt.se/nyheter/uppsala/artikel/rackis-for-barn-oppnar-second-hand-butik-i-uppsala/jn11gonl"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group card-warm flex items-start gap-4 hover:shadow-lg hover:border-primary/20 transition-all duration-300 animate-fade-up"
+            >
+              <div className="shrink-0 w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                <Newspaper className="h-6 w-6 text-primary" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-semibold text-muted-foreground mb-1">
+                  January 2026
+                </p>
+                <h3 className="font-bold text-foreground mb-1 group-hover:text-primary transition-colors">
+                  Uppsala Nya Tidning
+                </h3>
+                <p className="text-sm text-muted-foreground line-clamp-2">
+                  Räckis för barn öppnar second hand-butik i Uppsala
+                </p>
+                <span className="inline-flex items-center text-sm font-semibold text-primary mt-2 group-hover:gap-2 transition-all">
+                  Read article
+                  <ArrowRight className="ml-1 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                </span>
+              </div>
+            </a>
 
-          <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto mb-10 animate-fade-up delay-200 leading-relaxed">
-            Donated items become affordable finds for fellow students
-            <br />
-            all profit goes directly to{" "}
-            <span className="font-semibold text-foreground">Barncancerfonden</span> and{" "}
-            <span className="font-semibold text-foreground">RBU</span>
-          </p>
-
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-up delay-300">
-            <Button variant="hero" size="lg" asChild className="text-lg px-8">
-              <a href="https://instagram.com/rackis_for_barn" target="_blank" rel="noopener noreferrer">
-                <Instagram className="mr-2 h-5 w-5" />
-                Follow us
-              </a>
-            </Button>
-
-            <Button variant="hero-outline" size="lg" asChild className="text-lg px-8">
-              <Link to="/about">
-                Learn more
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Link>
-            </Button>
-          </div>
-
-          <div className="mt-12 flex items-center justify-center gap-2 text-muted-foreground animate-fade-up delay-400">
-            <MapPin className="h-5 w-5 text-primary" />
-            <span className="font-medium">Find us at Rackarbergsgatan 32, Uppsala</span>
+            {/* Sveriges Radio Card */}
+            <a
+              href="https://www.sverigesradio.se/artikel/utbytesstudenter-skanker-pengar-till-barncancerfonden"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group card-warm flex items-start gap-4 hover:shadow-lg hover:border-primary/20 transition-all duration-300 animate-fade-up delay-100"
+            >
+              <div className="shrink-0 w-12 h-12 rounded-xl bg-warm/10 flex items-center justify-center group-hover:bg-warm/20 transition-colors">
+                <Radio className="h-6 w-6 text-warm" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-semibold text-muted-foreground mb-1">
+                  January 2026
+                </p>
+                <h3 className="font-bold text-foreground mb-1 group-hover:text-warm transition-colors">
+                  Sveriges Radio P4 Uppland
+                </h3>
+                <p className="text-sm text-muted-foreground line-clamp-2">
+                  Utbytesstudenter säljer prylar – och skänker pengarna till barn
+                </p>
+                <span className="inline-flex items-center text-sm font-semibold text-warm mt-2 group-hover:gap-2 transition-all">
+                  Listen now
+                  <ArrowRight className="ml-1 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                </span>
+              </div>
+            </a>
           </div>
         </div>
       </div>
-    </section>
+    </>
   );
 }
 
